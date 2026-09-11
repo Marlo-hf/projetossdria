@@ -1,0 +1,3 @@
+# Estado local do CLI do Netlify. O id do projeto está documentado no
+# README, para não depender deste arquivo.
+.netlify/

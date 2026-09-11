@@ -11,9 +11,17 @@ notas internas e ficam fora do ar de propósito.
 
 ## Onde está publicado
 
-Projeto Netlify **`professor-sdr-lp`**. Atenção: o projeto `professor-sdr`, que
-serve `sdr.unlockify.com.br`, é o **aplicativo do curso**, com o login dos
-alunos. Nunca publicar a LP nele.
+Projeto Netlify **`professor-sdr-lp`**, em <https://professor-sdr-lp.netlify.app>.
+
+    site id: a26c01aa-69bf-4581-aca8-fc8958f4a6f1
+
+**Atenção ao publicar.** O projeto `professor-sdr`, site id
+`eb1f63f5-960b-4f25-a3c1-1aa6d3d7b9c6`, serve `sdr.unlockify.com.br` e é o
+**aplicativo do curso**, com o login dos alunos e as telas de Ebook, Situações,
+Aula por voz e Prova. Publicar a LP nele derruba o produto para quem já está
+matriculado. Nunca usar esse projeto para a landing page.
+
+O `.netlify/` fica fora do versionamento, por isso o id está anotado aqui.
 
 ## Antes de publicar
 

@@ -58,3 +58,8 @@ Estas são de conformidade e de copy, não de estética:
 - Conferir de 320px a 1920px, e a história do scroll em desktop e celular: no
   celular a faixa de leitura da batida fica abaixo do console fixo.
 - Manter o marcador `COLE_AQUI_O_LINK_DA_KIWIFY` até o link real existir.
+- **Publicar só no projeto Netlify `professor-sdr-lp`** (site id
+  `a26c01aa-69bf-4581-aca8-fc8958f4a6f1`). O projeto `professor-sdr`, que serve
+  `sdr.unlockify.com.br`, é o aplicativo do curso com o login dos alunos, e
+  publicar a LP nele derruba o produto. Conferir a URL no ar antes de qualquer
+  deploy.
