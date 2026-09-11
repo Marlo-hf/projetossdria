@@ -10,36 +10,49 @@ formação para SDR de escritório de advocacia de gestão de passivos bancário
 ## Estrutura
 
 - `index.html`, a página inteira: HTML, CSS e um script curto num arquivo só.
-- `README.md`, briefing de entrega, direção visual e o que falta definir.
+- `README.md`, direção visual, decisões e o que falta definir.
 
-Não há build, gerenciador de pacotes, teste ou linter. Não existe comando de
-build, execução ou teste para documentar. Para ver a página, abrir o arquivo no
-navegador ou servir o diretório.
+Não há build, gerenciador de pacotes, teste ou linter, e não existe comando de
+build ou teste para documentar. Para ver a página, abrir o arquivo no navegador.
 
-## Regras que a página precisa respeitar
+## Sistema visual
 
-Estas vieram do briefing do cliente e não são preferência de estilo:
+A página segue a casa do site da Unlockify (`unlockify.com.br`): Inter 800 com
+tracking apertado, violeta `#9184D9`, fundo `#161826`, capítulos alternando
+escuro e claro (`#F4F4FB`), raio de 12 a 18px, pílulas, rótulos violeta em caixa
+alta, brilho radial suave e o produto aparecendo como janela de app branca
+flutuando no escuro.
+
+**As regras antigas do briefing (raio de 3px, sem gradiente, sem sombra, largura
+de 1000px, sem rótulo em caixa alta, sem animação) foram substituídas pelo
+cliente.** Não restaurar.
+
+## Regras que continuam valendo
+
+Estas são de conformidade e de copy, não de estética:
 
 - **Nenhum travessão em nenhum texto.** Usar vírgula, dois pontos ou ponto.
-- Sem rótulo em caixa alta acima dos títulos, sem separador com pontinho no meio,
-  sem seta colada no texto de botão.
-- Sem gradiente, sem sombra, sem brilho, sem cards iguais em sequência.
-- Sem animação de entrada. Movimento só como resposta a uma ação do usuário.
-- Sem imagem de banco, sem ícone genérico, sem depoimento, logo de cliente,
-  número de alunos ou selo de garantia inventados. Nada disso existe ainda.
+- Sem depoimento, logo de cliente, número de alunos ou selo de garantia
+  inventados. Nada disso existe ainda.
 - Sem promessa de resultado para o escritório.
-- Raio de borda entre 3px e 4px, largura máxima de 1000px, texto alinhado à
-  esquerda, linha de no máximo 62 caracteres.
+- Os números reais do briefing: 143 conversas, 935 mensagens, 8 módulos,
+  52 questões, 20 situações, 16 acertos, 6 aulas, 3 simulações, 10 tentativas,
+  45 minutos, R$ 297 e R$ 97.
+- Cada cor semântica tem par por superfície, porque o violeta e o âmbar da
+  marca não alcançam 4.5:1 sobre fundo claro. Usar `--violet-ink`,
+  `--amber-ink`, `--green-ink` em capítulo claro e `--violet-lite` em pílula
+  sobre escuro elevado.
 
-As cores carregam significado fixo: violeta é marca e fala do SDR, âmbar é erro
-ou falta grave, verde é o que passou. Não usar nenhuma delas fora disso.
+## Armadilhas já encontradas
 
-## Ao alterar a página
-
-- Conferir de 320px a 1920px. A transcrição do hero é o elemento de abertura e
-  precisa continuar legível no celular.
-- `.shell` define a largura da coluna. Não declarar `width` em nenhuma classe que
-  divida elemento com `.shell`, senão a coluna estoura.
-- Em grid de coluna única, redefinir `grid-area` de todos os filhos. Sem isso uma
-  célula colapsa para largura zero e o texto atropela o vizinho.
+- **Nunca colocar `overflow:hidden` em `.band`.** Isso quebra o `position:sticky`
+  do console da simulação e da coluna de preço, e o console some da tela sem
+  nenhum erro aparecer. Ao mexer em sticky, medir a posição do elemento na
+  rolagem, não só o estado.
+- Não declarar `width` em classe que divida elemento com `.wrap`, senão a
+  coluna estoura.
+- Em grid de coluna única, redefinir `grid-area` de todos os filhos. Sem isso
+  uma célula colapsa para largura zero e o texto atropela o vizinho.
+- Conferir de 320px a 1920px, e a história do scroll em desktop e celular: no
+  celular a faixa de leitura da batida fica abaixo do console fixo.
 - Manter o marcador `COLE_AQUI_O_LINK_DA_KIWIFY` até o link real existir.
