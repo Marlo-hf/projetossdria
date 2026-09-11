@@ -4,1340 +4,1162 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Professor SDR | Formação para SDR de gestão de passivos bancários</title>
-<meta name="description" content="Formação para SDR de escritório de gestão de passivos. A prova é uma simulação de voz em tempo real, corrigida frase por frase. R$ 97 no lote de lançamento.">
-<meta name="theme-color" content="#14162A">
+<meta name="description" content="Formação com prova falada. O SDR atende um empresário endividado que responde na hora, por voz, e a correção devolve a frase exata do erro. R$ 97 no lançamento.">
+<meta name="theme-color" content="#141728">
 <meta name="color-scheme" content="dark">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Professor SDR | Formação para SDR de gestão de passivos">
-<meta property="og:description" content="A prova é uma conversa falada com uma IA que responde na hora. A correção devolve a frase exata do erro e o minuto em que ela aconteceu.">
+<meta property="og:title" content="Professor SDR">
+<meta property="og:description" content="A prova é uma conversa falada com uma IA que responde na hora. A correção devolve a frase exata do erro e o minuto em que aconteceu.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* ============================================================
+/* ═══════════════════════════════════════════════════════════════
    PROFESSOR SDR / UNLOCKIFY DIGITAL
-   Sistema: "transcrição corretiva"
-   As cores têm função. Violeta = marca e fala do SDR.
-   Âmbar = erro ou falta grave. Verde = o que passou.
-   ============================================================ */
+
+   Direção: console de simulação.
+   O produto é uma prova falada com relógio correndo, nota que se
+   mexe e falta que fica registrada. A página adota a linguagem do
+   instrumento.
+
+   Regra de forma, tirada da marca: DADO É RETO, ENERGIA É REDONDA.
+   Transcrição, fios e leituras ficam retos e monoespaçados. O que
+   é vivo (waveform, medidor, a própria marca) usa o traço de
+   terminal arredondado do logo.
+
+   Cores amostradas da assinatura de marca: fundo #141728, violeta
+   #A794EE, elevação de luz #38305F.
+   ═══════════════════════════════════════════════════════════════ */
 
 :root{
   /* superfícies */
-  --bg:#14162A;
-  --surface:#1B1E33;
-  --surface-2:#232742;
-  --line:#2E3352;
+  --void:#0F1120;
+  --base:#141728;
+  --surface:#1B1F36;
+  --raised:#232744;
+  --line:#2B3052;
+  --line-hi:#3A4068;
 
   /* texto */
   --ink:#F3F2FA;
-  --ink-2:#9AA0C0;
+  /* Calibrados para passar 4.5:1 inclusive sobre a superfície elevada
+     (--raised), que é o pior caso: barra do console, cabeçalho dos
+     cartões e do comparativo. */
+  --ink-2:#A3A9C7;
+  --ink-3:#8890B5;
 
   /* semântica */
-  --violet:#9084E4;
-  --violet-h:#7A6DDB;
-  --green:#3FD0AD;
+  --violet:#A794EE;
+  --violet-deep:#38305F;
+  --violet-hi:#D8D0FB;
   --amber:#F2B33D;
+  --green:#3FD0AD;
 
-  /* derivados, mantidos dentro do sistema */
-  --ghost:rgba(154,160,192,.20);
-  /* .06 e não mais: acima disso o rótulo violeta do SDR sobre a linha
-     marcada cai abaixo de 4.5:1 de contraste. */
-  --amber-wash:rgba(242,179,61,.06);
-  --violet-wash:rgba(144,132,228,.10);
+  --amber-wash:rgba(242,179,61,.07);
+  --violet-wash:rgba(167,148,238,.09);
 
   /* tipografia */
   --display:"Bricolage Grotesque","Helvetica Neue",Helvetica,Arial,sans-serif;
   --sans:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 
-  --fs-h1:clamp(2.375rem,1.35rem + 4.3vw,4.5rem);
-  --fs-h2:clamp(1.75rem,1.1rem + 2.2vw,2.625rem);
+  --fs-mega:clamp(2.875rem,1.1rem + 7.4vw,7.5rem);
+  --fs-h2:clamp(2rem,1.25rem + 3.1vw,4rem);
   --fs-h3:clamp(1.125rem,1.02rem + .5vw,1.375rem);
-  --fs-pull:clamp(1.375rem,1.05rem + 1.45vw,2rem);
   --fs-body:1.0625rem;
   --fs-sm:.9375rem;
   --fs-mono:.8125rem;
-  --fs-mono-xs:.75rem;
+  --fs-mono-xs:.6875rem;
 
   /* layout */
-  --max:1000px;
-  --pad:24px;
-  --gutter:96px;
-  --gutter-gap:32px;
-  --nav-h:66px;
+  --max:1240px;
+  --pad:28px;
+  --nav-h:70px;
   --measure:33em;
 
-  --radius:3px;
-  --radius-lg:4px;
-  --ease:cubic-bezier(.2,.7,.2,1);
-  --dur:.34s;
+  --r:4px;
+  --ease:cubic-bezier(.22,.7,.24,1);
+  --dur:.5s;
 }
 
 *,*::before,*::after{box-sizing:border-box}
 
-html{
-  -webkit-text-size-adjust:100%;
-  scroll-padding-top:calc(var(--nav-h) + 24px);
-}
-@media (prefers-reduced-motion:no-preference){
-  html{scroll-behavior:smooth}
-}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--nav-h) + 24px)}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 
 body{
-  margin:0;
-  background:var(--bg);
-  color:var(--ink);
-  font-family:var(--sans);
-  font-size:var(--fs-body);
-  line-height:1.6;
-  font-weight:400;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
+  margin:0;background:var(--base);color:var(--ink);
+  font-family:var(--sans);font-size:var(--fs-body);line-height:1.6;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
   overflow-x:hidden;
 }
 
-h1,h2,h3{
-  font-family:var(--display);
-  font-weight:800;
-  letter-spacing:-.03em;
-  margin:0;
-  text-wrap:balance;
-}
-h1{font-size:var(--fs-h1);line-height:.98}
-h2{font-size:var(--fs-h2);line-height:1.03}
+h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.035em;margin:0;text-wrap:balance}
+h1{font-size:var(--fs-mega);line-height:.9}
+h2{font-size:var(--fs-h2);line-height:.96}
 h3{font-size:var(--fs-h3);line-height:1.15;letter-spacing:-.02em}
 p{margin:0;text-wrap:pretty}
 ul,ol{margin:0;padding:0;list-style:none}
 b,strong{font-weight:600}
-
 a{color:inherit}
-a:focus-visible,button:focus-visible,summary:focus-visible{
-  outline:2px solid var(--violet);
-  outline-offset:3px;
-  border-radius:2px;
-}
 
-::selection{background:var(--violet);color:#14162A}
+:focus-visible{outline:2px solid var(--violet);outline-offset:3px;border-radius:3px}
+::selection{background:var(--violet);color:#141728}
 
-.sr-only{
-  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
-  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
-}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
 .skip{
-  position:fixed;left:12px;top:-120px;z-index:100;
-  background:var(--violet);color:#14162A;
-  font-weight:600;font-size:var(--fs-sm);
-  padding:10px 16px;border-radius:var(--radius);
-  transition:top .18s var(--ease);
+  position:fixed;left:14px;top:-120px;z-index:100;
+  background:var(--violet);color:#141728;font-weight:600;font-size:var(--fs-sm);
+  padding:11px 18px;border-radius:var(--r);transition:top .2s var(--ease);
 }
-.skip:focus{top:12px}
+.skip:focus{top:14px}
 
-/* ---------- primitivas de layout ---------- */
-
-.shell{
-  width:min(100% - (var(--pad) * 2),var(--max));
-  margin-inline:auto;
-}
-
-.band{
-  border-top:1px solid var(--line);
-  padding-block:clamp(72px,8.5vw,116px);
-}
-.band--surface{background:var(--surface)}
-.band--tall{padding-block:clamp(84px,10vw,140px)}
-
-/* Índice de seção. Abaixo de 1280px vive como uma linha acima do conteúdo;
-   acima disso ocupa a margem externa, fora da coluna de 1000px. */
-.rail{display:block}
-
-.rail__index{
-  display:flex;gap:10px;
-  margin-bottom:20px;
-  font-family:var(--mono);
-  font-size:var(--fs-mono-xs);
-  color:var(--ink-2);
-  letter-spacing:.02em;
-  line-height:1.5;
-}
-.rail__index span{color:var(--violet)}
-
-/* Acima de 1300px há margem de sobra fora da coluna de 1000px: o índice
-   sai para essa margem, alinhado à direita contra a borda do conteúdo.
-   A largura do .shell não pode ser tocada aqui, senão a coluna estoura. */
-@media (min-width:1300px){
-  .rail{position:relative}
-  .rail__index{
-    position:absolute;
-    right:calc(100% + var(--gutter-gap));
-    top:.55em;
-    display:block;margin-bottom:0;
-    max-width:var(--gutter);
-    white-space:nowrap;text-align:right;
-  }
-  .rail__index span{display:block}
-}
-
+/* ── contêiner ─────────────────────────────────────────────── */
+.wrap{width:min(100% - (var(--pad) * 2),var(--max));margin-inline:auto}
 .measure{max-width:var(--measure)}
 .lede{color:var(--ink-2);max-width:var(--measure)}
-.lede + .lede{margin-top:1.15em}
+.lede + .lede{margin-top:1.1em}
 
-.mono{font-family:var(--mono)}
+/* rótulo de instrumento: número e nome, minúsculo, monoespaçado */
+.tag{
+  display:flex;align-items:baseline;gap:10px;
+  font-family:var(--mono);font-size:var(--fs-mono-xs);
+  color:var(--ink-3);letter-spacing:.08em;
+}
+.tag b{color:var(--violet);font-weight:500}
 
-/* ---------- navegação ---------- */
+.band{padding-block:clamp(88px,10vw,150px);position:relative}
+.band--line{border-top:1px solid var(--line)}
+.band--well{background:var(--void)}
 
+/* ── marca ─────────────────────────────────────────────────── */
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none}
+.brand__mark{width:22px;height:26px;flex:none;overflow:visible}
+.brand__mark path,.brand__mark circle{
+  transition:stroke .4s var(--ease),fill .4s var(--ease);
+}
+.brand__txt{display:flex;flex-direction:column;line-height:1}
+.brand__a{font-family:var(--display);font-weight:800;font-size:1.0625rem;letter-spacing:-.035em;white-space:nowrap}
+.brand__b{font-family:var(--mono);font-size:.6875rem;letter-spacing:.2em;color:var(--ink-3);margin-top:3px;white-space:nowrap;transition:color .4s var(--ease)}
+.brand:hover .brand__b{color:var(--violet)}
+
+/* ── navegação ─────────────────────────────────────────────── */
 .nav{
-  position:fixed;inset:0 0 auto 0;z-index:60;
-  height:var(--nav-h);
+  position:fixed;inset:0 0 auto 0;z-index:60;height:var(--nav-h);
   display:flex;align-items:center;
-  background:rgba(20,22,42,0);
   border-bottom:1px solid transparent;
-  transition:height var(--dur) var(--ease),
-             background var(--dur) var(--ease),
-             border-color var(--dur) var(--ease),
-             backdrop-filter var(--dur) var(--ease);
+  transition:height var(--dur) var(--ease),background var(--dur) var(--ease),
+             border-color var(--dur) var(--ease),backdrop-filter var(--dur) var(--ease);
 }
 .nav.is-stuck{
-  height:58px;
-  background:rgba(20,22,42,.88);
-  backdrop-filter:saturate(140%) blur(14px);
-  border-bottom-color:var(--line);
+  height:58px;background:rgba(20,23,40,.82);
+  backdrop-filter:saturate(150%) blur(16px);border-bottom-color:var(--line);
 }
-.nav__inner{display:flex;align-items:center;justify-content:space-between;gap:20px}
-
-.brand{
-  display:flex;align-items:baseline;gap:10px;
-  text-decoration:none;
-}
-.brand__name{
-  font-family:var(--display);font-weight:800;
-  font-size:1.0625rem;letter-spacing:-.035em;
-  color:var(--ink);white-space:nowrap;
-}
-.brand__org{
-  font-family:var(--mono);font-size:.6875rem;
-  letter-spacing:.16em;color:var(--ink-2);white-space:nowrap;
-  transition:color var(--dur) var(--ease);
-}
-.brand:hover .brand__org{color:var(--violet)}
-
-.nav__progress{
-  position:absolute;left:0;right:0;bottom:-1px;height:1px;
-  background:var(--violet);transform:scaleX(0);transform-origin:0 50%;
-}
+.nav__in{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.nav__prog{position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--violet);transform:scaleX(0);transform-origin:0 50%}
 @supports (animation-timeline:scroll()){
-  .nav__progress{
-    animation:progress linear both;
-    animation-timeline:scroll(root block);
-  }
+  .nav__prog{animation:prog linear both;animation-timeline:scroll(root block)}
 }
-@keyframes progress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes prog{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 
-/* ---------- botões ---------- */
-
+/* ── botões ────────────────────────────────────────────────── */
 .btn{
-  --btn-bg:transparent;
-  --btn-ink:var(--ink);
-  --btn-bd:var(--line);
-  display:inline-flex;align-items:center;gap:10px;
+  --bg:transparent;--ink-c:var(--ink);--bd:var(--line-hi);
+  position:relative;display:inline-flex;align-items:center;justify-content:center;
   font-family:var(--sans);font-size:var(--fs-sm);font-weight:600;
-  letter-spacing:-.005em;
-  padding:13px 20px;
-  color:var(--btn-ink);
-  background:var(--btn-bg);
-  border:1px solid var(--btn-bd);
-  border-radius:var(--radius);
-  text-decoration:none;cursor:pointer;
-  transition:background .2s var(--ease),border-color .2s var(--ease),
-             color .2s var(--ease),transform .2s var(--ease);
+  padding:14px 22px;color:var(--ink-c);background:var(--bg);
+  border:1px solid var(--bd);border-radius:var(--r);
+  text-decoration:none;cursor:pointer;overflow:hidden;
+  transition:background .25s var(--ease),border-color .25s var(--ease),
+             color .25s var(--ease),transform .25s var(--ease);
 }
-.btn > span{position:relative;display:inline-block}
-.btn > span::after{
-  content:"";position:absolute;left:0;right:0;bottom:-3px;height:1px;
-  background:currentColor;
-  transform:scaleX(0);transform-origin:0 50%;
-  transition:transform .28s var(--ease);
+.btn span{position:relative;z-index:1}
+/* o brilho segue o ponteiro, uma luz só, como a da marca */
+.btn::before{
+  content:"";position:absolute;inset:0;z-index:0;opacity:0;
+  background:radial-gradient(150px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.22),transparent 70%);
+  transition:opacity .3s var(--ease);
 }
-.btn:hover{transform:translateY(-1px)}
-.btn:hover > span::after,
-.btn:focus-visible > span::after{transform:scaleX(1)}
+.btn:hover::before{opacity:1}
+.btn:hover{transform:translateY(-2px)}
 .btn:active{transform:translateY(0)}
+.btn--primary{--bg:var(--violet);--ink-c:#141728;--bd:var(--violet)}
+.btn--ghost:hover{--bd:var(--violet);--bg:var(--violet-wash)}
+.btn--nav{padding:9px 16px;font-size:.875rem}
+.nav.is-past .btn--nav{--bg:var(--violet);--ink-c:#141728;--bd:var(--violet)}
+.btn--block{width:100%;padding:18px 22px;font-size:1rem}
 
-.btn--primary{
-  --btn-bg:var(--violet);
-  --btn-ink:#14162A;
-  --btn-bd:var(--violet);
+/* ── atmosfera: uma luz só, vinda de cima à esquerda ───────── */
+.glow{
+  position:absolute;pointer-events:none;z-index:0;
+  width:min(1280px,135vw);aspect-ratio:1;
+  background:radial-gradient(circle,
+    rgba(80,68,136,.82) 0%,
+    rgba(56,48,95,.58) 30%,
+    rgba(34,30,62,.26) 52%,
+    transparent 72%);
 }
-.btn--primary:hover{--btn-bg:var(--violet-h);--btn-bd:var(--violet-h)}
+.motif{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.5}
+.motif path,.motif circle{fill:none;stroke:#252A48;stroke-linecap:round;stroke-linejoin:round}
 
-.btn--ghost:hover{--btn-bd:var(--violet);--btn-bg:var(--violet-wash)}
+/* ═══ CONSOLE ═══════════════════════════════════════════════
+   O instrumento. Aparece no hero e é o palco da simulação.     */
 
-.btn--nav{padding:9px 15px;font-size:.875rem}
-.nav.is-past .btn--nav{
-  --btn-bg:var(--violet);--btn-ink:#14162A;--btn-bd:var(--violet);
+.cns{
+  background:linear-gradient(180deg,#1B1F36 0%,#171B30 100%);
+  border:1px solid var(--line);border-radius:6px;
+  overflow:hidden;position:relative;
+  box-shadow:0 40px 90px -30px rgba(8,9,20,.9);
 }
-.nav.is-past .btn--nav:hover{--btn-bg:var(--violet-h);--btn-bd:var(--violet-h)}
-
-.btn--block{width:100%;justify-content:center;padding:17px 20px;font-size:1rem}
-
-/* ---------- hero ---------- */
-
-.hero{
-  padding-top:calc(var(--nav-h) + clamp(52px,9vh,104px));
-  padding-bottom:clamp(68px,8vw,108px);
-}
-.hero h1{max-width:11.5em}
-.hero__lede{
-  margin-top:clamp(20px,2.4vw,28px);
-  color:var(--ink-2);
-  max-width:var(--measure);
-}
-
-/* ---------- bloco de transcrição ---------- */
-
-.doc{
-  margin-top:clamp(34px,4.6vw,56px);
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:var(--radius-lg);
-  overflow:hidden;
-}
-.band--surface .doc{background:var(--bg)}
-
-.doc__head{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:16px;flex-wrap:wrap;
-  padding:13px 20px;
-  border-bottom:1px solid var(--line);
-  background:var(--surface-2);
+.cns__bar{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;border-bottom:1px solid var(--line);
+  background:var(--raised);
   font-family:var(--mono);font-size:var(--fs-mono-xs);
-  color:var(--ink-2);letter-spacing:.02em;
+  color:var(--ink-3);letter-spacing:.06em;
 }
-.doc__head b{color:var(--ink);font-weight:500}
+.cns__bar b{color:var(--ink);font-weight:500;letter-spacing:.04em}
+.cns__live{
+  width:7px;height:7px;border-radius:50%;background:var(--ink-3);flex:none;
+  transition:background .4s var(--ease),box-shadow .4s var(--ease);
+}
+.is-live .cns__live{background:var(--violet);box-shadow:0 0 0 4px rgba(167,148,238,.18)}
+.cns__clock{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--ink-2);letter-spacing:.05em}
 
-.doc__body{padding:6px 0}
+.cns__grid{display:grid;grid-template-columns:minmax(0,1fr) 190px}
+.cns__feed{padding:6px 0;min-height:0}
+.cns__rail{border-left:1px solid var(--line);padding:14px 16px;display:flex;flex-direction:column;gap:16px}
 
-.line{
-  display:grid;
-  grid-template-columns:58px 46px minmax(0,1fr);
-  column-gap:18px;
-  align-items:baseline;
-  padding:13px 20px 13px 18px;
-  border-left:2px solid transparent;
+/* falas */
+.tl{
+  display:grid;grid-template-columns:52px 42px minmax(0,1fr);
+  column-gap:14px;align-items:baseline;
+  padding:11px 16px 11px 14px;border-left:2px solid transparent;
+  opacity:0;transform:translateY(8px);
+  transition:opacity .45s var(--ease),transform .45s var(--ease),background .45s var(--ease),border-color .45s var(--ease);
 }
-.line__t{
-  font-family:var(--mono);font-size:var(--fs-mono);
-  color:var(--ink-2);font-variant-numeric:tabular-nums;
+.tl.is-on{opacity:1;transform:none}
+.tl__t{font-family:var(--mono);font-size:var(--fs-mono);color:var(--ink-3);font-variant-numeric:tabular-nums}
+.tl__w{font-family:var(--mono);font-size:var(--fs-mono);color:var(--ink-3);letter-spacing:.03em}
+.tl--sdr .tl__w{color:var(--violet)}
+.tl__s{font-size:.9375rem;line-height:1.5;color:var(--ink)}
+.tl.is-flag{background:var(--amber-wash);border-left-color:var(--amber)}
+.flag{
+  display:inline-block;margin-left:8px;padding:1px 7px;
+  font-family:var(--mono);font-size:var(--fs-mono-xs);letter-spacing:.05em;
+  color:var(--amber);border:1px solid rgba(242,179,61,.42);border-radius:2px;
+  opacity:0;transform:scale(.9);transition:opacity .3s var(--ease) .15s,transform .3s var(--ease) .15s;
 }
-.line__who{
-  font-family:var(--mono);font-size:var(--fs-mono);
-  color:var(--ink-2);letter-spacing:.02em;
-}
-.line--sdr .line__who{color:var(--violet)}
-.line__say{font-size:var(--fs-body);line-height:1.55;max-width:36em}
+.tl.is-flag .flag{opacity:1;transform:none}
 
-.line--flag{
-  background:var(--amber-wash);
-  border-left-color:var(--amber);
+/* waveform: traço arredondado, o vocabulário da marca */
+.wave{display:flex;align-items:center;gap:3px;height:34px}
+.wave i{
+  display:block;width:3px;height:100%;border-radius:2px;
+  background:var(--line-hi);transform:scaleY(.16);transform-origin:50% 50%;
+  transition:background .4s var(--ease);
+}
+.is-speaking .wave i{animation:osc 1s var(--ease) infinite;background:var(--ink-3)}
+.is-speaking-sdr .wave i{background:var(--violet)}
+@keyframes osc{0%,100%{transform:scaleY(.16)}50%{transform:scaleY(var(--h,.7))}}
+
+/* leituras */
+.rd{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
+.rd:last-child{border-bottom:0}
+.rd__k{font-size:.75rem;color:var(--ink-3)}
+.rd__v{font-family:var(--mono);font-size:var(--fs-mono);font-variant-numeric:tabular-nums;text-align:right;transition:color .4s var(--ease)}
+.v-pass{color:var(--green)}
+.v-fail{color:var(--amber)}
+.v-idle{color:var(--ink-3)}
+
+/* medidor de nota */
+.score__top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:7px}
+.score__n{font-family:var(--display);font-weight:800;font-size:2rem;line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums;transition:color .5s var(--ease)}
+.score__max{font-family:var(--mono);font-size:var(--fs-mono-xs);color:var(--ink-3)}
+.score__rail{height:4px;border-radius:3px;background:var(--line);overflow:hidden}
+.score__fill{
+  display:block;height:100%;border-radius:3px;width:var(--v,0%);
+  background:var(--violet);
+  transition:width .7s var(--ease),background .5s var(--ease);
+}
+.is-failing .score__fill{background:var(--amber)}
+.is-failing .score__n{color:var(--amber)}
+
+/* veredito */
+.cns__verdict{display:grid;grid-template-rows:0fr;transition:grid-template-rows .6s var(--ease)}
+.cns.is-done .cns__verdict{grid-template-rows:1fr}
+.cns__verdict > div{overflow:hidden}
+.verdict{border-top:1px solid var(--line);padding:18px 16px;background:var(--void)}
+.verdict__h{font-family:var(--mono);font-size:var(--fs-mono-xs);letter-spacing:.1em;color:var(--amber);margin-bottom:9px}
+.verdict__q{
+  font-family:var(--mono);font-size:.8125rem;line-height:1.5;color:var(--ink);
+  border-left:2px solid var(--amber);padding-left:12px;margin-bottom:10px;
+}
+.verdict__p{font-size:.875rem;color:var(--ink-2);max-width:44em}
+
+/* ═══ HERO ═════════════════════════════════════════════════ */
+.hero{position:relative;padding-top:calc(var(--nav-h) + clamp(56px,9vh,104px));padding-bottom:clamp(72px,9vw,128px);overflow:hidden}
+.hero .glow{top:-30%;left:-18%}
+.hero__in{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(48px,6vw,72px)}
+.hero h1{max-width:13ch}
+.hero h1 em{font-style:normal;color:var(--violet)}
+.hero__lede{margin-top:clamp(22px,2.4vw,30px);color:var(--ink-2);max-width:32em;font-size:1.0625rem}
+.hero__cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:clamp(28px,3.2vw,36px)}
+.hero__fine{margin-top:16px;font-size:var(--fs-sm);color:var(--ink-3);max-width:34em}
+.hero__fine s{opacity:.75}
+
+/* o console emerge da página, em perspectiva, sangrando pela direita */
+.stage{perspective:1800px;perspective-origin:26% 44%;position:relative}
+.stage__in{
+  transform:rotateY(-12deg) rotateX(6deg) rotateZ(-1deg)
+            translate3d(var(--px,0px),var(--py,0px),0);
+  transform-style:preserve-3d;transform-origin:0% 50%;
+  transition:transform .7s var(--ease);will-change:transform;
+}
+.stage .cns{max-width:none}
+
+@media (min-width:1000px){
+  .hero__in{grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);align-items:center;gap:40px}
+}
+/* O console só avança para fora da coluna quando existe margem sobrando.
+   Abaixo disso ele fica contido, senão as leituras da direita se perdem. */
+@media (min-width:1380px){
+  .stage{margin-right:calc(-1 * clamp(20px,3vw,56px))}
 }
 
-.tag{
-  display:inline-block;vertical-align:baseline;
-  margin-left:10px;
-  font-family:var(--mono);font-size:var(--fs-mono-xs);
-  letter-spacing:.04em;
-  color:var(--amber);
-  border:1px solid rgba(242,179,61,.4);
-  border-radius:2px;
-  padding:1px 7px;
-  white-space:nowrap;
-}
-
-.verdict{
-  border-top:1px solid var(--line);
-  padding:20px 20px 22px;
-}
-.verdict p{
-  font-size:var(--fs-sm);
-  color:var(--ink-2);
-  max-width:33em;
-}
-.verdict b{color:var(--amber);font-weight:600}
-
-/* ---------- ações do hero ---------- */
-
-.actions{
-  display:flex;flex-wrap:wrap;gap:12px;
-  margin-top:clamp(28px,3.4vw,38px);
-}
-.fineprint{
-  margin-top:16px;
-  font-size:var(--fs-sm);
-  color:var(--ink-2);
-  max-width:var(--measure);
-}
-.fineprint s{color:var(--ink-2);opacity:.72;text-decoration-thickness:1px}
-
-/* ---------- problema: duas colunas ---------- */
-
-.split{display:grid;column-gap:48px;row-gap:clamp(40px,5vw,56px)}
-/* A coluna curta acompanha a longa em vez de deixar um vazio embaixo. */
-@media (min-width:900px){
-  .split--problem > :first-child,
-  .split--price > :first-child{
-    position:sticky;
-    top:calc(var(--nav-h) + 40px);
-    align-self:start;
-  }
-}
-.split--problem{grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr)}
-.split--price{grid-template-columns:minmax(0,.86fr) minmax(0,1fr);column-gap:44px}
-.split--sim{grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr);column-gap:44px}
-
-.flaws{margin-top:26px;border-top:1px solid var(--line)}
+/* ═══ AS QUATRO FRASES ═════════════════════════════════════ */
+.flaws{margin-top:clamp(44px,5vw,64px);border-top:1px solid var(--line)}
 .flaw{
-  display:grid;
-  grid-template-columns:34px minmax(0,1fr);
-  column-gap:14px;
-  padding:20px 0 20px 14px;
-  border-bottom:1px solid var(--line);
-  border-left:2px solid var(--amber);
-  transition:background .22s var(--ease);
+  display:grid;grid-template-columns:minmax(0,1fr);gap:8px;
+  padding:clamp(24px,2.8vw,34px) 0 clamp(24px,2.8vw,34px) 18px;
+  border-bottom:1px solid var(--line);border-left:2px solid var(--amber);
+  transition:background .3s var(--ease),padding-left .3s var(--ease);
 }
-.flaw:hover{background:var(--amber-wash)}
-.flaw__n{
-  font-family:var(--mono);font-size:var(--fs-mono);
-  color:var(--amber);padding-top:.3em;
-  font-variant-numeric:tabular-nums;
-}
+.flaw:hover{background:var(--amber-wash);padding-left:26px}
+.flaw__n{font-family:var(--mono);font-size:var(--fs-mono-xs);color:var(--amber);letter-spacing:.1em}
 .flaw__q{
   font-family:var(--display);font-weight:700;
-  font-size:clamp(1.0625rem,.98rem + .42vw,1.3125rem);
-  line-height:1.22;letter-spacing:-.02em;
-  color:var(--ink);
+  font-size:clamp(1.375rem,1rem + 1.5vw,2.25rem);
+  line-height:1.08;letter-spacing:-.03em;max-width:16ch;
 }
-.flaw__why{
-  margin-top:7px;font-size:var(--fs-sm);color:var(--ink-2);
-  max-width:30em;
+.flaw__w{font-size:var(--fs-sm);color:var(--ink-2);max-width:34em}
+@media (min-width:860px){
+  .flaw{grid-template-columns:54px minmax(0,1.05fr) minmax(0,.95fr);column-gap:32px;align-items:baseline;row-gap:0}
+  .flaw__n{align-self:start;padding-top:.5em}
 }
 
-/* ---------- pull quote ---------- */
+/* ═══ SIMULAÇÃO: história conduzida pelo scroll ════════════ */
+.sim{position:relative}
+.sim__grid{display:grid;gap:40px;align-items:start;margin-top:clamp(40px,4.6vw,60px)}
+.sim__stage{position:sticky;top:calc(var(--nav-h) + 22px);z-index:2}
+.sim__script{display:flex;flex-direction:column}
 
-.sim-top{display:grid;row-gap:clamp(34px,4vw,44px)}
-@media (min-width:900px){
-  .sim-top{
-    grid-template-columns:minmax(0,1fr) minmax(0,.64fr);
-    column-gap:56px;align-items:start;
+.beat{
+  padding-block:clamp(30vh,34vh,38vh);
+  display:flex;flex-direction:column;gap:12px;
+  opacity:.26;transition:opacity .5s var(--ease);
+}
+.beat.is-now{opacity:1}
+.beat:first-child{padding-top:2vh}
+.beat:last-child{padding-bottom:32vh}
+.beat__n{
+  display:flex;align-items:center;gap:12px;
+  font-family:var(--mono);font-size:var(--fs-mono-xs);letter-spacing:.1em;color:var(--ink-3);
+}
+.beat__n i{display:block;width:22px;height:1px;background:var(--line-hi);transition:width .5s var(--ease),background .5s var(--ease)}
+.beat.is-now .beat__n{color:var(--violet)}
+.beat.is-now .beat__n i{width:44px;background:var(--violet)}
+.beat h3{font-size:clamp(1.375rem,1.05rem + 1.3vw,2rem);line-height:1.04;letter-spacing:-.03em}
+.beat p{color:var(--ink-2);font-size:var(--fs-sm);max-width:32em}
+
+@media (min-width:1000px){
+  .sim__grid{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:clamp(44px,5vw,72px)}
+  /* o palco ocupa a altura da janela e centraliza o console, então ele fica
+     na mesma linha do olho que a batida ativa */
+  .sim__stage{
+    top:var(--nav-h);height:calc(100vh - var(--nav-h));
+    display:flex;align-items:center;
   }
-  .sim-top .pull{margin-top:0}
+  .sim__stage .cns{width:100%}
+  /* altura reservada para as cinco falas: o console não cresce a cada estado */
+  .sim__stage .cns__feed{min-height:356px}
+}
+@media (max-width:999px){
+  .sim__stage{top:calc(var(--nav-h) + 8px)}
+  .sim__stage .cns__grid{grid-template-columns:minmax(0,1fr)}
+  .sim__stage .cns__rail{border-left:0;border-top:1px solid var(--line);flex-direction:row;align-items:center;gap:18px;padding:12px 16px}
+  .sim__stage .wave{flex:none;width:78px;height:26px}
+  .sim__stage .cns__reads{display:none}
+  .sim__stage .score{flex:1;min-width:0}
+  .sim__stage .cns__feed{
+    max-height:26vh;overflow:hidden;
+    display:flex;flex-direction:column;justify-content:flex-end;
+    transition:max-height .6s var(--ease);
+  }
+  /* No celular não cabem transcrição e veredito ao mesmo tempo. No estado
+     final o console troca a ligação pelo relatório, que já cita a frase e o
+     minuto, e assim a altura fixa não empurra o texto da batida para fora. */
+  .sim__stage .cns.is-done .cns__feed{max-height:0}
+  .beat{padding-block:22vh}
 }
 
-.pull{
-  margin-top:clamp(40px,4.6vw,52px);
-  padding-top:24px;
-  border-top:1px solid var(--violet);
-  font-family:var(--display);font-weight:800;
-  font-size:var(--fs-pull);line-height:1.06;letter-spacing:-.03em;
-  max-width:17em;
-  text-wrap:balance;
+/* ═══ ELENCO ═══════════════════════════════════════════════ */
+.cast{margin-top:clamp(40px,4.6vw,58px);border-top:1px solid var(--line)}
+.cast__r{
+  display:grid;grid-template-columns:minmax(0,1fr);gap:6px;
+  padding:clamp(22px,2.6vw,30px) 0 clamp(22px,2.6vw,30px) 16px;
+  border-bottom:1px solid var(--line);border-left:2px solid transparent;
+  transition:border-color .3s var(--ease),background .3s var(--ease),padding-left .3s var(--ease);
+}
+.cast__r:hover{border-left-color:var(--violet);background:var(--violet-wash);padding-left:24px}
+.cast__lv{font-family:var(--mono);font-size:var(--fs-mono-xs);color:var(--ink-3);letter-spacing:.1em}
+.cast__r:hover .cast__lv{color:var(--violet)}
+.cast__n{font-family:var(--display);font-weight:800;font-size:clamp(1.25rem,1.05rem + .8vw,1.75rem);letter-spacing:-.03em;line-height:1.1}
+.cast__n i{font-style:normal;color:var(--ink-3);font-weight:700}
+.cast__b{font-size:var(--fs-sm);color:var(--ink-2);max-width:34em}
+@media (min-width:860px){
+  .cast__r{grid-template-columns:78px minmax(0,.85fr) minmax(0,1.15fr);column-gap:30px;align-items:baseline;row-gap:0}
+  .cast__lv{align-self:start;padding-top:.55em}
 }
 
-/* ---------- elenco ---------- */
-
-.cast{margin-top:clamp(40px,4.6vw,54px);border-top:1px solid var(--line)}
-@media (min-width:900px){
-  /* as duas colunas da simulação começam na mesma linha */
-  .split--sim .cast{margin-top:0}
-}
-.cast__row{
-  display:grid;grid-template-columns:34px minmax(0,1fr);column-gap:14px;
-  padding:22px 0 22px 14px;
-  border-bottom:1px solid var(--line);
-  border-left:2px solid transparent;
-  transition:border-color .22s var(--ease),background .22s var(--ease);
-}
-.cast__row:hover{border-left-color:var(--violet);background:var(--violet-wash)}
-.cast__n{
-  font-family:var(--mono);font-size:var(--fs-mono);
-  color:var(--ink-2);padding-top:.34em;
-  transition:color .22s var(--ease);
-}
-.cast__row:hover .cast__n{color:var(--violet)}
-.cast__name{
-  font-family:var(--display);font-weight:800;
-  font-size:1.125rem;letter-spacing:-.025em;line-height:1.2;
-}
-.cast__name i{font-style:normal;color:var(--ink-2);font-weight:700}
-.cast__bio{margin-top:6px;font-size:var(--fs-sm);color:var(--ink-2);max-width:30em}
-
-/* ---------- painel de correção ---------- */
-
-.panel-wrap{position:sticky;top:calc(var(--nav-h) + 30px);align-self:start}
-
-.readout{margin-top:0}
-.readout .doc__body{padding:4px 0}
-.rd{
-  display:flex;align-items:baseline;justify-content:space-between;
-  gap:16px;padding:14px 20px;
-  border-bottom:1px solid var(--line);
-}
-.rd:last-of-type{border-bottom:0}
-.rd__k{font-size:var(--fs-sm);color:var(--ink-2)}
-.rd__v{
-  font-family:var(--mono);font-size:var(--fs-mono);
-  text-align:right;letter-spacing:.01em;
-}
-.is-pass{color:var(--green)}
-.is-fail{color:var(--amber)}
-
-.meter{height:2px;background:var(--line);margin:0 20px 18px}
-.meter i{display:block;height:100%;width:40%;background:var(--amber)}
-
-.panel-note{
-  margin-top:18px;font-size:var(--fs-sm);color:var(--ink-2);max-width:32em;
-}
-
-/* ---------- fases ---------- */
-
-.phases{margin-top:clamp(40px,4.6vw,54px);border-top:1px solid var(--line)}
+/* ═══ FASES ════════════════════════════════════════════════ */
+.phases{margin-top:clamp(40px,4.6vw,58px);border-top:1px solid var(--line)}
 .phase{
-  display:grid;
-  grid-template-columns:clamp(74px,9vw,112px) minmax(0,1fr);
-  column-gap:clamp(16px,2.2vw,28px);
-  align-items:start;
-  padding:clamp(26px,3vw,34px) 0;
-  border-bottom:1px solid var(--line);
-}
-.phase__n{grid-row:1 / span 2}
-.phase__t{grid-column:2}
-.phase__d{grid-column:2}
-
-/* Em telas largas a descrição vai para uma terceira coluna, e a fase
-   passa a ler como índice em vez de título empilhado sobre parágrafo. */
-@media (min-width:900px){
-  .phase{
-    grid-template-columns:clamp(74px,9vw,112px) minmax(0,.46fr) minmax(0,1fr);
-    align-items:baseline;
-  }
-  .phase__n{grid-row:1;align-self:start}
-  .phase__t{grid-row:1;margin-bottom:0}
-  .phase__d{grid-column:3;grid-row:1;max-width:34em}
+  display:grid;grid-template-columns:minmax(0,1fr);row-gap:8px;
+  padding:clamp(26px,3vw,36px) 0;border-bottom:1px solid var(--line);
 }
 .phase__n{
-  font-family:var(--display);font-weight:800;
-  font-size:clamp(2.75rem,5.6vw,4.25rem);
-  line-height:.82;letter-spacing:-.05em;
-  color:var(--ghost);
-  transition:color .24s var(--ease);
+  font-family:var(--display);font-weight:800;font-size:clamp(2.5rem,5.4vw,4.25rem);
+  line-height:.82;letter-spacing:-.05em;color:rgba(154,160,192,.19);
+  grid-area:1 / 1;
 }
+.phase__t{grid-area:2 / 1}
+.phase__d{grid-area:3 / 1;color:var(--ink-2);font-size:var(--fs-sm);max-width:34em}
 .phase:last-child .phase__n{color:var(--violet)}
-.phase__t{margin-bottom:9px}
-.phase__d{color:var(--ink-2);max-width:31em;font-size:var(--fs-sm)}
-
-/* ---------- método: log de conversas ---------- */
-
-.log{margin-top:clamp(40px,4.6vw,54px);display:flex;flex-direction:column;gap:clamp(26px,3vw,34px)}
-.log figure{margin:0;max-width:46em}
-.log blockquote{
-  margin:0;
-  display:inline-block;
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:var(--radius-lg);
-  border-top-left-radius:1px;
-  padding:15px 19px 16px;
-  max-width:100%;
-}
-.band--surface .log blockquote{background:var(--bg)}
-.log__meta{
-  display:block;font-family:var(--mono);font-size:var(--fs-mono-xs);
-  color:var(--ink-2);letter-spacing:.04em;margin-bottom:8px;
-}
-.log__say{
-  font-family:var(--mono);font-size:.9375rem;line-height:1.5;
-  color:var(--ink);
-}
-.log figcaption{
-  margin-top:11px;padding-left:2px;
-  font-size:var(--fs-sm);color:var(--ink-2);max-width:33em;
-  text-wrap:pretty;
+@media (min-width:860px){
+  .phase{grid-template-columns:clamp(84px,9vw,124px) minmax(0,.46fr) minmax(0,1fr);column-gap:clamp(18px,2.4vw,32px);align-items:baseline}
+  .phase__n{grid-area:1 / 1;align-self:start}
+  .phase__t{grid-area:1 / 2}
+  .phase__d{grid-area:1 / 3}
 }
 
-/* ---------- preço ---------- */
-
-.card{
-  background:var(--bg);
-  border:1px solid var(--line);
-  border-radius:var(--radius-lg);
-  overflow:hidden;
-}
-.card__top{
-  display:flex;align-items:center;justify-content:space-between;gap:14px;
-  padding:14px 22px;border-bottom:1px solid var(--line);
-  background:var(--surface-2);
-  font-family:var(--mono);font-size:var(--fs-mono-xs);
-  color:var(--ink-2);letter-spacing:.02em;
-}
-.card__flag{
-  color:var(--violet);border:1px solid rgba(144,132,228,.42);
-  border-radius:2px;padding:2px 8px;white-space:nowrap;
-}
-.card__body{padding:26px 22px 24px}
-
-.price{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
-.price__old{
-  font-family:var(--sans);font-size:1.0625rem;color:var(--ink-2);
-  font-variant-numeric:tabular-nums;
-  text-decoration:line-through;text-decoration-thickness:1px;
-}
-.price__now{
+/* ═══ MÉTODO: número editorial ═════════════════════════════ */
+.metric{display:grid;gap:clamp(28px,3vw,44px);margin-top:clamp(40px,4.6vw,58px);align-items:end}
+.metric__n{
   font-family:var(--display);font-weight:800;
-  font-size:clamp(3.25rem,7vw,4.5rem);line-height:.86;letter-spacing:-.05em;
+  font-size:clamp(6rem,2rem + 16vw,15rem);line-height:.76;letter-spacing:-.06em;
+  font-variant-numeric:tabular-nums;
+  background:linear-gradient(175deg,var(--violet-hi) 8%,var(--violet) 52%,#6E62B4 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
 }
-.price__now span{font-size:.4em;letter-spacing:-.02em;margin-right:.18em;vertical-align:.68em;color:var(--ink-2)}
-.price__terms{margin-top:12px;font-size:var(--fs-sm);color:var(--ink-2)}
+.metric__c{display:flex;flex-direction:column;gap:8px;padding-bottom:clamp(6px,1vw,18px)}
+.metric__l{font-family:var(--mono);font-size:var(--fs-mono);color:var(--ink-2);letter-spacing:.06em}
+.metric__s{font-size:var(--fs-sm);color:var(--ink-3);max-width:28em}
+@media (min-width:760px){.metric{grid-template-columns:auto minmax(0,1fr);column-gap:clamp(32px,4vw,56px)}}
 
-.alert{
-  margin-top:20px;padding:12px 14px;
-  background:var(--amber-wash);
-  border-left:2px solid var(--amber);
-  border-radius:0 var(--radius) var(--radius) 0;
-  font-size:var(--fs-sm);color:var(--ink);
+.log{margin-top:clamp(44px,5vw,66px);display:flex;flex-direction:column;gap:clamp(26px,3vw,36px)}
+.log figure{margin:0}
+/* A legenda vira nota de margem ao lado da evidência, e cada bloco
+   mantém a largura do próprio texto, então o ritmo não vira grade. */
+@media (min-width:960px){
+  .log figure{display:flex;gap:clamp(22px,3vw,44px);align-items:flex-start}
+  .log blockquote{flex:0 1 auto}
+  .log figcaption{flex:1 1 240px;margin-top:0;padding-top:9px}
 }
+.log blockquote{
+  margin:0;display:inline-block;max-width:100%;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:12px 12px 12px 3px;padding:14px 18px 15px;
+}
+.log__m{display:block;font-family:var(--mono);font-size:var(--fs-mono-xs);color:var(--ink-3);letter-spacing:.08em;margin-bottom:7px}
+.log__s{font-family:var(--mono);font-size:.9375rem;line-height:1.5}
+.log figcaption{margin-top:11px;font-size:var(--fs-sm);color:var(--ink-2);max-width:33em;text-wrap:pretty}
 
-.includes{margin-top:22px;padding-top:20px;border-top:1px solid var(--line)}
-.includes li{
-  display:grid;grid-template-columns:16px 1fr;column-gap:12px;
-  align-items:baseline;
-  font-size:var(--fs-sm);color:var(--ink-2);
-  padding:6px 0;
+/* ═══ MESMO MINUTO, DUAS VERSÕES ═══════════════════════════ */
+.vs{display:grid;gap:20px;margin-top:clamp(40px,4.6vw,58px)}
+@media (min-width:860px){.vs{grid-template-columns:1fr 1fr;gap:24px}}
+.vs__c{border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface);display:flex;flex-direction:column}
+.vs__h{
+  display:flex;align-items:center;gap:10px;padding:11px 16px;
+  border-bottom:1px solid var(--line);background:var(--raised);
+  font-family:var(--mono);font-size:var(--fs-mono-xs);letter-spacing:.07em;color:var(--ink-3);
 }
-.includes li::before{
-  content:"";display:block;width:5px;height:5px;
-  background:var(--violet);border-radius:1px;
-  transform:translateY(-.28em);margin-left:3px;
-}
-.card__cta{margin-top:24px}
-.card__foot{
-  margin-top:16px;font-size:var(--fs-mono);line-height:1.6;
-  color:var(--ink-2);font-family:var(--sans);
-}
+.vs__h b{font-weight:500}
+.vs--bad .vs__h b{color:var(--amber)}
+.vs--good .vs__h b{color:var(--green)}
+.vs__q{padding:20px 18px;font-size:1.0625rem;line-height:1.45;border-left:2px solid transparent;flex:1}
+.vs--bad .vs__q{border-left-color:var(--amber);background:var(--amber-wash)}
+.vs--good .vs__q{border-left-color:var(--green);background:rgba(63,208,173,.05)}
+.vs__f{padding:14px 18px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.vs__row{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:var(--fs-mono)}
+.vs__row span:first-child{color:var(--ink-3);font-family:var(--sans);font-size:.75rem}
 
-/* ---------- acordeão ---------- */
+/* ═══ PREÇO ════════════════════════════════════════════════ */
+.price{display:grid;gap:clamp(36px,4vw,52px);margin-top:clamp(36px,4vw,52px)}
+@media (min-width:900px){.price{grid-template-columns:minmax(0,.84fr) minmax(0,1fr);column-gap:clamp(40px,5vw,64px)}
+  .price > :first-child{position:sticky;top:calc(var(--nav-h) + 40px);align-self:start}}
+.card{border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface);position:relative}
+.card__t{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 22px;border-bottom:1px solid var(--line);background:var(--raised);font-family:var(--mono);font-size:var(--fs-mono-xs);letter-spacing:.07em;color:var(--ink-3)}
+.card__flag{color:var(--violet);border:1px solid rgba(167,148,238,.4);border-radius:2px;padding:2px 9px;white-space:nowrap}
+.card__b{padding:28px 22px 26px}
+.pr{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.pr__o{font-size:1.0625rem;color:var(--ink-3);text-decoration:line-through;text-decoration-thickness:1px;font-variant-numeric:tabular-nums}
+.pr__n{font-family:var(--display);font-weight:800;font-size:clamp(3.5rem,7vw,5rem);line-height:.84;letter-spacing:-.05em}
+.pr__n span{font-size:.36em;vertical-align:.72em;color:var(--ink-3);margin-right:.16em}
+.pr__t{margin-top:13px;font-size:var(--fs-sm);color:var(--ink-3)}
+.alert{margin-top:22px;padding:13px 15px;background:var(--amber-wash);border-left:2px solid var(--amber);border-radius:0 var(--r) var(--r) 0;font-size:var(--fs-sm)}
+.inc{margin-top:24px;padding-top:22px;border-top:1px solid var(--line)}
+.inc li{display:grid;grid-template-columns:16px 1fr;column-gap:12px;align-items:baseline;font-size:var(--fs-sm);color:var(--ink-2);padding:7px 0}
+.inc li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--violet);transform:translateY(-.28em);margin-left:4px}
+.card__f{margin-top:16px;font-size:var(--fs-sm);color:var(--ink-3)}
 
-.faq{margin-top:clamp(34px,4vw,46px);border-top:1px solid var(--line)}
-.faq__item{border-bottom:1px solid var(--line)}
+/* ═══ PERGUNTAS ════════════════════════════════════════════ */
+.faq{margin-top:clamp(36px,4vw,50px);border-top:1px solid var(--line)}
+.faq__i{border-bottom:1px solid var(--line)}
 .faq__q{
-  display:grid;grid-template-columns:40px minmax(0,1fr) 22px;
-  column-gap:14px;align-items:start;
-  width:100%;text-align:left;
-  background:none;border:0;color:inherit;
-  padding:22px 2px;cursor:pointer;
-  font-family:var(--display);font-weight:700;
-  font-size:clamp(1.0625rem,1rem + .32vw,1.25rem);
-  letter-spacing:-.02em;line-height:1.28;
-  transition:color .2s var(--ease);
+  display:grid;grid-template-columns:46px minmax(0,1fr) 24px;column-gap:16px;align-items:start;
+  width:100%;text-align:left;background:none;border:0;color:inherit;padding:24px 2px;cursor:pointer;
+  font-family:var(--display);font-weight:700;font-size:clamp(1.0625rem,1rem + .4vw,1.3125rem);
+  letter-spacing:-.02em;line-height:1.25;transition:color .25s var(--ease)
 }
 .faq__q:hover{color:var(--violet)}
-.faq__n{
-  font-family:var(--mono);font-size:var(--fs-mono);font-weight:400;
-  color:var(--ink-2);padding-top:.32em;letter-spacing:.02em;
-  transition:color .2s var(--ease);
+.faq__n{font-family:var(--mono);font-size:var(--fs-mono);font-weight:400;color:var(--ink-3);padding-top:.35em;letter-spacing:.06em;transition:color .25s var(--ease)}
+.faq__i.is-open .faq__n{color:var(--violet)}
+.faq__s{position:relative;width:14px;height:14px;margin-top:.45em;justify-self:end}
+.faq__s::before,.faq__s::after{content:"";position:absolute;inset:50% 0 auto 0;height:1.5px;border-radius:2px;background:currentColor;transition:transform var(--dur) var(--ease)}
+.faq__s::after{transform:rotate(90deg)}
+.faq__i.is-open .faq__s::after{transform:rotate(90deg) scaleX(0)}
+.faq__p{display:grid;grid-template-rows:0fr;transition:grid-template-rows var(--dur) var(--ease)}
+.faq__i.is-open .faq__p{grid-template-rows:1fr}
+.faq__c{overflow:hidden;visibility:hidden;transition:visibility var(--dur)}
+.faq__i.is-open .faq__c{visibility:visible}
+.faq__a{padding:0 62px 28px;color:var(--ink-2);font-size:var(--fs-sm);max-width:40em}
+
+/* ═══ FECHAMENTO ═══════════════════════════════════════════ */
+.final{position:relative;overflow:hidden;text-align:left;padding-block:clamp(110px,15vw,210px)}
+.final .glow{bottom:-46%;left:50%;transform:translateX(-50%);opacity:.62}
+.final__in{position:relative;z-index:1}
+.final h2{font-size:clamp(2.5rem,1.2rem + 5.4vw,6rem);line-height:.92;max-width:14ch}
+.final p{margin-top:clamp(20px,2.4vw,28px);color:var(--ink-2);max-width:31em}
+.final__cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:clamp(30px,3.4vw,40px)}
+.final__f{margin-top:18px;font-size:var(--fs-sm);color:var(--ink-3)}
+
+.foot{border-top:1px solid var(--line);background:var(--void);padding-block:46px}
+.foot__in{display:flex;flex-wrap:wrap;gap:20px 44px;align-items:baseline;justify-content:space-between}
+.foot__n{font-size:var(--fs-sm);color:var(--ink-3);max-width:37em}
+
+/* ═══ RESPONSIVO ═══════════════════════════════════════════ */
+@media (max-width:999px){
+  .stage{perspective:none;margin-top:8px}
+  .stage__in{transform:none}
+  .hero h1{max-width:none}
 }
-.faq__item.is-open .faq__n{color:var(--violet)}
-.faq__sign{
-  position:relative;width:13px;height:13px;
-  margin-top:.34em;justify-self:end;
-}
-.faq__sign::before,.faq__sign::after{
-  content:"";position:absolute;inset:50% 0 auto 0;
-  height:1px;background:currentColor;
-  transition:transform var(--dur) var(--ease);
-}
-.faq__sign::after{transform:rotate(90deg)}
-.faq__item.is-open .faq__sign::after{transform:rotate(90deg) scaleX(0)}
-
-.faq__panel{
-  display:grid;grid-template-rows:0fr;
-  transition:grid-template-rows var(--dur) var(--ease);
-}
-.faq__item.is-open .faq__panel{grid-template-rows:1fr}
-.faq__clip{overflow:hidden;visibility:hidden;transition:visibility var(--dur)}
-.faq__item.is-open .faq__clip{visibility:visible}
-.faq__a{
-  padding:0 54px 26px;
-  color:var(--ink-2);font-size:var(--fs-sm);max-width:38em;
-}
-
-/* ---------- rodapé ---------- */
-
-.foot{border-top:1px solid var(--line);background:var(--surface);padding-block:44px}
-.foot__inner{display:flex;flex-wrap:wrap;gap:18px 40px;align-items:baseline;justify-content:space-between}
-.foot__note{font-size:var(--fs-sm);color:var(--ink-2);max-width:36em}
-
-/* ============================================================
-   RESPONSIVO
-   ============================================================ */
-
-@media (max-width:900px){
-  :root{--pad:22px}
-  .rail{grid-template-columns:minmax(0,1fr)}
-  .rail__index{
-    position:static;padding-top:0;margin-bottom:18px;
-    display:flex;gap:10px;
-  }
-  .rail__index span{display:inline}
-  .split--problem,.split--sim,.split--price{grid-template-columns:minmax(0,1fr)}
-  .panel-wrap{position:static}
-  .cast{margin-top:34px}
-  .pull{max-width:none}
-}
-
-@media (max-width:620px){
-  :root{--pad:20px;--nav-h:60px;--fs-body:1rem}
-
-  .band{padding-block:clamp(58px,13vw,76px)}
-  .band--tall{padding-block:clamp(64px,14vw,84px)}
-  .hero{padding-top:calc(var(--nav-h) + 44px);padding-bottom:60px}
-  .hero h1{max-width:none;line-height:1.02}
-
-  /* transcrição vira coluna única, tempo e locutor na mesma linha */
-  /* tempo e locutor na primeira linha, a fala ocupa a linha inteira abaixo */
-  .line{
-    grid-template-columns:auto auto minmax(0,1fr);
-    column-gap:12px;row-gap:7px;
-    padding:14px 16px 15px 14px;
-  }
-  .line__t{grid-area:1 / 1}
-  .line__who{grid-area:1 / 2}
-  .line__say{grid-column:1 / -1;grid-row:2;max-width:none}
-  .tag{margin-left:0;margin-top:9px}
-
-  .doc__head{padding:12px 16px;gap:6px 14px}
-  .card__top{
-    padding:14px 16px;gap:9px;
-    flex-direction:column;align-items:flex-start;
-  }
-  /* a marca não pode quebrar em duas linhas e derrubar a altura da barra */
-  .brand{gap:8px}
-  .brand__name{font-size:.9375rem}
-  .brand__org{letter-spacing:.13em}
-  .btn--nav{padding:8px 12px;font-size:.8125rem}
-  .card__top > span:first-child{white-space:nowrap}
-  .verdict{padding:18px 16px 20px}
-  .rd{padding:13px 16px}
-  .meter{margin:0 16px 16px}
-  .card__body{padding:22px 18px}
+@media (max-width:700px){
+  :root{--pad:20px;--nav-h:62px;--fs-body:1rem}
+  .band{padding-block:clamp(64px,13vw,92px)}
+  .cns__grid{grid-template-columns:minmax(0,1fr)}
+  .cns__rail{border-left:0;border-top:1px solid var(--line)}
+  .tl{grid-template-columns:auto auto minmax(0,1fr);column-gap:12px;row-gap:6px;padding:13px 14px}
+  .tl__t{grid-area:1 / 1}
+  .tl__w{grid-area:1 / 2}
+  .tl__s{grid-column:1 / -1;grid-row:2}
+  .flag{margin-left:0;margin-top:8px}
+  .hero__cta .btn,.final__cta .btn{width:100%}
+  .faq__q{grid-template-columns:34px minmax(0,1fr) 20px;column-gap:12px;padding:20px 2px}
   .faq__a{padding:0 0 24px}
-  .faq__q{grid-template-columns:34px minmax(0,1fr) 20px;column-gap:12px;padding:19px 2px}
-  .actions{gap:10px}
-  .actions .btn{width:100%;justify-content:center}
-  /* empilhado: numeral, título e descrição em três linhas próprias.
-     Sem redefinir grid-row/column aqui o numeral cai numa coluna de
-     largura zero e o texto dele atropela o título. */
-  .phase{grid-template-columns:minmax(0,1fr);row-gap:8px}
-  .phase__n{grid-area:1 / 1;font-size:2.5rem;line-height:1}
-  .phase__t{grid-area:2 / 1;margin-bottom:0}
-  .phase__d{grid-area:3 / 1}
-  .flaw,.cast__row{grid-template-columns:26px minmax(0,1fr);column-gap:10px;padding-left:12px}
-  .log__say{font-size:.875rem}
-  .foot__inner{flex-direction:column;gap:14px}
+  .foot__in{flex-direction:column;gap:16px}
+  .card__t{flex-direction:column;align-items:flex-start;gap:9px}
+  /* a barra do console não comporta o nome do personagem em tela estreita */
+  .cns__who{display:none}
+  .cns__bar{gap:9px}
 }
-
-@media (max-width:380px){
-  :root{--pad:16px}
-  .doc__head,.card__top{font-size:.6875rem}
-  .brand__org{letter-spacing:.1em}
-}
-
-/* ============================================================
-   MOVIMENTO REDUZIDO
-   ============================================================ */
+@media (max-width:380px){:root{--pad:16px}}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{
-    animation-duration:.01ms !important;
-    animation-iteration-count:1 !important;
-    transition-duration:.01ms !important;
-    scroll-behavior:auto !important;
+    animation-duration:.01ms !important;animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;scroll-behavior:auto !important;
   }
+  .stage__in{transform:rotateY(-11deg) rotateX(5deg)}
+  .beat{opacity:1}
 }
 </style>
 </head>
 <body>
-
 <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+<div id="sentinela" aria-hidden="true" style="position:absolute;top:0;height:1px;width:1px"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="ug" x1="24" y1="3" x2="4" y2="28" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#D8D0FB"/><stop offset=".55" stop-color="#A794EE"/><stop offset="1" stop-color="#8B7BD8"/>
+    </linearGradient>
+    <symbol id="ui" viewBox="0 0 26 30">
+      <path d="M4.6 8.5 L4.6 16.5 C4.6 21.2 8.4 25 13 25 C17.6 25 21.4 21.2 21.4 16.5 L21.4 13.5"
+            fill="none" stroke="url(#ug)" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="21.4" cy="5.6" r="2.6" fill="url(#ug)"/>
+    </symbol>
+  </defs>
+</svg>
 
 <header class="nav" id="nav">
-  <div class="shell nav__inner">
-    <a class="brand" href="#topo">
-      <span class="brand__name">Professor SDR</span>
-      <span class="brand__org">UNLOCKIFY</span>
+  <div class="wrap nav__in">
+    <a class="brand" href="#topo" aria-label="Professor SDR, da Unlockify Digital">
+      <svg class="brand__mark" viewBox="0 0 26 30" aria-hidden="true"><use href="#ui"/></svg>
+      <span class="brand__txt">
+        <span class="brand__a">Professor SDR</span>
+        <span class="brand__b">UNLOCKIFY</span>
+      </span>
     </a>
     <a class="btn btn--ghost btn--nav" href="#matricula"><span>Matricular</span></a>
   </div>
-  <div class="nav__progress" aria-hidden="true"></div>
+  <div class="nav__prog" aria-hidden="true"></div>
 </header>
 
 <span id="topo"></span>
-<div id="sentinela" aria-hidden="true" style="position:absolute;top:0;height:1px;width:1px"></div>
 
 <main id="conteudo">
 
-  <!-- ============ HERO ============ -->
-  <section class="hero">
-    <div class="shell">
-      <h1>O seu SDR já disse isso hoje?</h1>
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="glow" aria-hidden="true"></div>
+  <svg class="motif" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+    <g stroke-width="7">
+      <path d="M70 120 C70 172 112 214 164 214"/>
+      <path d="M250 60 L250 118"/>
+      <circle cx="330" cy="150" r="26" stroke-width="7"/>
+      <path d="M430 240 C430 200 462 168 502 168"/>
+      <path d="M980 90 C1030 90 1070 130 1070 180" stroke-width="9"/>
+      <path d="M1120 300 L1120 372" stroke-width="9"/>
+      <circle cx="905" cy="255" r="17"/>
+      <path d="M60 470 C60 430 92 398 132 398" stroke-width="9"/>
+      <path d="M186 560 C232 560 270 598 270 644"/>
+      <circle cx="404" cy="640" r="30" stroke-width="6"/>
+      <path d="M560 700 L648 700" stroke-width="9"/>
+      <path d="M760 520 C760 566 798 604 844 604"/>
+      <path d="M1010 640 C1010 594 1048 556 1094 556" stroke-width="6"/>
+      <circle cx="700" cy="330" r="13"/>
+      <path d="M840 730 L900 730"/>
+      <path d="M160 300 C196 300 226 330 226 366" stroke-width="5"/>
+      <circle cx="565" cy="120" r="9"/>
+      <path d="M300 420 C300 452 326 478 358 478" stroke-width="5"/>
+      <path d="M660 150 L660 196" stroke-width="6"/>
+      <circle cx="150" cy="700" r="19" stroke-width="6"/>
+      <path d="M520 330 C556 330 586 360 586 396" stroke-width="8"/>
+      <path d="M930 420 L1010 420" stroke-width="6"/>
+      <circle cx="1150" cy="470" r="11"/>
+      <path d="M380 60 C418 60 448 90 448 128" stroke-width="5"/>
+      <path d="M700 610 C700 642 726 668 758 668" stroke-width="6"/>
+      <circle cx="270" cy="240" r="8"/>
+      <path d="M1050 720 L1118 720" stroke-width="5"/>
+      <path d="M860 330 C860 362 886 388 918 388" stroke-width="5"/>
+    </g>
+  </svg>
+
+  <div class="wrap hero__in">
+    <div>
+      <h1>O seu SDR vai errar. A pergunta é <em>em quem</em>.</h1>
       <p class="hero__lede">
-        Quatro frases queimam um caso de gestão de passivos. Três delas expõem o
-        escritório. Abaixo, uma delas, dita numa simulação do Professor SDR e
-        marcada pela correção automática.
+        Professor SDR é uma formação com prova falada. O aluno atende um
+        empresário endividado que responde na hora, por voz, e a correção
+        automática devolve a frase exata em que ele errou e o minuto em que
+        aconteceu.
       </p>
-
-      <article class="doc">
-        <div class="doc__head">
-          <span><b>simulação 01</b> transportadora</span>
-          <span>tempo limite 06:00</span>
-        </div>
-
-        <div class="doc__body">
-          <div class="line line--lead">
-            <span class="line__t">01:12</span>
-            <span class="line__who">lead</span>
-            <p class="line__say">Mas dá pra resolver isso? Dá pra abaixar essa parcela?</p>
-          </div>
-
-          <div class="line line--sdr line--flag">
-            <span class="line__t">01:18</span>
-            <span class="line__who">sdr</span>
-            <p class="line__say">
-              Dá sim, a gente analisa os contratos e consegue reduzir bastante.<span class="tag">falta grave</span>
-            </p>
-          </div>
-
-          <div class="line line--lead">
-            <span class="line__t">01:26</span>
-            <span class="line__who">lead</span>
-            <p class="line__say">Ah, que bom. Então pode marcar.</p>
-          </div>
-        </div>
-
-        <div class="verdict">
-          <p>
-            <b>Reprovado.</b> Promessa de resultado, aos 01:18. A reunião foi
-            agendada e a nota travou em 40. No mundo real, essa frase teria virado
-            expectativa que o advogado precisaria desmontar.
-          </p>
-        </div>
-      </article>
-
-      <div class="actions">
+      <div class="hero__cta">
         <!-- Substituir COLE_AQUI_O_LINK_DA_KIWIFY pelo checkout -->
-        <a class="btn btn--primary" href="COLE_AQUI_O_LINK_DA_KIWIFY">
-          <span>Matricular por R$ 97 no lançamento</span>
-        </a>
-        <a class="btn btn--ghost" href="#simulacao">
-          <span>Como funciona a simulação</span>
-        </a>
+        <a class="btn btn--primary" href="COLE_AQUI_O_LINK_DA_KIWIFY"><span>Matricular por R$ 97</span></a>
+        <a class="btn btn--ghost" href="#simulacao"><span>Ver uma simulação</span></a>
       </div>
-
-      <p class="fineprint">
-        De <s>R$ 297</s> por R$ 97 no lote de lançamento. Acesso de 30 dias,
-        pagamento único, certificado ao final.
+      <p class="hero__fine">
+        De <s>R$ 297</s> por R$ 97 no lote de lançamento. Pagamento único,
+        30 dias de acesso, certificado ao final.
       </p>
     </div>
-  </section>
 
-  <!-- ============ O PROBLEMA ============ -->
-  <section class="band band--surface" id="problema">
-    <div class="shell rail">
-      <p class="rail__index">01<span>o problema</span></p>
-
-      <div class="split split--problem">
-        <div>
-          <h2>O lead é caro. Quem atende é de graça.</h2>
-          <p class="lede" style="margin-top:20px">
-            Você paga por um empresário endividado que levanta a mão. Ele chega com
-            vergonha, meio arrependido de ter preenchido, pronto pra agradecer e
-            sumir. O que acontece nos cinco minutos seguintes decide se ele senta
-            na frente do advogado ou vira custo.
-          </p>
-        </div>
-
-        <div>
-          <h3>As quatro frases que custam o caso</h3>
-          <ol class="flaws">
-            <li class="flaw">
-              <span class="flaw__n" aria-hidden="true">01</span>
-              <div>
-                <p class="flaw__q">“Dá pra reverter o seu caso.”</p>
-                <p class="flaw__why">Promessa de resultado. Nem o advogado pode fazer.</p>
+    <div class="stage" id="stage">
+      <div class="stage__in">
+        <article class="cns is-failing" aria-label="Trecho de uma simulação corrigida">
+          <div class="cns__bar">
+            <span class="cns__live" aria-hidden="true"></span>
+            <b>simulação 01</b><span>ronaldo, transportadora</span>
+            <span class="cns__clock">01:26 / 06:00</span>
+          </div>
+          <div class="cns__grid">
+            <div class="cns__feed">
+              <div class="tl is-on"><span class="tl__t">01:12</span><span class="tl__w">lead</span><p class="tl__s">Mas dá pra resolver isso? Dá pra abaixar essa parcela?</p></div>
+              <div class="tl tl--sdr is-on is-flag"><span class="tl__t">01:18</span><span class="tl__w">sdr</span><p class="tl__s">Dá sim, a gente analisa os contratos e consegue reduzir bastante.<span class="flag">falta grave</span></p></div>
+              <div class="tl is-on"><span class="tl__t">01:26</span><span class="tl__w">lead</span><p class="tl__s">Ah, que bom. Então pode marcar.</p></div>
+            </div>
+            <div class="cns__rail">
+              <div class="wave" aria-hidden="true"></div>
+              <div class="cns__reads">
+                <div class="rd"><span class="rd__k">Reunião</span><span class="rd__v v-pass">marcada</span></div>
+                <div class="rd"><span class="rd__k">Faltas graves</span><span class="rd__v v-fail">1</span></div>
               </div>
-            </li>
-            <li class="flaw">
-              <span class="flaw__n" aria-hidden="true">02</span>
-              <div>
-                <p class="flaw__q">“Fica uns 20 por cento.”</p>
-                <p class="flaw__why">Honorário é assunto do advogado, não de quem atende.</p>
+              <div class="score">
+                <div class="score__top"><span class="score__n">40</span><span class="score__max">de 100</span></div>
+                <div class="score__rail"><span class="score__fill" style="--v:40%"></span></div>
               </div>
-            </li>
-            <li class="flaw">
-              <span class="flaw__n" aria-hidden="true">03</span>
-              <div>
-                <p class="flaw__q">“Nesse caso eles bloqueiam a conta sim.”</p>
-                <p class="flaw__why">Opinião jurídica dada por quem não é advogado.</p>
-              </div>
-            </li>
-            <li class="flaw">
-              <span class="flaw__n" aria-hidden="true">04</span>
-              <div>
-                <p class="flaw__q">“Se o senhor não agir, perde o caminhão.”</p>
-                <p class="flaw__why">Medo como alavanca. Vergonha não reage a ameaça, ela some.</p>
-              </div>
-            </li>
-          </ol>
-        </div>
+            </div>
+          </div>
+        </article>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ============ A SIMULAÇÃO ============ -->
-  <section class="band band--tall" id="simulacao">
-    <div class="shell rail">
-      <p class="rail__index">02<span>a simulação</span></p>
+<!-- ══════════ O PROBLEMA ══════════ -->
+<section class="band band--line" id="problema">
+  <div class="wrap">
+    <p class="tag">01<b>o problema</b></p>
+    <h2 class="measure" style="margin-top:20px">Quatro frases queimam um caso. Três expõem o escritório.</h2>
+    <p class="lede" style="margin-top:22px">
+      Você paga por um empresário endividado que levanta a mão. Ele chega com
+      vergonha, meio arrependido de ter preenchido, pronto pra agradecer e
+      sumir. O que acontece nos cinco minutos seguintes decide se ele senta na
+      frente do advogado ou vira custo.
+    </p>
 
-      <div>
-        <h2 class="measure">Ele treina numa simulação de voz em tempo real, não num lead seu.</h2>
+    <ol class="flaws">
+      <li class="flaw"><span class="flaw__n">01</span><p class="flaw__q">“Dá pra reverter o seu caso.”</p><p class="flaw__w">Promessa de resultado. Nem o advogado pode fazer.</p></li>
+      <li class="flaw"><span class="flaw__n">02</span><p class="flaw__q">“Fica uns 20 por cento.”</p><p class="flaw__w">Honorário é assunto do advogado, não de quem atende.</p></li>
+      <li class="flaw"><span class="flaw__n">03</span><p class="flaw__q">“Nesse caso eles bloqueiam a conta sim.”</p><p class="flaw__w">Opinião jurídica dada por quem não é advogado.</p></li>
+      <li class="flaw"><span class="flaw__n">04</span><p class="flaw__q">“Se o senhor não agir, perde o caminhão.”</p><p class="flaw__w">Medo como alavanca. Vergonha não reage a ameaça, ela some.</p></li>
+    </ol>
+  </div>
+</section>
 
-        <div class="sim-top" style="margin-top:26px">
-          <div>
-            <p class="lede">
-              A prova roda sobre a tecnologia de voz em tempo real da OpenAI, a
-              mesma que permite conversar com uma IA falando, sem digitar e sem
-              espera. O aluno fala pelo microfone e a resposta vem na hora, com
-              voz, hesitação e sotaque.
-            </p>
-            <p class="lede">
-              Do outro lado existe um empresário com nome, dívida, banco, garantia
-              e um jeito próprio de escapar. Ele reage ao que o aluno diz, não
-              segue roteiro, e não entrega nada de graça: cada informação só sai
-              se a pergunta for específica.
-            </p>
+<!-- ══════════ A SIMULAÇÃO, CONDUZIDA PELO SCROLL ══════════ -->
+<section class="band band--line band--well sim" id="simulacao">
+  <div class="wrap">
+    <p class="tag">02<b>a simulação</b></p>
+    <h2 class="measure" style="margin-top:20px">Seis minutos de voz. Cada frase entra na transcrição.</h2>
+    <p class="lede" style="margin-top:22px">
+      A prova roda sobre a tecnologia de voz em tempo real da OpenAI, a mesma
+      que permite conversar com uma IA falando, sem digitar e sem espera. Role
+      a página e acompanhe uma simulação inteira, do alô até a correção.
+    </p>
+
+    <div class="sim__grid">
+      <div class="sim__stage">
+        <article class="cns" id="simConsole" aria-live="polite" aria-label="Console da simulação">
+          <div class="cns__bar">
+            <span class="cns__live" aria-hidden="true"></span>
+            <b>simulação 01</b><span class="cns__who">ronaldo, transportadora</span>
+            <span class="cns__clock" id="simClock">00:00 / 06:00</span>
           </div>
-
-          <p class="pull">Nenhuma conversa é igual à anterior. Não tem como decorar.</p>
-        </div>
-
-        <div class="split split--sim" style="margin-top:clamp(44px,5vw,62px)">
-          <div>
-            <ul class="cast">
-              <li class="cast__row">
-                <span class="cast__n" aria-hidden="true">01</span>
-                <div>
-                  <p class="cast__name">Ronaldo, <i>transportadora</i></p>
-                  <p class="cast__bio">
-                    Ainda está em dia, mas já decidiu parar de pagar. Não se vê como
-                    alguém com problema, e por isso é o mais difícil de todos.
-                  </p>
-                </div>
-              </li>
-              <li class="cast__row">
-                <span class="cast__n" aria-hidden="true">02</span>
-                <div>
-                  <p class="cast__name">Sérgio, <i>distribuidora</i></p>
-                  <p class="cast__bio">
-                    Já renegociou direto no banco e acha que resolveu. Fechado,
-                    responde seco, tenta empurrar tudo pro WhatsApp.
-                  </p>
-                </div>
-              </li>
-              <li class="cast__row">
-                <span class="cast__n" aria-hidden="true">03</span>
-                <div>
-                  <p class="cast__name">Marcelo, <i>metalúrgica</i></p>
-                  <p class="cast__bio">
-                    Execução já distribuída. Atende irritado, faz pergunta jurídica
-                    pra testar, e tenta desligar duas vezes.
-                  </p>
-                </div>
-              </li>
-            </ul>
-          </div>
-
-          <div class="panel-wrap">
-            <article class="doc readout">
-              <div class="doc__head">
-                <span><b>correção automática</b></span>
-                <span>simulação 01</span>
+          <div class="cns__grid">
+            <div class="cns__feed" id="simFeed">
+              <div class="tl" data-at="2"><span class="tl__t">00:41</span><span class="tl__w">lead</span><p class="tl__s">Alô? Pois não.</p></div>
+              <div class="tl tl--sdr" data-at="3"><span class="tl__t">01:04</span><span class="tl__w">sdr</span><p class="tl__s">Bom dia, seu Ronaldo. Aqui é do escritório, o senhor preencheu um formulário sobre as dívidas da transportadora.</p></div>
+              <div class="tl" data-at="4"><span class="tl__t">01:12</span><span class="tl__w">lead</span><p class="tl__s">Mas dá pra resolver isso? Dá pra abaixar essa parcela?</p></div>
+              <div class="tl tl--sdr" data-at="5" data-flag="5"><span class="tl__t">01:18</span><span class="tl__w">sdr</span><p class="tl__s">Dá sim, a gente analisa os contratos e consegue reduzir bastante.<span class="flag">falta grave</span></p></div>
+              <div class="tl" data-at="6"><span class="tl__t">01:26</span><span class="tl__w">lead</span><p class="tl__s">Ah, que bom. Então pode marcar.</p></div>
+            </div>
+            <div class="cns__rail">
+              <div class="wave" aria-hidden="true"></div>
+              <div class="cns__reads">
+                <div class="rd"><span class="rd__k">Reunião</span><span class="rd__v v-idle" id="rdMeet">não marcada</span></div>
+                <div class="rd"><span class="rd__k">Informações</span><span class="rd__v v-idle" id="rdInfo">0 de 3</span></div>
+                <div class="rd"><span class="rd__k">Faltas graves</span><span class="rd__v v-idle" id="rdFault">0</span></div>
               </div>
-              <dl class="doc__body">
-                <div class="rd">
-                  <dt class="rd__k">Reunião</dt>
-                  <dd class="rd__v is-pass">marcada, terça 07:00</dd>
-                </div>
-                <div class="rd">
-                  <dt class="rd__k">Informações colhidas</dt>
-                  <dd class="rd__v is-pass">5 de 3</dd>
-                </div>
-                <div class="rd">
-                  <dt class="rd__k">Faltas graves</dt>
-                  <dd class="rd__v is-fail">1</dd>
-                </div>
-                <div class="rd">
-                  <dt class="rd__k">Nota</dt>
-                  <dd class="rd__v is-fail">40 de 100</dd>
-                </div>
-              </dl>
-              <div class="meter" aria-hidden="true"><i></i></div>
-            </article>
-
-            <p class="panel-note">
-              A conversa inteira é transcrita e analisada. Quando há falta grave, a
-              correção devolve a frase exata que o aluno disse e o momento em que
-              ela aconteceu.
-            </p>
+              <div class="score">
+                <div class="score__top"><span class="score__n" id="rdScore">0</span><span class="score__max">de 100</span></div>
+                <div class="score__rail"><span class="score__fill" id="rdFill" style="--v:0%"></span></div>
+              </div>
+            </div>
           </div>
-        </div>
+          <div class="cns__verdict"><div>
+            <div class="verdict">
+              <p class="verdict__h">correção automática, falta grave aos 01:18</p>
+              <p class="verdict__q">“Dá sim, a gente analisa os contratos e consegue reduzir bastante.”</p>
+              <p class="verdict__p">Promessa de resultado. A reunião foi agendada e a nota travou em 40. No mundo real, essa frase teria virado expectativa que o advogado precisaria desmontar.</p>
+            </div>
+          </div></div>
+        </article>
+      </div>
+
+      <div class="sim__script" id="simScript">
+        <div class="beat" data-step="1"><p class="beat__n"><i></i>00:00</p><h3>A ligação começa.</h3><p>O empresário preencheu um formulário e não esperava o telefone tocar. O relógio da simulação começa a correr.</p></div>
+        <div class="beat" data-step="2"><p class="beat__n"><i></i>00:41</p><h3>Ele atende com o pé atrás.</h3><p>Vergonha e arrependimento chegam antes de qualquer objeção. A voz do outro lado hesita, tem sotaque, e reage ao que o aluno diz.</p></div>
+        <div class="beat" data-step="3"><p class="beat__n"><i></i>01:04</p><h3>O SDR se apresenta.</h3><p>A partir daqui cada frase entra na transcrição. A nota começa a ser construída, e nenhuma informação sai sem pergunta específica.</p></div>
+        <div class="beat" data-step="4"><p class="beat__n"><i></i>01:12</p><h3>Vem o teste.</h3><p>O empresário pergunta se dá pra resolver. É nessa frase que o caso se ganha ou se queima, e ele faz essa pergunta em toda simulação.</p></div>
+        <div class="beat" data-step="5"><p class="beat__n"><i></i>01:18</p><h3>A frase que queima o caso.</h3><p>Promessa de resultado. A nota cai na hora, de 55 para 40, e a falta grave fica registrada com o minuto exato.</p></div>
+        <div class="beat" data-step="6"><p class="beat__n"><i></i>01:26</p><h3>A reunião é marcada.</h3><p>O indicador fica verde e o aluno colheu mais informação que o mínimo. Parece vitória, e é exatamente aqui que o escritório se engana.</p></div>
+        <div class="beat" data-step="7"><p class="beat__n"><i></i>06:00</p><h3>A correção chega.</h3><p>Quarenta de cem. A conversa inteira é transcrita e analisada, e a correção devolve a frase exata. Reunião marcada não salva a nota.</p></div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ============ AS QUATRO FASES ============ -->
-  <section class="band band--surface" id="fases">
-    <div class="shell rail">
-      <p class="rail__index">03<span>as fases</span></p>
+<!-- ══════════ ELENCO ══════════ -->
+<section class="band band--line" id="elenco">
+  <div class="wrap">
+    <p class="tag">03<b>o elenco</b></p>
+    <h2 class="measure" style="margin-top:20px">Três empresários. Nenhum entrega nada de graça.</h2>
+    <p class="lede" style="margin-top:22px">
+      Cada um tem nome, dívida, banco, garantia e um jeito próprio de escapar.
+      Eles não seguem roteiro, e cada informação só sai se a pergunta for
+      específica. Nenhuma conversa é igual à anterior, então não tem como decorar.
+    </p>
 
-      <div>
-        <h2 class="measure">Quatro fases, e nenhuma se conclui clicando.</h2>
+    <ol class="cast">
+      <li class="cast__r"><span class="cast__lv">nível 01</span><p class="cast__n">Ronaldo, <i>transportadora</i></p><p class="cast__b">Ainda está em dia, mas já decidiu parar de pagar. Não se vê como alguém com problema, e por isso é o mais difícil de todos.</p></li>
+      <li class="cast__r"><span class="cast__lv">nível 02</span><p class="cast__n">Sérgio, <i>distribuidora</i></p><p class="cast__b">Já renegociou direto no banco e acha que resolveu. Fechado, responde seco, tenta empurrar tudo pro WhatsApp.</p></li>
+      <li class="cast__r"><span class="cast__lv">nível 03</span><p class="cast__n">Marcelo, <i>metalúrgica</i></p><p class="cast__b">Execução já distribuída. Atende irritado, faz pergunta jurídica pra testar, e tenta desligar duas vezes.</p></li>
+    </ol>
+  </div>
+</section>
 
-        <ol class="phases">
-          <li class="phase">
-            <span class="phase__n" aria-hidden="true">01</span>
-            <h3 class="phase__t">Ebook</h3>
-            <p class="phase__d">
-              Oito módulos, de quem é o empresário até como passar o caso pro
-              advogado. Cada módulo termina em quatro perguntas. Sem acertar três,
-              ele não fecha.
-            </p>
-          </li>
-          <li class="phase">
-            <span class="phase__n" aria-hidden="true">02</span>
-            <h3 class="phase__t">Situações</h3>
-            <p class="phase__d">
-              Vinte casos reais, com 16 acertos para passar. Seis são armadilhas,
-              onde a resposta mais confortável é a que reprovaria numa ligação de
-              verdade.
-            </p>
-          </li>
-          <li class="phase">
-            <span class="phase__n" aria-hidden="true">03</span>
-            <h3 class="phase__t">Aulas por voz</h3>
-            <p class="phase__d">
-              Seis aulas curtas com legenda, incluindo uma ligação inteira feita do
-              jeito certo, do alô até a reunião marcada.
-            </p>
-          </li>
-          <li class="phase">
-            <span class="phase__n" aria-hidden="true">04</span>
-            <h3 class="phase__t">Simulações</h3>
-            <p class="phase__d">
-              Três atendimentos por voz em tempo real. Passar num libera o próximo,
-              e o certificado só sai com os três.
-            </p>
-          </li>
-        </ol>
-      </div>
-    </div>
-  </section>
+<!-- ══════════ AS QUATRO FASES ══════════ -->
+<section class="band band--line" id="fases">
+  <div class="wrap">
+    <p class="tag">04<b>as fases</b></p>
+    <h2 class="measure" style="margin-top:20px">Quatro fases, e nenhuma se conclui clicando.</h2>
 
-  <!-- ============ O MÉTODO ============ -->
-  <section class="band" id="metodo">
-    <div class="shell rail">
-      <p class="rail__index">04<span>o método</span></p>
+    <ol class="phases">
+      <li class="phase"><span class="phase__n" aria-hidden="true">01</span><h3 class="phase__t">Ebook</h3><p class="phase__d">Oito módulos, de quem é o empresário até como passar o caso pro advogado. Cada módulo termina em quatro perguntas. Sem acertar três, ele não fecha.</p></li>
+      <li class="phase"><span class="phase__n" aria-hidden="true">02</span><h3 class="phase__t">Situações</h3><p class="phase__d">Vinte casos reais, com 16 acertos para passar. Seis são armadilhas, onde a resposta mais confortável é a que reprovaria numa ligação de verdade.</p></li>
+      <li class="phase"><span class="phase__n" aria-hidden="true">03</span><h3 class="phase__t">Aulas por voz</h3><p class="phase__d">Seis aulas curtas com legenda, incluindo uma ligação inteira feita do jeito certo, do alô até a reunião marcada.</p></li>
+      <li class="phase"><span class="phase__n" aria-hidden="true">04</span><h3 class="phase__t">Simulações</h3><p class="phase__d">Três atendimentos por voz em tempo real. Passar num libera o próximo, e o certificado só sai com os três.</p></li>
+    </ol>
+  </div>
+</section>
 
-      <div>
-        <h2 class="measure">O conteúdo não foi inventado numa sala de aula.</h2>
+<!-- ══════════ O MÉTODO ══════════ -->
+<section class="band band--line band--well" id="metodo">
+  <div class="wrap">
+    <p class="tag">05<b>o método</b></p>
+    <h2 class="measure" style="margin-top:20px">O conteúdo não foi inventado numa sala de aula.</h2>
 
-        <p class="lede" style="margin-top:24px">
-          O banco de objeções saiu de 143 conversas reais de WhatsApp entre
-          escritórios de gestão de passivos e empresários endividados. Novecentas e
-          trinta e cinco mensagens de lead, lidas uma a uma.
+    <div class="metric">
+      <p class="metric__n" id="bigNum" data-to="143">143</p>
+      <div class="metric__c">
+        <p class="metric__l">conversas reais de WhatsApp</p>
+        <p class="metric__s">
+          Entre escritórios de gestão de passivos e empresários endividados.
+          Novecentas e trinta e cinco mensagens de lead, lidas uma a uma.
         </p>
-        <p class="lede">
-          O que apareceu ali não é o que um curso teria chutado. A pergunta número
-          um não é sobre o serviço, é sobre honorário. A segunda é o lead tentando
-          fugir da reunião por vídeo. A terceira é o adiamento.
-        </p>
+      </div>
+    </div>
 
-        <div class="log">
-          <figure>
-            <blockquote>
-              <span class="log__meta">lead, whatsapp</span>
-              <p class="log__say">Olá bom dia. Vcs trabalha com êxito ou tem mensalidade ???</p>
-            </blockquote>
-            <figcaption>
-              A objeção mais frequente de todas, e a que o SDR não pode responder
-              com número.
-            </figcaption>
-          </figure>
+    <p class="lede" style="margin-top:clamp(36px,4vw,52px)">
+      O que apareceu ali não é o que um curso teria chutado. A pergunta número
+      um não é sobre o serviço, é sobre honorário. A segunda é o lead tentando
+      fugir da reunião por vídeo. A terceira é o adiamento.
+    </p>
 
-          <figure>
-            <blockquote>
-              <span class="log__meta">lead, whatsapp</span>
-              <p class="log__say">Prefiro falar pelo whats, é possível ?</p>
-            </blockquote>
-            <figcaption>
-              Não é comodidade. É vergonha de sentar na frente de um advogado para
-              falar de dívida.
-            </figcaption>
-          </figure>
+    <div class="log">
+      <figure>
+        <blockquote><span class="log__m">lead, whatsapp</span><p class="log__s">Olá bom dia. Vcs trabalha com êxito ou tem mensalidade ???</p></blockquote>
+        <figcaption>A objeção mais frequente de todas, e a que o SDR não pode responder com número.</figcaption>
+      </figure>
+      <figure>
+        <blockquote><span class="log__m">lead, whatsapp</span><p class="log__s">Prefiro falar pelo whats, é possível ?</p></blockquote>
+        <figcaption>Não é comodidade. É vergonha de sentar na frente de um advogado para falar de dívida.</figcaption>
+      </figure>
+      <figure>
+        <blockquote><span class="log__m">lead, whatsapp</span><p class="log__s">Eles bloqueia a conta da empresa e da pessoa física tb se for executado ?</p></blockquote>
+        <figcaption>Parece pergunta simples. É a que faz o SDR despreparado dar parecer jurídico.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
 
-          <figure>
-            <blockquote>
-              <span class="log__meta">lead, whatsapp</span>
-              <p class="log__say">Eles bloqueia a conta da empresa e da pessoa física tb se for executado ?</p>
-            </blockquote>
-            <figcaption>
-              Parece pergunta simples. É a que faz o SDR despreparado dar parecer
-              jurídico.
-            </figcaption>
-          </figure>
+<!-- ══════════ O MESMO MINUTO, DUAS VERSÕES ══════════ -->
+<section class="band band--line" id="correcao">
+  <div class="wrap">
+    <p class="tag">06<b>a correção</b></p>
+    <h2 class="measure" style="margin-top:20px">O mesmo minuto, duas versões.</h2>
+    <p class="lede" style="margin-top:22px">
+      O empresário faz a mesma pergunta em toda simulação. O que muda é a
+      resposta, e a correção mostra exatamente o que cada uma custa. Abaixo,
+      as duas versões do mesmo 01:18.
+    </p>
+
+    <div class="vs">
+      <div class="vs__c vs--bad">
+        <div class="vs__h"><span>01:18</span><b>reprova</b></div>
+        <p class="vs__q">“Dá sim, a gente analisa os contratos e consegue reduzir bastante.”</p>
+        <div class="vs__f">
+          <p class="vs__row"><span>Falta grave</span><span class="v-fail">promessa de resultado</span></p>
+          <p class="vs__row"><span>Informações colhidas</span><span class="v-fail">nenhuma</span></p>
+          <p class="vs__row"><span>Nota</span><span class="v-fail">40 de 100</span></p>
+        </div>
+      </div>
+      <div class="vs__c vs--good">
+        <div class="vs__h"><span>01:18</span><b>passa</b></div>
+        <p class="vs__q">“Essa é exatamente a pergunta que o advogado vai responder. Antes disso, me conta qual banco e quanto tem em aberto hoje.”</p>
+        <div class="vs__f">
+          <p class="vs__row"><span>Falta grave</span><span class="v-pass">nenhuma</span></p>
+          <p class="vs__row"><span>Informações colhidas</span><span class="v-pass">banco e valor</span></p>
+          <p class="vs__row"><span>Nota</span><span class="v-pass">acima do corte</span></p>
         </div>
       </div>
     </div>
-  </section>
+    <p class="lede" style="margin-top:clamp(26px,3vw,36px);max-width:38em;font-size:var(--fs-sm)">
+      A segunda frase não promete nada, devolve a pergunta para quem pode
+      responder e ainda colhe duas informações que o advogado vai precisar.
+      É isso que a formação treina, frase por frase.
+    </p>
+  </div>
+</section>
 
-  <!-- ============ PREÇO ============ -->
-  <section class="band band--surface band--tall" id="matricula">
-    <div class="shell rail">
-      <p class="rail__index">05<span>a matrícula</span></p>
-
-      <div class="split split--price">
-        <div>
-          <h2>Uma matrícula custa menos que um lead perdido.</h2>
-          <p class="lede" style="margin-top:20px">
-            Deixe o SDR errar na simulação, onde o erro é de graça e vem com a frase
-            marcada. No lançamento, sai por um terço do preço.
-          </p>
-        </div>
-
-        <div class="card">
-          <div class="card__top">
-            <span>matrícula por aluno</span>
-            <span class="card__flag">lote de lançamento</span>
-          </div>
-
-          <div class="card__body">
-            <p class="price">
-              <s class="price__old">R$ 297</s>
-              <b class="price__now"><span>R$</span>97</b>
-            </p>
-            <p class="price__terms">pagamento único, 30 dias de acesso</p>
-
-            <p class="alert">Encerrado o lançamento, a matrícula volta para R$ 297.</p>
-
-            <ul class="includes">
-              <li>oito módulos e 52 questões</li>
-              <li>seis aulas por voz com legenda</li>
-              <li>três simulações de voz em tempo real</li>
-              <li>10 tentativas e 45 minutos de voz</li>
-              <li>transcrição e correção automática</li>
-              <li>certificado com código de verificação</li>
-            </ul>
-
-            <div class="card__cta">
-              <!-- Substituir COLE_AQUI_O_LINK_DA_KIWIFY pelo checkout -->
-              <a class="btn btn--primary btn--block" href="COLE_AQUI_O_LINK_DA_KIWIFY">
-                <span>Matricular agora</span>
-              </a>
-            </div>
-
-            <!-- Contato de equipe ainda não definido no briefing -->
-            <p class="card__foot">
-              O acesso chega no e-mail usado na compra. Vai formar uma equipe
-              inteira? Fale com a gente.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ PERGUNTAS ============ -->
-  <section class="band" id="perguntas">
-    <div class="shell rail">
-      <p class="rail__index">06<span>perguntas</span></p>
-
+<!-- ══════════ MATRÍCULA ══════════ -->
+<section class="band band--line" id="matricula">
+  <div class="wrap">
+    <p class="tag">07<b>a matrícula</b></p>
+    <div class="price">
       <div>
-        <h2 class="measure">Antes de matricular a equipe.</h2>
+        <h2>Uma matrícula custa menos que um lead perdido.</h2>
+        <p class="lede" style="margin-top:22px">
+          Deixe o SDR errar na simulação, onde o erro é de graça e vem com a
+          frase marcada. No lançamento, sai por um terço do preço.
+        </p>
+      </div>
 
-        <div class="faq">
-          <div class="faq__item">
-            <h3>
-              <button class="faq__q" type="button" aria-expanded="false" aria-controls="p1" id="q1">
-                <span class="faq__n" aria-hidden="true">01</span>
-                <span>A simulação é com uma pessoa de verdade?</span>
-                <span class="faq__sign" aria-hidden="true"></span>
-              </button>
-            </h3>
-            <div class="faq__panel" id="p1" role="region" aria-labelledby="q1">
-              <div class="faq__clip"><p class="faq__a">
-                Não. É uma inteligência artificial de voz em tempo real, e é por isso
-                que funciona: está disponível a qualquer hora, nunca perde a paciência
-                e se comporta igual para todo aluno. A avaliação também não depende de
-                quem corrige, porque a conversa é analisada sempre pelos mesmos
-                critérios.
-              </p></div>
-            </div>
-          </div>
-
-          <div class="faq__item">
-            <h3>
-              <button class="faq__q" type="button" aria-expanded="false" aria-controls="p2" id="q2">
-                <span class="faq__n" aria-hidden="true">02</span>
-                <span>Quanto tempo leva para concluir?</span>
-                <span class="faq__sign" aria-hidden="true"></span>
-              </button>
-            </h3>
-            <div class="faq__panel" id="p2" role="region" aria-labelledby="q2">
-              <div class="faq__clip"><p class="faq__a">
-                A leitura e as questões levam algumas horas, no ritmo de cada um. As
-                aulas por voz somam menos de quinze minutos. As simulações duram seis,
-                sete e oito minutos. O acesso vale trinta dias.
-              </p></div>
-            </div>
-          </div>
-
-          <div class="faq__item">
-            <h3>
-              <button class="faq__q" type="button" aria-expanded="false" aria-controls="p3" id="q3">
-                <span class="faq__n" aria-hidden="true">03</span>
-                <span>E se o aluno reprovar?</span>
-                <span class="faq__sign" aria-hidden="true"></span>
-              </button>
-            </h3>
-            <div class="faq__panel" id="p3" role="region" aria-labelledby="q3">
-              <div class="faq__clip"><p class="faq__a">
-                Ele tenta de novo enquanto tiver tentativas e tempo de voz. Cada
-                matrícula vem com dez tentativas e quarenta e cinco minutos, folga
-                suficiente para tropeçar nos três níveis e ainda sobrar.
-              </p></div>
-            </div>
-          </div>
-
-          <div class="faq__item">
-            <h3>
-              <button class="faq__q" type="button" aria-expanded="false" aria-controls="p4" id="q4">
-                <span class="faq__n" aria-hidden="true">04</span>
-                <span>Serve para qualquer escritório?</span>
-                <span class="faq__sign" aria-hidden="true"></span>
-              </button>
-            </h3>
-            <div class="faq__panel" id="p4" role="region" aria-labelledby="q4">
-              <div class="faq__clip"><p class="faq__a">
-                Esta formação é específica de gestão de passivos bancários de empresa.
-                O empresário endividado se comporta de um jeito que não se parece com
-                nenhum outro tipo de cliente, e o curso inteiro é construído em cima
-                disso.
-              </p></div>
-            </div>
-          </div>
-
-          <div class="faq__item">
-            <h3>
-              <button class="faq__q" type="button" aria-expanded="false" aria-controls="p5" id="q5">
-                <span class="faq__n" aria-hidden="true">05</span>
-                <span>Precisa instalar alguma coisa?</span>
-                <span class="faq__sign" aria-hidden="true"></span>
-              </button>
-            </h3>
-            <div class="faq__panel" id="p5" role="region" aria-labelledby="q5">
-              <div class="faq__clip"><p class="faq__a">
-                Não. Funciona no navegador, inclusive no celular. Para a simulação é
-                preciso permitir o microfone e estar num lugar onde dê para falar em
-                voz alta.
-              </p></div>
-            </div>
-          </div>
-
-          <div class="faq__item">
-            <h3>
-              <button class="faq__q" type="button" aria-expanded="false" aria-controls="p6" id="q6">
-                <span class="faq__n" aria-hidden="true">06</span>
-                <span>O certificado habilita a dar orientação jurídica?</span>
-                <span class="faq__sign" aria-hidden="true"></span>
-              </button>
-            </h3>
-            <div class="faq__panel" id="p6" role="region" aria-labelledby="q6">
-              <div class="faq__clip"><p class="faq__a">
-                Não, e o próprio certificado diz isso. Ele atesta treinamento em
-                pré-atendimento e agendamento. O curso ensina exatamente onde o SDR
-                precisa parar e passar para o advogado.
-              </p></div>
-            </div>
-          </div>
+      <div class="card">
+        <div class="card__t"><span>matrícula por aluno</span><span class="card__flag">lote de lançamento</span></div>
+        <div class="card__b">
+          <p class="pr"><s class="pr__o">R$ 297</s><b class="pr__n"><span>R$</span>97</b></p>
+          <p class="pr__t">pagamento único, 30 dias de acesso</p>
+          <p class="alert">Encerrado o lançamento, a matrícula volta para R$ 297.</p>
+          <ul class="inc">
+            <li>oito módulos e 52 questões</li>
+            <li>seis aulas por voz com legenda</li>
+            <li>três simulações de voz em tempo real</li>
+            <li>10 tentativas e 45 minutos de voz</li>
+            <li>transcrição e correção automática</li>
+            <li>certificado com código de verificação</li>
+          </ul>
+          <!-- Substituir COLE_AQUI_O_LINK_DA_KIWIFY pelo checkout -->
+          <a class="btn btn--primary btn--block" href="COLE_AQUI_O_LINK_DA_KIWIFY" style="margin-top:26px"><span>Matricular agora</span></a>
+          <!-- Contato de equipe ainda não definido no briefing -->
+          <p class="card__f">O acesso chega no e-mail usado na compra. Vai formar uma equipe inteira? Fale com a gente.</p>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+
+<!-- ══════════ PERGUNTAS ══════════ -->
+<section class="band band--line" id="perguntas">
+  <div class="wrap">
+    <p class="tag">08<b>perguntas</b></p>
+    <h2 class="measure" style="margin-top:20px">Antes de matricular a equipe.</h2>
+
+    <div class="faq">
+      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a1" id="q1"><span class="faq__n">01</span><span>A simulação é com uma pessoa de verdade?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
+        <div class="faq__p" id="a1" role="region" aria-labelledby="q1"><div class="faq__c"><p class="faq__a">Não. É uma inteligência artificial de voz em tempo real, e é por isso que funciona: está disponível a qualquer hora, nunca perde a paciência e se comporta igual para todo aluno. A avaliação também não depende de quem corrige, porque a conversa é analisada sempre pelos mesmos critérios.</p></div></div></div>
+
+      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a2" id="q2"><span class="faq__n">02</span><span>Quanto tempo leva para concluir?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
+        <div class="faq__p" id="a2" role="region" aria-labelledby="q2"><div class="faq__c"><p class="faq__a">A leitura e as questões levam algumas horas, no ritmo de cada um. As aulas por voz somam menos de quinze minutos. As simulações duram seis, sete e oito minutos. O acesso vale trinta dias.</p></div></div></div>
+
+      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a3" id="q3"><span class="faq__n">03</span><span>E se o aluno reprovar?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
+        <div class="faq__p" id="a3" role="region" aria-labelledby="q3"><div class="faq__c"><p class="faq__a">Ele tenta de novo enquanto tiver tentativas e tempo de voz. Cada matrícula vem com dez tentativas e quarenta e cinco minutos, folga suficiente para tropeçar nos três níveis e ainda sobrar.</p></div></div></div>
+
+      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a4" id="q4"><span class="faq__n">04</span><span>Serve para qualquer escritório?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
+        <div class="faq__p" id="a4" role="region" aria-labelledby="q4"><div class="faq__c"><p class="faq__a">Esta formação é específica de gestão de passivos bancários de empresa. O empresário endividado se comporta de um jeito que não se parece com nenhum outro tipo de cliente, e o curso inteiro é construído em cima disso.</p></div></div></div>
+
+      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a5" id="q5"><span class="faq__n">05</span><span>Precisa instalar alguma coisa?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
+        <div class="faq__p" id="a5" role="region" aria-labelledby="q5"><div class="faq__c"><p class="faq__a">Não. Funciona no navegador, inclusive no celular. Para a simulação é preciso permitir o microfone e estar num lugar onde dê para falar em voz alta.</p></div></div></div>
+
+      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a6" id="q6"><span class="faq__n">06</span><span>O certificado habilita a dar orientação jurídica?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
+        <div class="faq__p" id="a6" role="region" aria-labelledby="q6"><div class="faq__c"><p class="faq__a">Não, e o próprio certificado diz isso. Ele atesta treinamento em pré-atendimento e agendamento. O curso ensina exatamente onde o SDR precisa parar e passar para o advogado.</p></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FECHAMENTO ══════════ -->
+<section class="band--line final">
+  <div class="glow" aria-hidden="true"></div>
+  <div class="wrap final__in">
+    <h2>Deixe o erro acontecer aqui.</h2>
+    <p>
+      Na simulação o erro custa uma tentativa e volta com a frase marcada. No
+      seu lead, custa o caso.
+    </p>
+    <div class="final__cta">
+      <!-- Substituir COLE_AQUI_O_LINK_DA_KIWIFY pelo checkout -->
+      <a class="btn btn--primary" href="COLE_AQUI_O_LINK_DA_KIWIFY"><span>Matricular por R$ 97</span></a>
+      <a class="btn btn--ghost" href="#perguntas"><span>Ler as perguntas</span></a>
+    </div>
+    <p class="final__f">De <s>R$ 297</s> por R$ 97 no lote de lançamento.</p>
+  </div>
+</section>
 
 </main>
 
 <footer class="foot">
-  <div class="shell foot__inner">
-    <a class="brand" href="#topo">
-      <span class="brand__name">Professor SDR</span>
-      <span class="brand__org">UNLOCKIFY</span>
+  <div class="wrap foot__in">
+    <a class="brand" href="#topo" aria-label="Professor SDR, da Unlockify Digital">
+      <svg class="brand__mark" viewBox="0 0 26 30" aria-hidden="true"><use href="#ui"/></svg>
+      <span class="brand__txt"><span class="brand__a">Professor SDR</span><span class="brand__b">UNLOCKIFY</span></span>
     </a>
-    <p class="foot__note">
-      Unlockify Digital, formação profissional para equipes de atendimento. Não
-      constitui curso jurídico nem habilita ao exercício da advocacia.
-    </p>
+    <p class="foot__n">Unlockify Digital, formação profissional para equipes de atendimento. Não constitui curso jurídico nem habilita ao exercício da advocacia.</p>
   </div>
 </footer>
 
 <script>
 (function () {
   'use strict';
+  var calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
 
-  /* Estado da navbar. IntersectionObserver em vez de listener de scroll. */
-  var nav = document.getElementById('nav');
-  var sentinela = document.getElementById('sentinela');
-  var hero = document.querySelector('.hero');
-
+  /* ── barra de navegação ─────────────────────────────────── */
+  var nav = $('#nav'), sent = $('#sentinela'), hero = $('.hero');
   if ('IntersectionObserver' in window) {
-    if (sentinela) {
-      new IntersectionObserver(function (e) {
-        nav.classList.toggle('is-stuck', !e[0].isIntersecting);
-      }).observe(sentinela);
+    new IntersectionObserver(function (e) {
+      nav.classList.toggle('is-stuck', !e[0].isIntersecting);
+    }).observe(sent);
+    new IntersectionObserver(function (e) {
+      nav.classList.toggle('is-past', !e[0].isIntersecting);
+    }, { rootMargin: '-70px 0px 0px 0px' }).observe(hero);
+  }
+
+  /* ── waveform: barras de terminal arredondado, o traço da marca ── */
+  $$('.wave').forEach(function (w) {
+    var n = 18, html = '';
+    for (var i = 0; i < n; i++) {
+      // envelope de voz: mais alto no meio, com variação fixa por barra
+      var env = 0.34 + 0.62 * Math.sin((i + 1) / (n + 1) * Math.PI);
+      var jitter = 0.72 + 0.28 * Math.abs(Math.sin(i * 2.7));
+      html += '<i style="--h:' + (env * jitter).toFixed(2) +
+              ';animation-delay:' + (i * 0.055).toFixed(2) + 's"></i>';
     }
-    if (hero) {
-      new IntersectionObserver(function (e) {
-        nav.classList.toggle('is-past', !e[0].isIntersecting);
-      }, { rootMargin: '-70px 0px 0px 0px' }).observe(hero);
+    w.innerHTML = html;
+  });
+
+  /* ── a simulação, conduzida pelo scroll ─────────────────── */
+  var cns = $('#simConsole');
+  if (cns) {
+    var ESTADOS = [
+      null,
+      { t:'00:00', reuniao:['não marcada','v-idle'], info:['0 de 3','v-idle'], falta:['0','v-idle'], nota:0,  vivo:false, fala:null   },
+      { t:'00:41', reuniao:['não marcada','v-idle'], info:['0 de 3','v-idle'], falta:['0','v-idle'], nota:0,  vivo:true,  fala:'lead' },
+      { t:'01:04', reuniao:['não marcada','v-idle'], info:['1 de 3','v-idle'], falta:['0','v-idle'], nota:35, vivo:true,  fala:'sdr'  },
+      { t:'01:12', reuniao:['não marcada','v-idle'], info:['2 de 3','v-idle'], falta:['0','v-idle'], nota:55, vivo:true,  fala:'lead' },
+      { t:'01:18', reuniao:['não marcada','v-idle'], info:['2 de 3','v-idle'], falta:['1','v-fail'], nota:40, vivo:true,  fala:'sdr'  },
+      { t:'01:26', reuniao:['terça, 07:00','v-pass'], info:['5 de 3','v-pass'], falta:['1','v-fail'], nota:40, vivo:true,  fala:'lead' },
+      { t:'06:00', reuniao:['terça, 07:00','v-pass'], info:['5 de 3','v-pass'], falta:['1','v-fail'], nota:40, vivo:false, fala:null   }
+    ];
+    var relogio = $('#simClock'), elMeet = $('#rdMeet'), elInfo = $('#rdInfo'),
+        elFalta = $('#rdFault'), elNota = $('#rdScore'), elFill = $('#rdFill'),
+        falas = $$('.tl', cns), atual = 0;
+
+    function leitura(el, par) { el.textContent = par[0]; el.className = 'rd__v ' + par[1]; }
+
+    function aplicar(n) {
+      if (n === atual) return;
+      atual = n;
+      var s = ESTADOS[n];
+      relogio.textContent = s.t + ' / 06:00';
+      leitura(elMeet, s.reuniao); leitura(elInfo, s.info); leitura(elFalta, s.falta);
+      elNota.textContent = s.nota;
+      elFill.style.setProperty('--v', s.nota + '%');
+      cns.classList.toggle('is-live', s.vivo);
+      cns.classList.toggle('is-speaking', !calmo && !!s.fala);
+      cns.classList.toggle('is-speaking-sdr', !calmo && s.fala === 'sdr');
+      cns.classList.toggle('is-failing', s.falta[0] !== '0');
+      cns.classList.toggle('is-done', n === 7);
+      falas.forEach(function (l) {
+        l.classList.toggle('is-on', n >= +l.dataset.at);
+        if (l.dataset.flag) l.classList.toggle('is-flag', n >= +l.dataset.flag);
+      });
+    }
+    aplicar(1);
+
+    var batidas = $$('.beat');
+    /* No desktop o console fica centralizado na janela, então a batida ativa
+       é a que cruza o centro. No celular o console é fixo no topo e cobre o
+       centro, então a faixa de leitura desce para abaixo dele. */
+    function faixaDeLeitura() {
+      return matchMedia('(min-width: 1000px)').matches
+        ? '-50% 0px -50% 0px'
+        : '-72% 0px -22% 0px';
+    }
+    if ('IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(function (ents) {
+        ents.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          batidas.forEach(function (b) { b.classList.toggle('is-now', b === e.target); });
+          aplicar(+e.target.dataset.step);
+        });
+      }, { rootMargin: faixaDeLeitura(), threshold: 0 });
+      batidas.forEach(function (b) { obs.observe(b); });
+    } else {
+      batidas.forEach(function (b) { b.classList.add('is-now'); });
+      aplicar(7);
     }
   }
 
-  /* Acordeão: um aberto por vez. */
-  var itens = Array.prototype.slice.call(document.querySelectorAll('.faq__item'));
+  /* ── o número do método sobe uma vez, ao entrar em cena ── */
+  var num = $('#bigNum');
+  if (num && 'IntersectionObserver' in window) {
+    var alvo = +num.dataset.to;
+    if (calmo) { num.textContent = alvo; }
+    else {
+      num.textContent = '0';
+      new IntersectionObserver(function (e, o) {
+        if (!e[0].isIntersecting) return;
+        o.disconnect();
+        var t0 = performance.now(), dur = 900;
+        (function passo(t) {
+          var p = Math.min(1, (t - t0) / dur);
+          num.textContent = Math.round(alvo * (1 - Math.pow(1 - p, 3)));
+          if (p < 1) requestAnimationFrame(passo);
+        })(t0);
+      }, { threshold: .6 }).observe(num);
+    }
+  }
 
+  /* ── acordeão, um aberto por vez ─────────────────────────── */
+  var itens = $$('.faq__i');
   itens.forEach(function (item) {
-    var botao = item.querySelector('.faq__q');
-
-    botao.addEventListener('click', function () {
-      var estavaAberto = botao.getAttribute('aria-expanded') === 'true';
-
-      itens.forEach(function (outro) {
-        outro.classList.remove('is-open');
-        outro.querySelector('.faq__q').setAttribute('aria-expanded', 'false');
+    var b = $('.faq__q', item);
+    b.addEventListener('click', function () {
+      var aberto = b.getAttribute('aria-expanded') === 'true';
+      itens.forEach(function (o) {
+        o.classList.remove('is-open');
+        $('.faq__q', o).setAttribute('aria-expanded', 'false');
       });
-
-      if (!estavaAberto) {
-        item.classList.add('is-open');
-        botao.setAttribute('aria-expanded', 'true');
-      }
+      if (!aberto) { item.classList.add('is-open'); b.setAttribute('aria-expanded', 'true'); }
     });
   });
+
+  /* ── a luz do botão segue o ponteiro ────────────────────── */
+  if (matchMedia('(pointer: fine)').matches) {
+    $$('.btn').forEach(function (b) {
+      b.addEventListener('pointermove', function (e) {
+        var r = b.getBoundingClientRect();
+        b.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        b.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      });
+    });
+  }
+
+  /* ── paralaxe do console do hero ────────────────────────── */
+  var palco = $('#stage');
+  if (palco && !calmo && matchMedia('(pointer: fine)').matches) {
+    var camada = $('.stage__in', palco), pend = false, mx = 0, my = 0;
+    hero.addEventListener('pointermove', function (e) {
+      mx = (e.clientX / innerWidth - .5) * -16;
+      my = (e.clientY / innerHeight - .5) * -12;
+      if (pend) return;
+      pend = true;
+      requestAnimationFrame(function () {
+        camada.style.setProperty('--px', mx.toFixed(1) + 'px');
+        camada.style.setProperty('--py', my.toFixed(1) + 'px');
+        pend = false;
+      });
+    });
+    hero.addEventListener('pointerleave', function () {
+      camada.style.setProperty('--px', '0px');
+      camada.style.setProperty('--py', '0px');
+    });
+  }
 })();
 </script>
 

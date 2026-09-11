@@ -17,17 +17,34 @@ Basta publicar o arquivo. As fontes vêm do Google Fonts, e não há nenhuma ima
 
 ## Direção visual
 
-O sistema é a **transcrição corretiva**: a notação que o produto devolve ao aluno
-(barra âmbar, marcação de tempo em monoespaçada, etiqueta de falta grave) abre a
-página no hero e reaparece nas quatro frases fatais e no painel de correção. Quem
-lê aprende a notação em dez segundos e depois reconhece âmbar como caso perdido no
-resto da página.
+**Console de simulação.** O produto é uma prova falada com relógio correndo, nota
+que se mexe e falta que fica registrada. A página adota a linguagem do instrumento:
+timecode como espinha, medidores que se movem, waveform de voz, fio de 1px,
+tipografia gigante contra metadados minúsculos em monoespaçada.
+
+A regra de forma saiu da assinatura de marca da Unlockify: **dado é reto, energia é
+redonda**. Transcrição, fios e leituras ficam retos e monoespaçados. O que é vivo
+(waveform, medidor de nota, a própria marca) usa o traço de terminal arredondado
+do logo.
+
+O logo "Ui" é SVG inline, redesenhado a partir do vídeo de marca. As cores foram
+amostradas dos frames: fundo `#141728`, violeta `#A794EE`, elevação de luz
+`#38305F`.
+
+### O momento central
+
+A seção 02 é uma história conduzida pelo scroll. O console fica fixo, o roteiro
+rola ao lado, e em sete estados a ligação acontece na tela: o relógio avança, as
+falas entram uma a uma, a nota sobe até 55 e **cai para 40** na falta grave, a
+reunião fica verde no passo 06 (parece vitória) e no 07 a correção mostra que
+reunião marcada não salva a nota. Sem biblioteca: `position: sticky` mais
+`IntersectionObserver` mais transições de `transform` e `opacity`.
 
 As cores têm função e não são enfeite:
 
 | Cor | Significado | Onde aparece |
 |---|---|---|
-| Violeta `#9084E4` | marca e fala do SDR | logo, locutor `sdr`, fase 04, marcadores |
+| Violeta `#A794EE` | marca e fala do SDR | logo, locutor `sdr`, fase 04, marcadores |
 | Âmbar `#F2B33D` | erro e falta grave | linha marcada, frases fatais, nota reprovada, aviso de preço |
 | Verde `#3FD0AD` | o que passou | reunião marcada, informações colhidas |
 
@@ -36,13 +53,16 @@ Mono só onde o conteúdo é registro de conversa.
 
 ## Decisões que valem manter
 
-- **Sem animação de entrada.** Movimento só responde a ação do usuário: hover,
-  foco, abertura do acordeão, estado da barra de navegação ao rolar.
-- **Composição varia por seção.** Duas colunas com coluna fixa, tabela editorial
-  de três colunas, log de conversa com blocos de larguras diferentes, cartão. Não
-  existe nenhuma sequência de cards iguais.
-- **Coluna de 1000px, tudo alinhado à esquerda.** Acima de 1300px o índice da
-  seção sai para a margem externa. A barra de navegação alinha com a coluna.
+- **Nenhuma animação gratuita.** Não existe fade-in genérico de seção. Todo
+  movimento carrega informação: o waveform é voz, o medidor é a nota caindo, os
+  estados são a narrativa, a contagem do 143 é a contagem de conversas, a luz do
+  botão é affordance, a paralaxe é profundidade.
+- **Composição varia por seção.** Hero em perspectiva 3D, lista editorial com
+  citações gigantes, console fixo com roteiro rolando, índice de elenco, tabela
+  de três colunas, número editorial com log de conversa, comparativo lado a lado,
+  cartão de preço, acordeão, fechamento cinematográfico. Nenhuma se repete.
+- **Coluna de 1240px, tudo alinhado à esquerda.** A barra de navegação alinha com
+  a coluna de conteúdo.
 - **Acessibilidade.** Todo texto passa em WCAG AA sobre o fundo composto, foco de
   teclado visível, acordeão com `aria-expanded` e painel fechado fora da árvore de
   acessibilidade, `prefers-reduced-motion` respeitado.
@@ -50,5 +70,11 @@ Mono só onde o conteúdo é registro de conversa.
 ## Verificado
 
 Renderizado e medido em Chromium de 320px a 1920px: nenhum estouro horizontal,
-nenhuma célula de grid colapsada, nenhum texto abaixo de 11px, contraste mínimo
-de 4.59:1 em todos os trechos de texto.
+nenhuma célula de grid colapsada, nenhum texto abaixo de 11px, nenhum erro de
+JavaScript. Contraste mínimo de 4.64:1 em todos os trechos de texto, medido com
+composição de alfa sobre o fundo real.
+
+A história do scroll foi verificada estado por estado no desktop e em três
+tamanhos de celular, incluindo a checagem de que o texto da batida ativa nunca
+fica atrás do console fixo. Com `prefers-reduced-motion` a narrativa continua
+inteira, só sem as transições.
