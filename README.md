@@ -41,6 +41,20 @@ de conversa.
    pílula sobre escuro elevado.
 3. **Nenhuma fileira de cards iguais.** A seção de fases usa o padrão da casa,
    mas a quarta carta inverte de cor porque é a prova, não por decoração.
+4. **Âmbar legível em cartão branco.** O adendo pede selo e risco em `#F2B33D`,
+   que sobre branco dá 1.9:1. O glifo usa `--amber-ink` e o contorno um âmbar
+   médio: a identidade de alerta se mantém e o texto passa em AA.
+
+### A semana em ritmo guiado
+
+O conteúdo não abre de uma vez. A liberação é dia a dia, e isso é metodologia,
+não promoção: prática espaçada fixa mais do que maratona. A tabela virou uma
+**linha do tempo de oito marcos** logo abaixo do parágrafo que explica o método,
+em monoespaçada com fio fino ligando os pontos. O sétimo dia não libera nada e
+fica apagado de propósito, porque o intervalo é parte do argumento. O oitavo,
+que abre as simulações, é o único ponto em violeta.
+
+No celular o eixo gira e vira vertical, com o fio à esquerda.
 
 ### O momento central
 
@@ -56,8 +70,8 @@ de `transform` e `opacity`.
 
 | Cor | Significado | Onde aparece |
 |---|---|---|
-| Violeta | marca e fala do SDR | logo, locutor `sdr`, rótulos, fase 04 |
-| Âmbar | erro e falta grave | linha marcada, frases fatais, nota reprovada |
+| Violeta | marca e fala do SDR | logo, locutor `sdr`, rótulos, fase 04, dia 8 |
+| Âmbar | erro, falta grave e alerta de preço | linha marcada, frases fatais, nota reprovada, selo e risco do lançamento |
 | Verde | o que passou | reunião marcada, informações colhidas |
 
 ## Decisões que valem manter

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Professor SDR | Formação para SDR de gestão de passivos bancários</title>
-<meta name="description" content="Formação com prova falada. O SDR atende um empresário endividado que responde na hora, por voz, e a correção devolve a frase exata do erro. R$ 97 no lançamento.">
+<meta name="description" content="Formação de uma semana em ritmo guiado, com prova falada por voz. A correção devolve a frase exata do erro e o minuto. De R$ 297 por R$ 97 no lançamento.">
 <meta name="theme-color" content="#161826">
 <meta name="color-scheme" content="dark">
 <meta property="og:type" content="website">
@@ -295,7 +295,8 @@ b,strong{font-weight:700}
 .hero__lede{margin-top:20px;color:var(--on-dark-2);max-width:31em}
 .hero__cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
 .hero__fine{margin-top:20px;font-size:var(--fs-sm);color:var(--on-dark-3)}
-.hero__fine s{opacity:.8}
+.hero__fine s{opacity:.9;text-decoration-color:var(--amber);text-decoration-thickness:2px}
+.final__f s{text-decoration-color:var(--amber);text-decoration-thickness:2px}
 @media (min-width:1000px){
   .hero__in{grid-template-columns:minmax(0,1fr) minmax(0,.92fr);align-items:center;gap:clamp(36px,4vw,56px)}
 }
@@ -394,6 +395,34 @@ b,strong{font-weight:700}
 .phase__tag{position:absolute;top:-11px;left:20px;padding:4px 12px;border-radius:var(--pill);
   background:var(--violet);color:#161826;font-size:.6875rem;font-weight:700;letter-spacing:.04em;white-space:nowrap}
 
+/* ═══ LINHA DO TEMPO DA LIBERAÇÃO ════════════════════════════
+   Oito marcos. O sétimo dia não libera nada e fica apagado de
+   propósito: o intervalo é parte do argumento da prática espaçada. */
+.tl{display:grid;margin-top:clamp(30px,3.4vw,42px)}
+.tl__i{display:grid;grid-template-areas:"dia" "eixo" "rot";row-gap:7px;padding-right:12px}
+.tl__d{grid-area:dia;font-family:var(--mono);font-size:.6875rem;letter-spacing:.06em;color:var(--on-light-2)}
+.tl__e{grid-area:eixo;display:flex;align-items:center;height:14px;position:relative}
+.tl__e::before{content:"";position:absolute;left:0;right:0;height:1.5px;border-radius:2px;background:var(--light-line)}
+.tl__i:last-child .tl__e::before{display:none}
+.tl__dot{width:10px;height:10px;border-radius:50%;background:#C3C6DC;position:relative;z-index:1;flex:none}
+.tl__l{grid-area:rot;font-size:.8125rem;line-height:1.35;color:var(--on-light);max-width:15ch}
+.tl__i--off .tl__d{opacity:.5}
+.tl__i--off .tl__dot{background:var(--light-line)}
+.tl__i--key .tl__d{color:var(--violet-ink);font-weight:500}
+.tl__i--key .tl__dot{background:var(--violet-ink);box-shadow:0 0 0 4px rgba(107,92,196,.18)}
+.tl__i--key .tl__l{font-weight:600}
+@media (min-width:880px){.tl{grid-template-columns:repeat(8,1fr)}}
+@media (max-width:879px){
+  /* vertical: o eixo vira um fio à esquerda e cada marco é uma linha */
+  .tl{grid-template-columns:1fr;row-gap:0}
+  .tl__i{grid-template-areas:"eixo dia" "eixo rot";grid-template-columns:14px 1fr;
+    column-gap:16px;row-gap:2px;padding:0 0 18px}
+  .tl__i:last-child{padding-bottom:0}
+  .tl__e{grid-area:eixo;height:auto;align-self:stretch;justify-content:center;padding-top:4px;flex-direction:column}
+  .tl__e::before{left:50%;right:auto;top:0;bottom:0;width:1.5px;height:auto;transform:translateX(-50%)}
+  .tl__l{max-width:none}
+}
+
 /* ═══ NÚMEROS DO MÉTODO ══════════════════════════════════════ */
 .stats{display:grid;gap:14px;margin-top:clamp(34px,4vw,48px)}
 @media (min-width:640px){.stats{grid-template-columns:1fr 1fr;gap:16px}}
@@ -445,11 +474,16 @@ b,strong{font-weight:700}
 .card__t{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 24px;
   border-bottom:1px solid var(--light-line);font-size:.75rem;font-weight:600;
   letter-spacing:.08em;text-transform:uppercase;color:var(--on-light-2)}
-.card__flag{padding:4px 12px;border-radius:var(--pill);background:rgba(107,92,196,.1);
-  border:1px solid rgba(107,92,196,.28);color:var(--violet-ink);white-space:nowrap;letter-spacing:.06em}
+/* Selo e risco na cor de alerta, como pede o adendo. Sobre o cartão branco o
+   âmbar da marca fica em 1.9:1, então o glifo usa --amber-ink e o contorno um
+   âmbar médio: a identidade de alerta se mantém e o texto fica legível. */
+.card__flag{padding:4px 12px;border-radius:var(--pill);background:transparent;
+  border:1px solid rgba(224,160,32,.6);color:var(--amber-ink);white-space:nowrap;
+  font-family:var(--mono);font-size:.6875rem;font-weight:500;letter-spacing:.04em;text-transform:none}
 .card__b{padding:28px 24px 26px}
 .pr{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
-.pr__o{font-size:1.0625rem;color:var(--on-light-2);text-decoration:line-through;text-decoration-thickness:1px;font-variant-numeric:tabular-nums}
+.pr__o{font-size:1.0625rem;color:var(--on-light-2);font-variant-numeric:tabular-nums;
+  text-decoration:line-through;text-decoration-color:var(--amber-ink);text-decoration-thickness:2px}
 .pr__n{font-size:clamp(3.25rem,6vw,4.25rem);font-weight:800;line-height:.9;letter-spacing:-.045em}
 .pr__n span{font-size:.36em;vertical-align:.68em;color:var(--on-light-2);margin-right:.16em;font-weight:700}
 .pr__t{margin-top:12px;font-size:var(--fs-sm);color:var(--on-light-2)}
@@ -563,15 +597,16 @@ b,strong{font-weight:700}
       </p>
       <div class="hero__cta">
         <!-- Substituir COLE_AQUI_O_LINK_DA_KIWIFY pelo checkout -->
-        <a class="btn btn--primary" href="COLE_AQUI_O_LINK_DA_KIWIFY"><span>Matricular por R$ 97<i class="btn__go" aria-hidden="true"></i></span></a>
+        <a class="btn btn--primary" href="COLE_AQUI_O_LINK_DA_KIWIFY"><span>Matricular por R$ 97 no lançamento<i class="btn__go" aria-hidden="true"></i></span></a>
         <a class="btn btn--ghost" href="#simulacao"><span>Ver uma simulação</span></a>
       </div>
       <ul class="checks">
+        <li><svg aria-hidden="true"><use href="#ck"/></svg>Uma semana em ritmo guiado</li>
         <li><svg aria-hidden="true"><use href="#ck"/></svg>Voz em tempo real, não texto</li>
         <li><svg aria-hidden="true"><use href="#ck"/></svg>Correção com a frase e o minuto</li>
         <li><svg aria-hidden="true"><use href="#ck"/></svg>Certificado com código</li>
       </ul>
-      <p class="hero__fine">De <s>R$ 297</s> por R$ 97 no lote de lançamento. Pagamento único, 30 dias de acesso.</p>
+      <p class="hero__fine">De <s>R$ 297</s> por R$ 97 no lote de lançamento. Formação de uma semana em ritmo guiado, com 30 dias de acesso e certificado ao final.</p>
     </div>
 
     <div class="app-wrap">
@@ -709,12 +744,31 @@ b,strong{font-weight:700}
 <section class="band band--light on-light" id="fases">
   <div class="wrap">
     <p class="eyebrow">A formação</p>
-    <h2 style="max-width:20ch">Quatro fases, e nenhuma se conclui clicando.</h2>
-    <ol class="phases">
+    <h2 style="max-width:22ch">Quatro fases, distribuídas ao longo de uma semana.</h2>
+    <p class="lede" style="margin-top:18px;max-width:38em">
+      O conteúdo abre em ritmo guiado, e não de uma vez. Quem estuda espaçado
+      retém muito mais do que quem faz tudo numa tarde, e no telefone isso
+      aparece: o SDR que maratonou esquece a frase na hora que precisa dela. A
+      primeira simulação abre no oitavo dia, depois que a leitura, as situações
+      e as aulas já estão na cabeça.
+    </p>
+
+    <ol class="tl" aria-label="Liberação do conteúdo, dia a dia">
+      <li class="tl__i"><span class="tl__d">dia 1</span><span class="tl__e"><i class="tl__dot"></i></span><span class="tl__l">introdução e módulos 1 e 2</span></li>
+      <li class="tl__i"><span class="tl__d">dia 2</span><span class="tl__e"><i class="tl__dot"></i></span><span class="tl__l">módulos 3 e 4</span></li>
+      <li class="tl__i"><span class="tl__d">dia 3</span><span class="tl__e"><i class="tl__dot"></i></span><span class="tl__l">módulos 5 e 6</span></li>
+      <li class="tl__i"><span class="tl__d">dia 4</span><span class="tl__e"><i class="tl__dot"></i></span><span class="tl__l">módulos 7 e 8</span></li>
+      <li class="tl__i"><span class="tl__d">dia 5</span><span class="tl__e"><i class="tl__dot"></i></span><span class="tl__l">as 20 situações</span></li>
+      <li class="tl__i"><span class="tl__d">dia 6</span><span class="tl__e"><i class="tl__dot"></i></span><span class="tl__l">as seis aulas por voz</span></li>
+      <li class="tl__i tl__i--off"><span class="tl__d">dia 7</span><span class="tl__e"><i class="tl__dot"></i></span><span class="tl__l">sem liberação</span></li>
+      <li class="tl__i tl__i--key"><span class="tl__d">dia 8</span><span class="tl__e"><i class="tl__dot"></i></span><span class="tl__l">as três simulações</span></li>
+    </ol>
+
+    <ol class="phases" style="margin-top:clamp(30px,3.4vw,44px)">
       <li class="phase"><span class="phase__n">01</span><h3>Ebook</h3><p class="phase__d">Oito módulos, de quem é o empresário até como passar o caso pro advogado. Cada módulo termina em quatro perguntas. Sem acertar três, ele não fecha.</p></li>
       <li class="phase"><span class="phase__n">02</span><h3>Situações</h3><p class="phase__d">Vinte casos reais, com 16 acertos para passar. Seis são armadilhas, onde a resposta mais confortável é a que reprovaria numa ligação de verdade.</p></li>
       <li class="phase"><span class="phase__n">03</span><h3>Aulas por voz</h3><p class="phase__d">Seis aulas curtas com legenda, incluindo uma ligação inteira feita do jeito certo, do alô até a reunião marcada.</p></li>
-      <li class="phase phase--key"><span class="phase__tag">A prova</span><span class="phase__n">04</span><h3>Simulações</h3><p class="phase__d">Três atendimentos por voz em tempo real. Passar num libera o próximo, e o certificado só sai com os três.</p></li>
+      <li class="phase phase--key"><span class="phase__tag">A prova</span><span class="phase__n">04</span><h3>Simulações</h3><p class="phase__d">Três atendimentos por voz em tempo real, liberados no oitavo dia. Passar numa libera a próxima, e o certificado só sai com as três.</p></li>
     </ol>
   </div>
 </section>
@@ -802,7 +856,7 @@ b,strong{font-weight:700}
         </p>
       </div>
       <div class="card">
-        <div class="card__t"><span>Matrícula por aluno</span><span class="card__flag">Lote de lançamento</span></div>
+        <div class="card__t"><span>Matrícula por aluno</span><span class="card__flag">lote de lançamento</span></div>
         <div class="card__b">
           <p class="pr"><s class="pr__o">R$ 297</s><b class="pr__n"><span>R$</span>97</b></p>
           <p class="pr__t">pagamento único, 30 dias de acesso</p>
@@ -833,16 +887,18 @@ b,strong{font-weight:700}
     <div class="faq">
       <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a1" id="q1"><span>A simulação é com uma pessoa de verdade?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
         <div class="faq__p" id="a1" role="region" aria-labelledby="q1"><div class="faq__c"><p class="faq__a">Não. É uma inteligência artificial de voz em tempo real, e é por isso que funciona: está disponível a qualquer hora, nunca perde a paciência e se comporta igual para todo aluno. A avaliação também não depende de quem corrige, porque a conversa é analisada sempre pelos mesmos critérios.</p></div></div></div>
-      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a2" id="q2"><span>Quanto tempo leva para concluir?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
-        <div class="faq__p" id="a2" role="region" aria-labelledby="q2"><div class="faq__c"><p class="faq__a">A leitura e as questões levam algumas horas, no ritmo de cada um. As aulas por voz somam menos de quinze minutos. As simulações duram seis, sete e oito minutos. O acesso vale trinta dias.</p></div></div></div>
-      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a3" id="q3"><span>E se o aluno reprovar?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
-        <div class="faq__p" id="a3" role="region" aria-labelledby="q3"><div class="faq__c"><p class="faq__a">Ele tenta de novo enquanto tiver tentativas e tempo de voz. Cada matrícula vem com dez tentativas e quarenta e cinco minutos, folga suficiente para tropeçar nos três níveis e ainda sobrar.</p></div></div></div>
-      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a4" id="q4"><span>Serve para qualquer escritório?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
-        <div class="faq__p" id="a4" role="region" aria-labelledby="q4"><div class="faq__c"><p class="faq__a">Esta formação é específica de gestão de passivos bancários de empresa. O empresário endividado se comporta de um jeito que não se parece com nenhum outro tipo de cliente, e o curso inteiro é construído em cima disso.</p></div></div></div>
-      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a5" id="q5"><span>Precisa instalar alguma coisa?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
-        <div class="faq__p" id="a5" role="region" aria-labelledby="q5"><div class="faq__c"><p class="faq__a">Não. Funciona no navegador, inclusive no celular. Para a simulação é preciso permitir o microfone e estar num lugar onde dê para falar em voz alta.</p></div></div></div>
-      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a6" id="q6"><span>O certificado habilita a dar orientação jurídica?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
-        <div class="faq__p" id="a6" role="region" aria-labelledby="q6"><div class="faq__c"><p class="faq__a">Não, e o próprio certificado diz isso. Ele atesta treinamento em pré-atendimento e agendamento. O curso ensina exatamente onde o SDR precisa parar e passar para o advogado.</p></div></div></div>
+      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a2" id="q2"><span>Posso fazer o curso todo num dia?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
+        <div class="faq__p" id="a2" role="region" aria-labelledby="q2"><div class="faq__c"><p class="faq__a">Não, e isso é proposital. O conteúdo abre em ritmo guiado ao longo de uma semana: os módulos do ebook liberam de dois em dois, as situações no quinto dia, as aulas por voz no sexto e as simulações no oitavo. Prática espaçada fixa muito mais do que maratona, e o efeito aparece no telefone. O acesso vale trinta dias, então sobra tempo de sobra para concluir sem correria.</p></div></div></div>
+      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a3" id="q3"><span>Quanto tempo leva para concluir?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
+        <div class="faq__p" id="a3" role="region" aria-labelledby="q3"><div class="faq__c"><p class="faq__a">A leitura e as questões levam algumas horas, no ritmo de cada um. As aulas por voz somam menos de quinze minutos. As simulações duram seis, sete e oito minutos. O acesso vale trinta dias.</p></div></div></div>
+      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a4" id="q4"><span>E se o aluno reprovar?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
+        <div class="faq__p" id="a4" role="region" aria-labelledby="q4"><div class="faq__c"><p class="faq__a">Ele tenta de novo enquanto tiver tentativas e tempo de voz. Cada matrícula vem com dez tentativas e quarenta e cinco minutos, folga suficiente para tropeçar nos três níveis e ainda sobrar.</p></div></div></div>
+      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a5" id="q5"><span>Serve para qualquer escritório?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
+        <div class="faq__p" id="a5" role="region" aria-labelledby="q5"><div class="faq__c"><p class="faq__a">Esta formação é específica de gestão de passivos bancários de empresa. O empresário endividado se comporta de um jeito que não se parece com nenhum outro tipo de cliente, e o curso inteiro é construído em cima disso.</p></div></div></div>
+      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a6" id="q6"><span>Precisa instalar alguma coisa?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
+        <div class="faq__p" id="a6" role="region" aria-labelledby="q6"><div class="faq__c"><p class="faq__a">Não. Funciona no navegador, inclusive no celular. Para a simulação é preciso permitir o microfone e estar num lugar onde dê para falar em voz alta.</p></div></div></div>
+      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a7" id="q7"><span>O certificado habilita a dar orientação jurídica?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
+        <div class="faq__p" id="a7" role="region" aria-labelledby="q7"><div class="faq__c"><p class="faq__a">Não, e o próprio certificado diz isso. Ele atesta treinamento em pré-atendimento e agendamento. O curso ensina exatamente onde o SDR precisa parar e passar para o advogado.</p></div></div></div>
     </div>
   </div>
 </section>
