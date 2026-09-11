@@ -1,0 +1,4 @@
+# Só a pasta site/ vai para o ar. README.md e CLAUDE.md são notas internas
+# do repositório e não devem ficar públicos.
+[build]
+  publish = "site"

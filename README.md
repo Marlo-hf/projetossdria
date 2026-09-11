@@ -3,8 +3,17 @@
 Página de vendas da formação **Professor SDR** (Unlockify Digital), para SDR de
 escritório de advocacia que trabalha com gestão de passivos bancários de empresa.
 
-Arquivo único: **`index.html`**. Sem build, sem framework, sem dependência.
-Basta publicar o arquivo. As fontes vêm do Google Fonts, e não há nenhuma imagem.
+Arquivo único: **`site/index.html`**. Sem build, sem framework, sem dependência.
+As fontes vêm do Google Fonts, e não há nenhuma imagem.
+
+O `netlify.toml` publica apenas a pasta `site/`. `README.md` e `CLAUDE.md` são
+notas internas e ficam fora do ar de propósito.
+
+## Onde está publicado
+
+Projeto Netlify **`professor-sdr-lp`**. Atenção: o projeto `professor-sdr`, que
+serve `sdr.unlockify.com.br`, é o **aplicativo do curso**, com o login dos
+alunos. Nunca publicar a LP nele.
 
 ## Antes de publicar
 

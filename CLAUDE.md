@@ -9,7 +9,9 @@ formação para SDR de escritório de advocacia de gestão de passivos bancário
 
 ## Estrutura
 
-- `index.html`, a página inteira: HTML, CSS e um script curto num arquivo só.
+- `site/index.html`, a página inteira: HTML, CSS e um script curto num arquivo só.
+- `site/_headers`, cabeçalhos de resposta do Netlify.
+- `netlify.toml`, aponta o deploy para `site/`, para que README e CLAUDE não fiquem públicos.
 - `README.md`, direção visual, decisões e o que falta definir.
 
 Não há build, gerenciador de pacotes, teste ou linter, e não existe comando de
