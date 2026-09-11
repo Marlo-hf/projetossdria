@@ -1,0 +1,1345 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Professor SDR | Formação para SDR de gestão de passivos bancários</title>
+<meta name="description" content="Formação para SDR de escritório de gestão de passivos. A prova é uma simulação de voz em tempo real, corrigida frase por frase. R$ 97 no lote de lançamento.">
+<meta name="theme-color" content="#14162A">
+<meta name="color-scheme" content="dark">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Professor SDR | Formação para SDR de gestão de passivos">
+<meta property="og:description" content="A prova é uma conversa falada com uma IA que responde na hora. A correção devolve a frase exata do erro e o minuto em que ela aconteceu.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* ============================================================
+   PROFESSOR SDR / UNLOCKIFY DIGITAL
+   Sistema: "transcrição corretiva"
+   As cores têm função. Violeta = marca e fala do SDR.
+   Âmbar = erro ou falta grave. Verde = o que passou.
+   ============================================================ */
+
+:root{
+  /* superfícies */
+  --bg:#14162A;
+  --surface:#1B1E33;
+  --surface-2:#232742;
+  --line:#2E3352;
+
+  /* texto */
+  --ink:#F3F2FA;
+  --ink-2:#9AA0C0;
+
+  /* semântica */
+  --violet:#9084E4;
+  --violet-h:#7A6DDB;
+  --green:#3FD0AD;
+  --amber:#F2B33D;
+
+  /* derivados, mantidos dentro do sistema */
+  --ghost:rgba(154,160,192,.20);
+  /* .06 e não mais: acima disso o rótulo violeta do SDR sobre a linha
+     marcada cai abaixo de 4.5:1 de contraste. */
+  --amber-wash:rgba(242,179,61,.06);
+  --violet-wash:rgba(144,132,228,.10);
+
+  /* tipografia */
+  --display:"Bricolage Grotesque","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --sans:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+  --fs-h1:clamp(2.375rem,1.35rem + 4.3vw,4.5rem);
+  --fs-h2:clamp(1.75rem,1.1rem + 2.2vw,2.625rem);
+  --fs-h3:clamp(1.125rem,1.02rem + .5vw,1.375rem);
+  --fs-pull:clamp(1.375rem,1.05rem + 1.45vw,2rem);
+  --fs-body:1.0625rem;
+  --fs-sm:.9375rem;
+  --fs-mono:.8125rem;
+  --fs-mono-xs:.75rem;
+
+  /* layout */
+  --max:1000px;
+  --pad:24px;
+  --gutter:96px;
+  --gutter-gap:32px;
+  --nav-h:66px;
+  --measure:33em;
+
+  --radius:3px;
+  --radius-lg:4px;
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --dur:.34s;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+
+html{
+  -webkit-text-size-adjust:100%;
+  scroll-padding-top:calc(var(--nav-h) + 24px);
+}
+@media (prefers-reduced-motion:no-preference){
+  html{scroll-behavior:smooth}
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:var(--fs-body);
+  line-height:1.6;
+  font-weight:400;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+
+h1,h2,h3{
+  font-family:var(--display);
+  font-weight:800;
+  letter-spacing:-.03em;
+  margin:0;
+  text-wrap:balance;
+}
+h1{font-size:var(--fs-h1);line-height:.98}
+h2{font-size:var(--fs-h2);line-height:1.03}
+h3{font-size:var(--fs-h3);line-height:1.15;letter-spacing:-.02em}
+p{margin:0;text-wrap:pretty}
+ul,ol{margin:0;padding:0;list-style:none}
+b,strong{font-weight:600}
+
+a{color:inherit}
+a:focus-visible,button:focus-visible,summary:focus-visible{
+  outline:2px solid var(--violet);
+  outline-offset:3px;
+  border-radius:2px;
+}
+
+::selection{background:var(--violet);color:#14162A}
+
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+
+.skip{
+  position:fixed;left:12px;top:-120px;z-index:100;
+  background:var(--violet);color:#14162A;
+  font-weight:600;font-size:var(--fs-sm);
+  padding:10px 16px;border-radius:var(--radius);
+  transition:top .18s var(--ease);
+}
+.skip:focus{top:12px}
+
+/* ---------- primitivas de layout ---------- */
+
+.shell{
+  width:min(100% - (var(--pad) * 2),var(--max));
+  margin-inline:auto;
+}
+
+.band{
+  border-top:1px solid var(--line);
+  padding-block:clamp(72px,8.5vw,116px);
+}
+.band--surface{background:var(--surface)}
+.band--tall{padding-block:clamp(84px,10vw,140px)}
+
+/* Índice de seção. Abaixo de 1280px vive como uma linha acima do conteúdo;
+   acima disso ocupa a margem externa, fora da coluna de 1000px. */
+.rail{display:block}
+
+.rail__index{
+  display:flex;gap:10px;
+  margin-bottom:20px;
+  font-family:var(--mono);
+  font-size:var(--fs-mono-xs);
+  color:var(--ink-2);
+  letter-spacing:.02em;
+  line-height:1.5;
+}
+.rail__index span{color:var(--violet)}
+
+/* Acima de 1300px há margem de sobra fora da coluna de 1000px: o índice
+   sai para essa margem, alinhado à direita contra a borda do conteúdo.
+   A largura do .shell não pode ser tocada aqui, senão a coluna estoura. */
+@media (min-width:1300px){
+  .rail{position:relative}
+  .rail__index{
+    position:absolute;
+    right:calc(100% + var(--gutter-gap));
+    top:.55em;
+    display:block;margin-bottom:0;
+    max-width:var(--gutter);
+    white-space:nowrap;text-align:right;
+  }
+  .rail__index span{display:block}
+}
+
+.measure{max-width:var(--measure)}
+.lede{color:var(--ink-2);max-width:var(--measure)}
+.lede + .lede{margin-top:1.15em}
+
+.mono{font-family:var(--mono)}
+
+/* ---------- navegação ---------- */
+
+.nav{
+  position:fixed;inset:0 0 auto 0;z-index:60;
+  height:var(--nav-h);
+  display:flex;align-items:center;
+  background:rgba(20,22,42,0);
+  border-bottom:1px solid transparent;
+  transition:height var(--dur) var(--ease),
+             background var(--dur) var(--ease),
+             border-color var(--dur) var(--ease),
+             backdrop-filter var(--dur) var(--ease);
+}
+.nav.is-stuck{
+  height:58px;
+  background:rgba(20,22,42,.88);
+  backdrop-filter:saturate(140%) blur(14px);
+  border-bottom-color:var(--line);
+}
+.nav__inner{display:flex;align-items:center;justify-content:space-between;gap:20px}
+
+.brand{
+  display:flex;align-items:baseline;gap:10px;
+  text-decoration:none;
+}
+.brand__name{
+  font-family:var(--display);font-weight:800;
+  font-size:1.0625rem;letter-spacing:-.035em;
+  color:var(--ink);white-space:nowrap;
+}
+.brand__org{
+  font-family:var(--mono);font-size:.6875rem;
+  letter-spacing:.16em;color:var(--ink-2);white-space:nowrap;
+  transition:color var(--dur) var(--ease);
+}
+.brand:hover .brand__org{color:var(--violet)}
+
+.nav__progress{
+  position:absolute;left:0;right:0;bottom:-1px;height:1px;
+  background:var(--violet);transform:scaleX(0);transform-origin:0 50%;
+}
+@supports (animation-timeline:scroll()){
+  .nav__progress{
+    animation:progress linear both;
+    animation-timeline:scroll(root block);
+  }
+}
+@keyframes progress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* ---------- botões ---------- */
+
+.btn{
+  --btn-bg:transparent;
+  --btn-ink:var(--ink);
+  --btn-bd:var(--line);
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--sans);font-size:var(--fs-sm);font-weight:600;
+  letter-spacing:-.005em;
+  padding:13px 20px;
+  color:var(--btn-ink);
+  background:var(--btn-bg);
+  border:1px solid var(--btn-bd);
+  border-radius:var(--radius);
+  text-decoration:none;cursor:pointer;
+  transition:background .2s var(--ease),border-color .2s var(--ease),
+             color .2s var(--ease),transform .2s var(--ease);
+}
+.btn > span{position:relative;display:inline-block}
+.btn > span::after{
+  content:"";position:absolute;left:0;right:0;bottom:-3px;height:1px;
+  background:currentColor;
+  transform:scaleX(0);transform-origin:0 50%;
+  transition:transform .28s var(--ease);
+}
+.btn:hover{transform:translateY(-1px)}
+.btn:hover > span::after,
+.btn:focus-visible > span::after{transform:scaleX(1)}
+.btn:active{transform:translateY(0)}
+
+.btn--primary{
+  --btn-bg:var(--violet);
+  --btn-ink:#14162A;
+  --btn-bd:var(--violet);
+}
+.btn--primary:hover{--btn-bg:var(--violet-h);--btn-bd:var(--violet-h)}
+
+.btn--ghost:hover{--btn-bd:var(--violet);--btn-bg:var(--violet-wash)}
+
+.btn--nav{padding:9px 15px;font-size:.875rem}
+.nav.is-past .btn--nav{
+  --btn-bg:var(--violet);--btn-ink:#14162A;--btn-bd:var(--violet);
+}
+.nav.is-past .btn--nav:hover{--btn-bg:var(--violet-h);--btn-bd:var(--violet-h)}
+
+.btn--block{width:100%;justify-content:center;padding:17px 20px;font-size:1rem}
+
+/* ---------- hero ---------- */
+
+.hero{
+  padding-top:calc(var(--nav-h) + clamp(52px,9vh,104px));
+  padding-bottom:clamp(68px,8vw,108px);
+}
+.hero h1{max-width:11.5em}
+.hero__lede{
+  margin-top:clamp(20px,2.4vw,28px);
+  color:var(--ink-2);
+  max-width:var(--measure);
+}
+
+/* ---------- bloco de transcrição ---------- */
+
+.doc{
+  margin-top:clamp(34px,4.6vw,56px);
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+}
+.band--surface .doc{background:var(--bg)}
+
+.doc__head{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;
+  padding:13px 20px;
+  border-bottom:1px solid var(--line);
+  background:var(--surface-2);
+  font-family:var(--mono);font-size:var(--fs-mono-xs);
+  color:var(--ink-2);letter-spacing:.02em;
+}
+.doc__head b{color:var(--ink);font-weight:500}
+
+.doc__body{padding:6px 0}
+
+.line{
+  display:grid;
+  grid-template-columns:58px 46px minmax(0,1fr);
+  column-gap:18px;
+  align-items:baseline;
+  padding:13px 20px 13px 18px;
+  border-left:2px solid transparent;
+}
+.line__t{
+  font-family:var(--mono);font-size:var(--fs-mono);
+  color:var(--ink-2);font-variant-numeric:tabular-nums;
+}
+.line__who{
+  font-family:var(--mono);font-size:var(--fs-mono);
+  color:var(--ink-2);letter-spacing:.02em;
+}
+.line--sdr .line__who{color:var(--violet)}
+.line__say{font-size:var(--fs-body);line-height:1.55;max-width:36em}
+
+.line--flag{
+  background:var(--amber-wash);
+  border-left-color:var(--amber);
+}
+
+.tag{
+  display:inline-block;vertical-align:baseline;
+  margin-left:10px;
+  font-family:var(--mono);font-size:var(--fs-mono-xs);
+  letter-spacing:.04em;
+  color:var(--amber);
+  border:1px solid rgba(242,179,61,.4);
+  border-radius:2px;
+  padding:1px 7px;
+  white-space:nowrap;
+}
+
+.verdict{
+  border-top:1px solid var(--line);
+  padding:20px 20px 22px;
+}
+.verdict p{
+  font-size:var(--fs-sm);
+  color:var(--ink-2);
+  max-width:33em;
+}
+.verdict b{color:var(--amber);font-weight:600}
+
+/* ---------- ações do hero ---------- */
+
+.actions{
+  display:flex;flex-wrap:wrap;gap:12px;
+  margin-top:clamp(28px,3.4vw,38px);
+}
+.fineprint{
+  margin-top:16px;
+  font-size:var(--fs-sm);
+  color:var(--ink-2);
+  max-width:var(--measure);
+}
+.fineprint s{color:var(--ink-2);opacity:.72;text-decoration-thickness:1px}
+
+/* ---------- problema: duas colunas ---------- */
+
+.split{display:grid;column-gap:48px;row-gap:clamp(40px,5vw,56px)}
+/* A coluna curta acompanha a longa em vez de deixar um vazio embaixo. */
+@media (min-width:900px){
+  .split--problem > :first-child,
+  .split--price > :first-child{
+    position:sticky;
+    top:calc(var(--nav-h) + 40px);
+    align-self:start;
+  }
+}
+.split--problem{grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr)}
+.split--price{grid-template-columns:minmax(0,.86fr) minmax(0,1fr);column-gap:44px}
+.split--sim{grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr);column-gap:44px}
+
+.flaws{margin-top:26px;border-top:1px solid var(--line)}
+.flaw{
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr);
+  column-gap:14px;
+  padding:20px 0 20px 14px;
+  border-bottom:1px solid var(--line);
+  border-left:2px solid var(--amber);
+  transition:background .22s var(--ease);
+}
+.flaw:hover{background:var(--amber-wash)}
+.flaw__n{
+  font-family:var(--mono);font-size:var(--fs-mono);
+  color:var(--amber);padding-top:.3em;
+  font-variant-numeric:tabular-nums;
+}
+.flaw__q{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(1.0625rem,.98rem + .42vw,1.3125rem);
+  line-height:1.22;letter-spacing:-.02em;
+  color:var(--ink);
+}
+.flaw__why{
+  margin-top:7px;font-size:var(--fs-sm);color:var(--ink-2);
+  max-width:30em;
+}
+
+/* ---------- pull quote ---------- */
+
+.sim-top{display:grid;row-gap:clamp(34px,4vw,44px)}
+@media (min-width:900px){
+  .sim-top{
+    grid-template-columns:minmax(0,1fr) minmax(0,.64fr);
+    column-gap:56px;align-items:start;
+  }
+  .sim-top .pull{margin-top:0}
+}
+
+.pull{
+  margin-top:clamp(40px,4.6vw,52px);
+  padding-top:24px;
+  border-top:1px solid var(--violet);
+  font-family:var(--display);font-weight:800;
+  font-size:var(--fs-pull);line-height:1.06;letter-spacing:-.03em;
+  max-width:17em;
+  text-wrap:balance;
+}
+
+/* ---------- elenco ---------- */
+
+.cast{margin-top:clamp(40px,4.6vw,54px);border-top:1px solid var(--line)}
+@media (min-width:900px){
+  /* as duas colunas da simulação começam na mesma linha */
+  .split--sim .cast{margin-top:0}
+}
+.cast__row{
+  display:grid;grid-template-columns:34px minmax(0,1fr);column-gap:14px;
+  padding:22px 0 22px 14px;
+  border-bottom:1px solid var(--line);
+  border-left:2px solid transparent;
+  transition:border-color .22s var(--ease),background .22s var(--ease);
+}
+.cast__row:hover{border-left-color:var(--violet);background:var(--violet-wash)}
+.cast__n{
+  font-family:var(--mono);font-size:var(--fs-mono);
+  color:var(--ink-2);padding-top:.34em;
+  transition:color .22s var(--ease);
+}
+.cast__row:hover .cast__n{color:var(--violet)}
+.cast__name{
+  font-family:var(--display);font-weight:800;
+  font-size:1.125rem;letter-spacing:-.025em;line-height:1.2;
+}
+.cast__name i{font-style:normal;color:var(--ink-2);font-weight:700}
+.cast__bio{margin-top:6px;font-size:var(--fs-sm);color:var(--ink-2);max-width:30em}
+
+/* ---------- painel de correção ---------- */
+
+.panel-wrap{position:sticky;top:calc(var(--nav-h) + 30px);align-self:start}
+
+.readout{margin-top:0}
+.readout .doc__body{padding:4px 0}
+.rd{
+  display:flex;align-items:baseline;justify-content:space-between;
+  gap:16px;padding:14px 20px;
+  border-bottom:1px solid var(--line);
+}
+.rd:last-of-type{border-bottom:0}
+.rd__k{font-size:var(--fs-sm);color:var(--ink-2)}
+.rd__v{
+  font-family:var(--mono);font-size:var(--fs-mono);
+  text-align:right;letter-spacing:.01em;
+}
+.is-pass{color:var(--green)}
+.is-fail{color:var(--amber)}
+
+.meter{height:2px;background:var(--line);margin:0 20px 18px}
+.meter i{display:block;height:100%;width:40%;background:var(--amber)}
+
+.panel-note{
+  margin-top:18px;font-size:var(--fs-sm);color:var(--ink-2);max-width:32em;
+}
+
+/* ---------- fases ---------- */
+
+.phases{margin-top:clamp(40px,4.6vw,54px);border-top:1px solid var(--line)}
+.phase{
+  display:grid;
+  grid-template-columns:clamp(74px,9vw,112px) minmax(0,1fr);
+  column-gap:clamp(16px,2.2vw,28px);
+  align-items:start;
+  padding:clamp(26px,3vw,34px) 0;
+  border-bottom:1px solid var(--line);
+}
+.phase__n{grid-row:1 / span 2}
+.phase__t{grid-column:2}
+.phase__d{grid-column:2}
+
+/* Em telas largas a descrição vai para uma terceira coluna, e a fase
+   passa a ler como índice em vez de título empilhado sobre parágrafo. */
+@media (min-width:900px){
+  .phase{
+    grid-template-columns:clamp(74px,9vw,112px) minmax(0,.46fr) minmax(0,1fr);
+    align-items:baseline;
+  }
+  .phase__n{grid-row:1;align-self:start}
+  .phase__t{grid-row:1;margin-bottom:0}
+  .phase__d{grid-column:3;grid-row:1;max-width:34em}
+}
+.phase__n{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(2.75rem,5.6vw,4.25rem);
+  line-height:.82;letter-spacing:-.05em;
+  color:var(--ghost);
+  transition:color .24s var(--ease);
+}
+.phase:last-child .phase__n{color:var(--violet)}
+.phase__t{margin-bottom:9px}
+.phase__d{color:var(--ink-2);max-width:31em;font-size:var(--fs-sm)}
+
+/* ---------- método: log de conversas ---------- */
+
+.log{margin-top:clamp(40px,4.6vw,54px);display:flex;flex-direction:column;gap:clamp(26px,3vw,34px)}
+.log figure{margin:0;max-width:46em}
+.log blockquote{
+  margin:0;
+  display:inline-block;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  border-top-left-radius:1px;
+  padding:15px 19px 16px;
+  max-width:100%;
+}
+.band--surface .log blockquote{background:var(--bg)}
+.log__meta{
+  display:block;font-family:var(--mono);font-size:var(--fs-mono-xs);
+  color:var(--ink-2);letter-spacing:.04em;margin-bottom:8px;
+}
+.log__say{
+  font-family:var(--mono);font-size:.9375rem;line-height:1.5;
+  color:var(--ink);
+}
+.log figcaption{
+  margin-top:11px;padding-left:2px;
+  font-size:var(--fs-sm);color:var(--ink-2);max-width:33em;
+  text-wrap:pretty;
+}
+
+/* ---------- preço ---------- */
+
+.card{
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+}
+.card__top{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:14px 22px;border-bottom:1px solid var(--line);
+  background:var(--surface-2);
+  font-family:var(--mono);font-size:var(--fs-mono-xs);
+  color:var(--ink-2);letter-spacing:.02em;
+}
+.card__flag{
+  color:var(--violet);border:1px solid rgba(144,132,228,.42);
+  border-radius:2px;padding:2px 8px;white-space:nowrap;
+}
+.card__body{padding:26px 22px 24px}
+
+.price{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.price__old{
+  font-family:var(--sans);font-size:1.0625rem;color:var(--ink-2);
+  font-variant-numeric:tabular-nums;
+  text-decoration:line-through;text-decoration-thickness:1px;
+}
+.price__now{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(3.25rem,7vw,4.5rem);line-height:.86;letter-spacing:-.05em;
+}
+.price__now span{font-size:.4em;letter-spacing:-.02em;margin-right:.18em;vertical-align:.68em;color:var(--ink-2)}
+.price__terms{margin-top:12px;font-size:var(--fs-sm);color:var(--ink-2)}
+
+.alert{
+  margin-top:20px;padding:12px 14px;
+  background:var(--amber-wash);
+  border-left:2px solid var(--amber);
+  border-radius:0 var(--radius) var(--radius) 0;
+  font-size:var(--fs-sm);color:var(--ink);
+}
+
+.includes{margin-top:22px;padding-top:20px;border-top:1px solid var(--line)}
+.includes li{
+  display:grid;grid-template-columns:16px 1fr;column-gap:12px;
+  align-items:baseline;
+  font-size:var(--fs-sm);color:var(--ink-2);
+  padding:6px 0;
+}
+.includes li::before{
+  content:"";display:block;width:5px;height:5px;
+  background:var(--violet);border-radius:1px;
+  transform:translateY(-.28em);margin-left:3px;
+}
+.card__cta{margin-top:24px}
+.card__foot{
+  margin-top:16px;font-size:var(--fs-mono);line-height:1.6;
+  color:var(--ink-2);font-family:var(--sans);
+}
+
+/* ---------- acordeão ---------- */
+
+.faq{margin-top:clamp(34px,4vw,46px);border-top:1px solid var(--line)}
+.faq__item{border-bottom:1px solid var(--line)}
+.faq__q{
+  display:grid;grid-template-columns:40px minmax(0,1fr) 22px;
+  column-gap:14px;align-items:start;
+  width:100%;text-align:left;
+  background:none;border:0;color:inherit;
+  padding:22px 2px;cursor:pointer;
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(1.0625rem,1rem + .32vw,1.25rem);
+  letter-spacing:-.02em;line-height:1.28;
+  transition:color .2s var(--ease);
+}
+.faq__q:hover{color:var(--violet)}
+.faq__n{
+  font-family:var(--mono);font-size:var(--fs-mono);font-weight:400;
+  color:var(--ink-2);padding-top:.32em;letter-spacing:.02em;
+  transition:color .2s var(--ease);
+}
+.faq__item.is-open .faq__n{color:var(--violet)}
+.faq__sign{
+  position:relative;width:13px;height:13px;
+  margin-top:.34em;justify-self:end;
+}
+.faq__sign::before,.faq__sign::after{
+  content:"";position:absolute;inset:50% 0 auto 0;
+  height:1px;background:currentColor;
+  transition:transform var(--dur) var(--ease);
+}
+.faq__sign::after{transform:rotate(90deg)}
+.faq__item.is-open .faq__sign::after{transform:rotate(90deg) scaleX(0)}
+
+.faq__panel{
+  display:grid;grid-template-rows:0fr;
+  transition:grid-template-rows var(--dur) var(--ease);
+}
+.faq__item.is-open .faq__panel{grid-template-rows:1fr}
+.faq__clip{overflow:hidden;visibility:hidden;transition:visibility var(--dur)}
+.faq__item.is-open .faq__clip{visibility:visible}
+.faq__a{
+  padding:0 54px 26px;
+  color:var(--ink-2);font-size:var(--fs-sm);max-width:38em;
+}
+
+/* ---------- rodapé ---------- */
+
+.foot{border-top:1px solid var(--line);background:var(--surface);padding-block:44px}
+.foot__inner{display:flex;flex-wrap:wrap;gap:18px 40px;align-items:baseline;justify-content:space-between}
+.foot__note{font-size:var(--fs-sm);color:var(--ink-2);max-width:36em}
+
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+
+@media (max-width:900px){
+  :root{--pad:22px}
+  .rail{grid-template-columns:minmax(0,1fr)}
+  .rail__index{
+    position:static;padding-top:0;margin-bottom:18px;
+    display:flex;gap:10px;
+  }
+  .rail__index span{display:inline}
+  .split--problem,.split--sim,.split--price{grid-template-columns:minmax(0,1fr)}
+  .panel-wrap{position:static}
+  .cast{margin-top:34px}
+  .pull{max-width:none}
+}
+
+@media (max-width:620px){
+  :root{--pad:20px;--nav-h:60px;--fs-body:1rem}
+
+  .band{padding-block:clamp(58px,13vw,76px)}
+  .band--tall{padding-block:clamp(64px,14vw,84px)}
+  .hero{padding-top:calc(var(--nav-h) + 44px);padding-bottom:60px}
+  .hero h1{max-width:none;line-height:1.02}
+
+  /* transcrição vira coluna única, tempo e locutor na mesma linha */
+  /* tempo e locutor na primeira linha, a fala ocupa a linha inteira abaixo */
+  .line{
+    grid-template-columns:auto auto minmax(0,1fr);
+    column-gap:12px;row-gap:7px;
+    padding:14px 16px 15px 14px;
+  }
+  .line__t{grid-area:1 / 1}
+  .line__who{grid-area:1 / 2}
+  .line__say{grid-column:1 / -1;grid-row:2;max-width:none}
+  .tag{margin-left:0;margin-top:9px}
+
+  .doc__head{padding:12px 16px;gap:6px 14px}
+  .card__top{
+    padding:14px 16px;gap:9px;
+    flex-direction:column;align-items:flex-start;
+  }
+  /* a marca não pode quebrar em duas linhas e derrubar a altura da barra */
+  .brand{gap:8px}
+  .brand__name{font-size:.9375rem}
+  .brand__org{letter-spacing:.13em}
+  .btn--nav{padding:8px 12px;font-size:.8125rem}
+  .card__top > span:first-child{white-space:nowrap}
+  .verdict{padding:18px 16px 20px}
+  .rd{padding:13px 16px}
+  .meter{margin:0 16px 16px}
+  .card__body{padding:22px 18px}
+  .faq__a{padding:0 0 24px}
+  .faq__q{grid-template-columns:34px minmax(0,1fr) 20px;column-gap:12px;padding:19px 2px}
+  .actions{gap:10px}
+  .actions .btn{width:100%;justify-content:center}
+  /* empilhado: numeral, título e descrição em três linhas próprias.
+     Sem redefinir grid-row/column aqui o numeral cai numa coluna de
+     largura zero e o texto dele atropela o título. */
+  .phase{grid-template-columns:minmax(0,1fr);row-gap:8px}
+  .phase__n{grid-area:1 / 1;font-size:2.5rem;line-height:1}
+  .phase__t{grid-area:2 / 1;margin-bottom:0}
+  .phase__d{grid-area:3 / 1}
+  .flaw,.cast__row{grid-template-columns:26px minmax(0,1fr);column-gap:10px;padding-left:12px}
+  .log__say{font-size:.875rem}
+  .foot__inner{flex-direction:column;gap:14px}
+}
+
+@media (max-width:380px){
+  :root{--pad:16px}
+  .doc__head,.card__top{font-size:.6875rem}
+  .brand__org{letter-spacing:.1em}
+}
+
+/* ============================================================
+   MOVIMENTO REDUZIDO
+   ============================================================ */
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+    scroll-behavior:auto !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#conteudo">Ir para o conteúdo</a>
+
+<header class="nav" id="nav">
+  <div class="shell nav__inner">
+    <a class="brand" href="#topo">
+      <span class="brand__name">Professor SDR</span>
+      <span class="brand__org">UNLOCKIFY</span>
+    </a>
+    <a class="btn btn--ghost btn--nav" href="#matricula"><span>Matricular</span></a>
+  </div>
+  <div class="nav__progress" aria-hidden="true"></div>
+</header>
+
+<span id="topo"></span>
+<div id="sentinela" aria-hidden="true" style="position:absolute;top:0;height:1px;width:1px"></div>
+
+<main id="conteudo">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="shell">
+      <h1>O seu SDR já disse isso hoje?</h1>
+      <p class="hero__lede">
+        Quatro frases queimam um caso de gestão de passivos. Três delas expõem o
+        escritório. Abaixo, uma delas, dita numa simulação do Professor SDR e
+        marcada pela correção automática.
+      </p>
+
+      <article class="doc">
+        <div class="doc__head">
+          <span><b>simulação 01</b> transportadora</span>
+          <span>tempo limite 06:00</span>
+        </div>
+
+        <div class="doc__body">
+          <div class="line line--lead">
+            <span class="line__t">01:12</span>
+            <span class="line__who">lead</span>
+            <p class="line__say">Mas dá pra resolver isso? Dá pra abaixar essa parcela?</p>
+          </div>
+
+          <div class="line line--sdr line--flag">
+            <span class="line__t">01:18</span>
+            <span class="line__who">sdr</span>
+            <p class="line__say">
+              Dá sim, a gente analisa os contratos e consegue reduzir bastante.<span class="tag">falta grave</span>
+            </p>
+          </div>
+
+          <div class="line line--lead">
+            <span class="line__t">01:26</span>
+            <span class="line__who">lead</span>
+            <p class="line__say">Ah, que bom. Então pode marcar.</p>
+          </div>
+        </div>
+
+        <div class="verdict">
+          <p>
+            <b>Reprovado.</b> Promessa de resultado, aos 01:18. A reunião foi
+            agendada e a nota travou em 40. No mundo real, essa frase teria virado
+            expectativa que o advogado precisaria desmontar.
+          </p>
+        </div>
+      </article>
+
+      <div class="actions">
+        <!-- Substituir COLE_AQUI_O_LINK_DA_KIWIFY pelo checkout -->
+        <a class="btn btn--primary" href="COLE_AQUI_O_LINK_DA_KIWIFY">
+          <span>Matricular por R$ 97 no lançamento</span>
+        </a>
+        <a class="btn btn--ghost" href="#simulacao">
+          <span>Como funciona a simulação</span>
+        </a>
+      </div>
+
+      <p class="fineprint">
+        De <s>R$ 297</s> por R$ 97 no lote de lançamento. Acesso de 30 dias,
+        pagamento único, certificado ao final.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ O PROBLEMA ============ -->
+  <section class="band band--surface" id="problema">
+    <div class="shell rail">
+      <p class="rail__index">01<span>o problema</span></p>
+
+      <div class="split split--problem">
+        <div>
+          <h2>O lead é caro. Quem atende é de graça.</h2>
+          <p class="lede" style="margin-top:20px">
+            Você paga por um empresário endividado que levanta a mão. Ele chega com
+            vergonha, meio arrependido de ter preenchido, pronto pra agradecer e
+            sumir. O que acontece nos cinco minutos seguintes decide se ele senta
+            na frente do advogado ou vira custo.
+          </p>
+        </div>
+
+        <div>
+          <h3>As quatro frases que custam o caso</h3>
+          <ol class="flaws">
+            <li class="flaw">
+              <span class="flaw__n" aria-hidden="true">01</span>
+              <div>
+                <p class="flaw__q">“Dá pra reverter o seu caso.”</p>
+                <p class="flaw__why">Promessa de resultado. Nem o advogado pode fazer.</p>
+              </div>
+            </li>
+            <li class="flaw">
+              <span class="flaw__n" aria-hidden="true">02</span>
+              <div>
+                <p class="flaw__q">“Fica uns 20 por cento.”</p>
+                <p class="flaw__why">Honorário é assunto do advogado, não de quem atende.</p>
+              </div>
+            </li>
+            <li class="flaw">
+              <span class="flaw__n" aria-hidden="true">03</span>
+              <div>
+                <p class="flaw__q">“Nesse caso eles bloqueiam a conta sim.”</p>
+                <p class="flaw__why">Opinião jurídica dada por quem não é advogado.</p>
+              </div>
+            </li>
+            <li class="flaw">
+              <span class="flaw__n" aria-hidden="true">04</span>
+              <div>
+                <p class="flaw__q">“Se o senhor não agir, perde o caminhão.”</p>
+                <p class="flaw__why">Medo como alavanca. Vergonha não reage a ameaça, ela some.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ A SIMULAÇÃO ============ -->
+  <section class="band band--tall" id="simulacao">
+    <div class="shell rail">
+      <p class="rail__index">02<span>a simulação</span></p>
+
+      <div>
+        <h2 class="measure">Ele treina numa simulação de voz em tempo real, não num lead seu.</h2>
+
+        <div class="sim-top" style="margin-top:26px">
+          <div>
+            <p class="lede">
+              A prova roda sobre a tecnologia de voz em tempo real da OpenAI, a
+              mesma que permite conversar com uma IA falando, sem digitar e sem
+              espera. O aluno fala pelo microfone e a resposta vem na hora, com
+              voz, hesitação e sotaque.
+            </p>
+            <p class="lede">
+              Do outro lado existe um empresário com nome, dívida, banco, garantia
+              e um jeito próprio de escapar. Ele reage ao que o aluno diz, não
+              segue roteiro, e não entrega nada de graça: cada informação só sai
+              se a pergunta for específica.
+            </p>
+          </div>
+
+          <p class="pull">Nenhuma conversa é igual à anterior. Não tem como decorar.</p>
+        </div>
+
+        <div class="split split--sim" style="margin-top:clamp(44px,5vw,62px)">
+          <div>
+            <ul class="cast">
+              <li class="cast__row">
+                <span class="cast__n" aria-hidden="true">01</span>
+                <div>
+                  <p class="cast__name">Ronaldo, <i>transportadora</i></p>
+                  <p class="cast__bio">
+                    Ainda está em dia, mas já decidiu parar de pagar. Não se vê como
+                    alguém com problema, e por isso é o mais difícil de todos.
+                  </p>
+                </div>
+              </li>
+              <li class="cast__row">
+                <span class="cast__n" aria-hidden="true">02</span>
+                <div>
+                  <p class="cast__name">Sérgio, <i>distribuidora</i></p>
+                  <p class="cast__bio">
+                    Já renegociou direto no banco e acha que resolveu. Fechado,
+                    responde seco, tenta empurrar tudo pro WhatsApp.
+                  </p>
+                </div>
+              </li>
+              <li class="cast__row">
+                <span class="cast__n" aria-hidden="true">03</span>
+                <div>
+                  <p class="cast__name">Marcelo, <i>metalúrgica</i></p>
+                  <p class="cast__bio">
+                    Execução já distribuída. Atende irritado, faz pergunta jurídica
+                    pra testar, e tenta desligar duas vezes.
+                  </p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="panel-wrap">
+            <article class="doc readout">
+              <div class="doc__head">
+                <span><b>correção automática</b></span>
+                <span>simulação 01</span>
+              </div>
+              <dl class="doc__body">
+                <div class="rd">
+                  <dt class="rd__k">Reunião</dt>
+                  <dd class="rd__v is-pass">marcada, terça 07:00</dd>
+                </div>
+                <div class="rd">
+                  <dt class="rd__k">Informações colhidas</dt>
+                  <dd class="rd__v is-pass">5 de 3</dd>
+                </div>
+                <div class="rd">
+                  <dt class="rd__k">Faltas graves</dt>
+                  <dd class="rd__v is-fail">1</dd>
+                </div>
+                <div class="rd">
+                  <dt class="rd__k">Nota</dt>
+                  <dd class="rd__v is-fail">40 de 100</dd>
+                </div>
+              </dl>
+              <div class="meter" aria-hidden="true"><i></i></div>
+            </article>
+
+            <p class="panel-note">
+              A conversa inteira é transcrita e analisada. Quando há falta grave, a
+              correção devolve a frase exata que o aluno disse e o momento em que
+              ela aconteceu.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ AS QUATRO FASES ============ -->
+  <section class="band band--surface" id="fases">
+    <div class="shell rail">
+      <p class="rail__index">03<span>as fases</span></p>
+
+      <div>
+        <h2 class="measure">Quatro fases, e nenhuma se conclui clicando.</h2>
+
+        <ol class="phases">
+          <li class="phase">
+            <span class="phase__n" aria-hidden="true">01</span>
+            <h3 class="phase__t">Ebook</h3>
+            <p class="phase__d">
+              Oito módulos, de quem é o empresário até como passar o caso pro
+              advogado. Cada módulo termina em quatro perguntas. Sem acertar três,
+              ele não fecha.
+            </p>
+          </li>
+          <li class="phase">
+            <span class="phase__n" aria-hidden="true">02</span>
+            <h3 class="phase__t">Situações</h3>
+            <p class="phase__d">
+              Vinte casos reais, com 16 acertos para passar. Seis são armadilhas,
+              onde a resposta mais confortável é a que reprovaria numa ligação de
+              verdade.
+            </p>
+          </li>
+          <li class="phase">
+            <span class="phase__n" aria-hidden="true">03</span>
+            <h3 class="phase__t">Aulas por voz</h3>
+            <p class="phase__d">
+              Seis aulas curtas com legenda, incluindo uma ligação inteira feita do
+              jeito certo, do alô até a reunião marcada.
+            </p>
+          </li>
+          <li class="phase">
+            <span class="phase__n" aria-hidden="true">04</span>
+            <h3 class="phase__t">Simulações</h3>
+            <p class="phase__d">
+              Três atendimentos por voz em tempo real. Passar num libera o próximo,
+              e o certificado só sai com os três.
+            </p>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ O MÉTODO ============ -->
+  <section class="band" id="metodo">
+    <div class="shell rail">
+      <p class="rail__index">04<span>o método</span></p>
+
+      <div>
+        <h2 class="measure">O conteúdo não foi inventado numa sala de aula.</h2>
+
+        <p class="lede" style="margin-top:24px">
+          O banco de objeções saiu de 143 conversas reais de WhatsApp entre
+          escritórios de gestão de passivos e empresários endividados. Novecentas e
+          trinta e cinco mensagens de lead, lidas uma a uma.
+        </p>
+        <p class="lede">
+          O que apareceu ali não é o que um curso teria chutado. A pergunta número
+          um não é sobre o serviço, é sobre honorário. A segunda é o lead tentando
+          fugir da reunião por vídeo. A terceira é o adiamento.
+        </p>
+
+        <div class="log">
+          <figure>
+            <blockquote>
+              <span class="log__meta">lead, whatsapp</span>
+              <p class="log__say">Olá bom dia. Vcs trabalha com êxito ou tem mensalidade ???</p>
+            </blockquote>
+            <figcaption>
+              A objeção mais frequente de todas, e a que o SDR não pode responder
+              com número.
+            </figcaption>
+          </figure>
+
+          <figure>
+            <blockquote>
+              <span class="log__meta">lead, whatsapp</span>
+              <p class="log__say">Prefiro falar pelo whats, é possível ?</p>
+            </blockquote>
+            <figcaption>
+              Não é comodidade. É vergonha de sentar na frente de um advogado para
+              falar de dívida.
+            </figcaption>
+          </figure>
+
+          <figure>
+            <blockquote>
+              <span class="log__meta">lead, whatsapp</span>
+              <p class="log__say">Eles bloqueia a conta da empresa e da pessoa física tb se for executado ?</p>
+            </blockquote>
+            <figcaption>
+              Parece pergunta simples. É a que faz o SDR despreparado dar parecer
+              jurídico.
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PREÇO ============ -->
+  <section class="band band--surface band--tall" id="matricula">
+    <div class="shell rail">
+      <p class="rail__index">05<span>a matrícula</span></p>
+
+      <div class="split split--price">
+        <div>
+          <h2>Uma matrícula custa menos que um lead perdido.</h2>
+          <p class="lede" style="margin-top:20px">
+            Deixe o SDR errar na simulação, onde o erro é de graça e vem com a frase
+            marcada. No lançamento, sai por um terço do preço.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card__top">
+            <span>matrícula por aluno</span>
+            <span class="card__flag">lote de lançamento</span>
+          </div>
+
+          <div class="card__body">
+            <p class="price">
+              <s class="price__old">R$ 297</s>
+              <b class="price__now"><span>R$</span>97</b>
+            </p>
+            <p class="price__terms">pagamento único, 30 dias de acesso</p>
+
+            <p class="alert">Encerrado o lançamento, a matrícula volta para R$ 297.</p>
+
+            <ul class="includes">
+              <li>oito módulos e 52 questões</li>
+              <li>seis aulas por voz com legenda</li>
+              <li>três simulações de voz em tempo real</li>
+              <li>10 tentativas e 45 minutos de voz</li>
+              <li>transcrição e correção automática</li>
+              <li>certificado com código de verificação</li>
+            </ul>
+
+            <div class="card__cta">
+              <!-- Substituir COLE_AQUI_O_LINK_DA_KIWIFY pelo checkout -->
+              <a class="btn btn--primary btn--block" href="COLE_AQUI_O_LINK_DA_KIWIFY">
+                <span>Matricular agora</span>
+              </a>
+            </div>
+
+            <!-- Contato de equipe ainda não definido no briefing -->
+            <p class="card__foot">
+              O acesso chega no e-mail usado na compra. Vai formar uma equipe
+              inteira? Fale com a gente.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PERGUNTAS ============ -->
+  <section class="band" id="perguntas">
+    <div class="shell rail">
+      <p class="rail__index">06<span>perguntas</span></p>
+
+      <div>
+        <h2 class="measure">Antes de matricular a equipe.</h2>
+
+        <div class="faq">
+          <div class="faq__item">
+            <h3>
+              <button class="faq__q" type="button" aria-expanded="false" aria-controls="p1" id="q1">
+                <span class="faq__n" aria-hidden="true">01</span>
+                <span>A simulação é com uma pessoa de verdade?</span>
+                <span class="faq__sign" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="faq__panel" id="p1" role="region" aria-labelledby="q1">
+              <div class="faq__clip"><p class="faq__a">
+                Não. É uma inteligência artificial de voz em tempo real, e é por isso
+                que funciona: está disponível a qualquer hora, nunca perde a paciência
+                e se comporta igual para todo aluno. A avaliação também não depende de
+                quem corrige, porque a conversa é analisada sempre pelos mesmos
+                critérios.
+              </p></div>
+            </div>
+          </div>
+
+          <div class="faq__item">
+            <h3>
+              <button class="faq__q" type="button" aria-expanded="false" aria-controls="p2" id="q2">
+                <span class="faq__n" aria-hidden="true">02</span>
+                <span>Quanto tempo leva para concluir?</span>
+                <span class="faq__sign" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="faq__panel" id="p2" role="region" aria-labelledby="q2">
+              <div class="faq__clip"><p class="faq__a">
+                A leitura e as questões levam algumas horas, no ritmo de cada um. As
+                aulas por voz somam menos de quinze minutos. As simulações duram seis,
+                sete e oito minutos. O acesso vale trinta dias.
+              </p></div>
+            </div>
+          </div>
+
+          <div class="faq__item">
+            <h3>
+              <button class="faq__q" type="button" aria-expanded="false" aria-controls="p3" id="q3">
+                <span class="faq__n" aria-hidden="true">03</span>
+                <span>E se o aluno reprovar?</span>
+                <span class="faq__sign" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="faq__panel" id="p3" role="region" aria-labelledby="q3">
+              <div class="faq__clip"><p class="faq__a">
+                Ele tenta de novo enquanto tiver tentativas e tempo de voz. Cada
+                matrícula vem com dez tentativas e quarenta e cinco minutos, folga
+                suficiente para tropeçar nos três níveis e ainda sobrar.
+              </p></div>
+            </div>
+          </div>
+
+          <div class="faq__item">
+            <h3>
+              <button class="faq__q" type="button" aria-expanded="false" aria-controls="p4" id="q4">
+                <span class="faq__n" aria-hidden="true">04</span>
+                <span>Serve para qualquer escritório?</span>
+                <span class="faq__sign" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="faq__panel" id="p4" role="region" aria-labelledby="q4">
+              <div class="faq__clip"><p class="faq__a">
+                Esta formação é específica de gestão de passivos bancários de empresa.
+                O empresário endividado se comporta de um jeito que não se parece com
+                nenhum outro tipo de cliente, e o curso inteiro é construído em cima
+                disso.
+              </p></div>
+            </div>
+          </div>
+
+          <div class="faq__item">
+            <h3>
+              <button class="faq__q" type="button" aria-expanded="false" aria-controls="p5" id="q5">
+                <span class="faq__n" aria-hidden="true">05</span>
+                <span>Precisa instalar alguma coisa?</span>
+                <span class="faq__sign" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="faq__panel" id="p5" role="region" aria-labelledby="q5">
+              <div class="faq__clip"><p class="faq__a">
+                Não. Funciona no navegador, inclusive no celular. Para a simulação é
+                preciso permitir o microfone e estar num lugar onde dê para falar em
+                voz alta.
+              </p></div>
+            </div>
+          </div>
+
+          <div class="faq__item">
+            <h3>
+              <button class="faq__q" type="button" aria-expanded="false" aria-controls="p6" id="q6">
+                <span class="faq__n" aria-hidden="true">06</span>
+                <span>O certificado habilita a dar orientação jurídica?</span>
+                <span class="faq__sign" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="faq__panel" id="p6" role="region" aria-labelledby="q6">
+              <div class="faq__clip"><p class="faq__a">
+                Não, e o próprio certificado diz isso. Ele atesta treinamento em
+                pré-atendimento e agendamento. O curso ensina exatamente onde o SDR
+                precisa parar e passar para o advogado.
+              </p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="shell foot__inner">
+    <a class="brand" href="#topo">
+      <span class="brand__name">Professor SDR</span>
+      <span class="brand__org">UNLOCKIFY</span>
+    </a>
+    <p class="foot__note">
+      Unlockify Digital, formação profissional para equipes de atendimento. Não
+      constitui curso jurídico nem habilita ao exercício da advocacia.
+    </p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* Estado da navbar. IntersectionObserver em vez de listener de scroll. */
+  var nav = document.getElementById('nav');
+  var sentinela = document.getElementById('sentinela');
+  var hero = document.querySelector('.hero');
+
+  if ('IntersectionObserver' in window) {
+    if (sentinela) {
+      new IntersectionObserver(function (e) {
+        nav.classList.toggle('is-stuck', !e[0].isIntersecting);
+      }).observe(sentinela);
+    }
+    if (hero) {
+      new IntersectionObserver(function (e) {
+        nav.classList.toggle('is-past', !e[0].isIntersecting);
+      }, { rootMargin: '-70px 0px 0px 0px' }).observe(hero);
+    }
+  }
+
+  /* Acordeão: um aberto por vez. */
+  var itens = Array.prototype.slice.call(document.querySelectorAll('.faq__item'));
+
+  itens.forEach(function (item) {
+    var botao = item.querySelector('.faq__q');
+
+    botao.addEventListener('click', function () {
+      var estavaAberto = botao.getAttribute('aria-expanded') === 'true';
+
+      itens.forEach(function (outro) {
+        outro.classList.remove('is-open');
+        outro.querySelector('.faq__q').setAttribute('aria-expanded', 'false');
+      });
+
+      if (!estavaAberto) {
+        item.classList.add('is-open');
+        botao.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
