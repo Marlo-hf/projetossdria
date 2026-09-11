@@ -395,6 +395,29 @@ b,strong{font-weight:700}
 .phase__tag{position:absolute;top:-11px;left:20px;padding:4px 12px;border-radius:var(--pill);
   background:var(--violet);color:#161826;font-size:.6875rem;font-weight:700;letter-spacing:.04em;white-space:nowrap}
 
+/* ═══ PAINEL DE LEITURA ══════════════════════════════════════
+   A mesma janela do produto da transcrição do hero, com cabeçalho
+   neutro em vez do violeta, para não ler como outro console de
+   simulação. */
+.duo{display:grid;gap:clamp(34px,4vw,50px);margin-top:clamp(30px,3.4vw,44px);align-items:start}
+@media (min-width:940px){
+  .duo{grid-template-columns:minmax(0,1fr) minmax(0,.84fr);column-gap:clamp(44px,5vw,68px)}
+}
+.duo__key{margin-top:1.15em;color:var(--on-dark);font-weight:600;max-width:30em}
+
+.panel{background:var(--white);border:1px solid var(--light-line);border-radius:var(--r-lg);
+  overflow:hidden;color:var(--on-light);box-shadow:0 30px 70px -26px rgba(10,11,22,.7)}
+.panel__h{padding:14px 20px;border-bottom:1px solid var(--light-line);background:var(--light);
+  font-size:.75rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--on-light-2)}
+.panel__b{padding:4px 20px 2px}
+.panel__r{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+  padding:14px 0;border-bottom:1px solid var(--light-line)}
+.panel__r:last-child{border-bottom:0}
+.panel__k{font-size:var(--fs-sm);color:var(--on-light-2)}
+.panel__v{font-family:var(--mono);font-size:.9375rem;font-variant-numeric:tabular-nums;text-align:right}
+.panel__f{padding:15px 20px 17px;border-top:1px solid var(--light-line);background:#FBFBFE;
+  font-size:.8125rem;line-height:1.55;color:var(--on-light-2)}
+
 /* ═══ LINHA DO TEMPO DA LIBERAÇÃO ════════════════════════════
    Oito marcos. O sétimo dia não libera nada e fica apagado de
    propósito: o intervalo é parte do argumento da prática espaçada. */
@@ -773,6 +796,45 @@ b,strong{font-weight:700}
   </div>
 </section>
 
+<!-- ══ COMPROMISSO E PONTUALIDADE ══ -->
+<section class="band band--dark2" id="compromisso">
+  <div class="wrap">
+    <p class="eyebrow">O compromisso</p>
+    <div class="duo">
+      <div>
+        <h2 style="max-width:17ch">Você também vai saber que ele aparece na hora.</h2>
+        <p class="lede" style="margin-top:18px">
+          No começo do curso o aluno marca o dia e a hora em que vai voltar para
+          estudar. Quando volta, registra a presença. O sistema guarda se ele
+          apareceu e se apareceu no horário que combinou.
+        </p>
+        <p class="lede">
+          Isso não é controle por controle. Pontualidade não é detalhe nessa
+          função, é a função: quem não aparece na hora que combinou com o
+          professor também não liga na hora que combinou com o cliente.
+        </p>
+        <p class="duo__key">
+          O número vem no certificado e no relatório que chega para você.
+        </p>
+      </div>
+
+      <article class="panel" aria-label="Exemplo de leitura de assiduidade">
+        <p class="panel__h">assiduidade do aluno</p>
+        <dl class="panel__b">
+          <div class="panel__r"><dt class="panel__k">Encontros marcados</dt><dd class="panel__v">6</dd></div>
+          <div class="panel__r"><dt class="panel__k">Cumpridos</dt><dd class="panel__v">6</dd></div>
+          <div class="panel__r"><dt class="panel__k">No horário</dt><dd class="panel__v v-pass">5</dd></div>
+          <div class="panel__r"><dt class="panel__k">Atraso médio</dt><dd class="panel__v">4 min</dd></div>
+        </dl>
+        <p class="panel__f">
+          A assiduidade é medida e reportada, mas não reprova ninguém. Quem
+          decide o que fazer com esse número é você.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
 <!-- ══ O MÉTODO, capítulo escuro ══ -->
 <section class="band band--dark" id="metodo">
   <div class="wrap">
@@ -867,6 +929,7 @@ b,strong{font-weight:700}
             <li><svg aria-hidden="true"><use href="#ck"/></svg>três simulações de voz em tempo real</li>
             <li><svg aria-hidden="true"><use href="#ck"/></svg>10 tentativas e 45 minutos de voz</li>
             <li><svg aria-hidden="true"><use href="#ck"/></svg>transcrição e correção automática</li>
+            <li><svg aria-hidden="true"><use href="#ck"/></svg>registro de presença e pontualidade</li>
             <li><svg aria-hidden="true"><use href="#ck"/></svg>certificado com código de verificação</li>
           </ul>
           <!-- Substituir COLE_AQUI_O_LINK_DA_KIWIFY pelo checkout -->
@@ -889,16 +952,18 @@ b,strong{font-weight:700}
         <div class="faq__p" id="a1" role="region" aria-labelledby="q1"><div class="faq__c"><p class="faq__a">Não. É uma inteligência artificial de voz em tempo real, e é por isso que funciona: está disponível a qualquer hora, nunca perde a paciência e se comporta igual para todo aluno. A avaliação também não depende de quem corrige, porque a conversa é analisada sempre pelos mesmos critérios.</p></div></div></div>
       <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a2" id="q2"><span>Posso fazer o curso todo num dia?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
         <div class="faq__p" id="a2" role="region" aria-labelledby="q2"><div class="faq__c"><p class="faq__a">Não, e isso é proposital. O conteúdo abre em ritmo guiado ao longo de uma semana: os módulos do ebook liberam de dois em dois, as situações no quinto dia, as aulas por voz no sexto e as simulações no oitavo. Prática espaçada fixa muito mais do que maratona, e o efeito aparece no telefone. O acesso vale trinta dias, então sobra tempo de sobra para concluir sem correria.</p></div></div></div>
-      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a3" id="q3"><span>Quanto tempo leva para concluir?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
-        <div class="faq__p" id="a3" role="region" aria-labelledby="q3"><div class="faq__c"><p class="faq__a">A leitura e as questões levam algumas horas, no ritmo de cada um. As aulas por voz somam menos de quinze minutos. As simulações duram seis, sete e oito minutos. O acesso vale trinta dias.</p></div></div></div>
-      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a4" id="q4"><span>E se o aluno reprovar?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
-        <div class="faq__p" id="a4" role="region" aria-labelledby="q4"><div class="faq__c"><p class="faq__a">Ele tenta de novo enquanto tiver tentativas e tempo de voz. Cada matrícula vem com dez tentativas e quarenta e cinco minutos, folga suficiente para tropeçar nos três níveis e ainda sobrar.</p></div></div></div>
-      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a5" id="q5"><span>Serve para qualquer escritório?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
-        <div class="faq__p" id="a5" role="region" aria-labelledby="q5"><div class="faq__c"><p class="faq__a">Esta formação é específica de gestão de passivos bancários de empresa. O empresário endividado se comporta de um jeito que não se parece com nenhum outro tipo de cliente, e o curso inteiro é construído em cima disso.</p></div></div></div>
-      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a6" id="q6"><span>Precisa instalar alguma coisa?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
-        <div class="faq__p" id="a6" role="region" aria-labelledby="q6"><div class="faq__c"><p class="faq__a">Não. Funciona no navegador, inclusive no celular. Para a simulação é preciso permitir o microfone e estar num lugar onde dê para falar em voz alta.</p></div></div></div>
-      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a7" id="q7"><span>O certificado habilita a dar orientação jurídica?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
-        <div class="faq__p" id="a7" role="region" aria-labelledby="q7"><div class="faq__c"><p class="faq__a">Não, e o próprio certificado diz isso. Ele atesta treinamento em pré-atendimento e agendamento. O curso ensina exatamente onde o SDR precisa parar e passar para o advogado.</p></div></div></div>
+      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a3" id="q3"><span>Como vocês medem o comprometimento do aluno?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
+        <div class="faq__p" id="a3" role="region" aria-labelledby="q3"><div class="faq__c"><p class="faq__a">Ele marca no sistema o dia e a hora em que pretende voltar para estudar, e registra a presença quando volta. Fica guardado se apareceu e se apareceu no horário combinado. Esse número aparece no certificado e no relatório que chega para o escritório. Ele não reprova ninguém: serve para você enxergar quem trata compromisso como compromisso, que é exatamente o que a função exige no telefone.</p></div></div></div>
+      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a4" id="q4"><span>Quanto tempo leva para concluir?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
+        <div class="faq__p" id="a4" role="region" aria-labelledby="q4"><div class="faq__c"><p class="faq__a">A leitura e as questões levam algumas horas, no ritmo de cada um. As aulas por voz somam menos de quinze minutos. As simulações duram seis, sete e oito minutos. O acesso vale trinta dias.</p></div></div></div>
+      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a5" id="q5"><span>E se o aluno reprovar?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
+        <div class="faq__p" id="a5" role="region" aria-labelledby="q5"><div class="faq__c"><p class="faq__a">Ele tenta de novo enquanto tiver tentativas e tempo de voz. Cada matrícula vem com dez tentativas e quarenta e cinco minutos, folga suficiente para tropeçar nos três níveis e ainda sobrar.</p></div></div></div>
+      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a6" id="q6"><span>Serve para qualquer escritório?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
+        <div class="faq__p" id="a6" role="region" aria-labelledby="q6"><div class="faq__c"><p class="faq__a">Esta formação é específica de gestão de passivos bancários de empresa. O empresário endividado se comporta de um jeito que não se parece com nenhum outro tipo de cliente, e o curso inteiro é construído em cima disso.</p></div></div></div>
+      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a7" id="q7"><span>Precisa instalar alguma coisa?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
+        <div class="faq__p" id="a7" role="region" aria-labelledby="q7"><div class="faq__c"><p class="faq__a">Não. Funciona no navegador, inclusive no celular. Para a simulação é preciso permitir o microfone e estar num lugar onde dê para falar em voz alta.</p></div></div></div>
+      <div class="faq__i"><h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="a8" id="q8"><span>O certificado habilita a dar orientação jurídica?</span><span class="faq__s" aria-hidden="true"></span></button></h3>
+        <div class="faq__p" id="a8" role="region" aria-labelledby="q8"><div class="faq__c"><p class="faq__a">Não, e o próprio certificado diz isso. Ele atesta treinamento em pré-atendimento e agendamento. O curso ensina exatamente onde o SDR precisa parar e passar para o advogado.</p></div></div></div>
     </div>
   </div>
 </section>

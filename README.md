@@ -56,6 +56,17 @@ que abre as simulações, é o único ponto em violeta.
 
 No celular o eixo gira e vira vertical, com o fio à esquerda.
 
+### Compromisso e pontualidade
+
+Seção entre as fases e o método, em capítulo escuro elevado. Argumento à
+esquerda, painel de leitura à direita. O painel reusa a janela do produto da
+transcrição do hero, mas com cabeçalho neutro em vez do violeta, para não ler
+como outro console de simulação.
+
+O tom fala com o dono do escritório, não com o aluno: o ângulo é o que ele
+enxerga antes de colocar a pessoa no telefone com lead pago. Sem linguagem de
+vigilância e sem ícone de relógio, cadeado ou câmera. O painel comunica sozinho.
+
 ### O momento central
 
 O console fica fixo, o roteiro rola ao lado, e em sete estados a ligação
@@ -103,6 +114,14 @@ A história do scroll foi verificada estado por estado e por posição em deskto
 em dois tamanhos de celular, incluindo a checagem de que o console realmente
 gruda e de que o texto da batida ativa nunca fica atrás dele. Com
 `prefers-reduced-motion` a narrativa continua inteira, só sem as transições.
+
+## Armadilha de processo
+
+Ao inserir item no acordeão, validar o conteúdo antes e depois, não só a
+contagem. Uma rotina de regex já derrubou silenciosamente a pergunta do
+certificado, que é a que carrega a ressalva de não habilitar ao exercício da
+advocacia. O script atual compara a lista de perguntas antes e depois e falha
+se alguma sumir.
 
 ## O que ainda falta definir
 
