@@ -39,7 +39,7 @@ Estas são de conformidade e de copy, não de estética:
 - Sem promessa de resultado para o escritório.
 - Os números reais do briefing: 143 conversas, 935 mensagens, 8 módulos,
   52 questões, 20 situações, 16 acertos, 6 aulas, 3 simulações, 10 tentativas,
-  45 minutos, R$ 297 e R$ 97.
+  45 minutos, R$ 297 cheio e R$ 197 no lançamento.
 - Cada cor semântica tem par por superfície, porque o violeta e o âmbar da
   marca não alcançam 4.5:1 sobre fundo claro. Usar `--violet-ink`,
   `--amber-ink`, `--green-ink` em capítulo claro e `--violet-lite` em pílula
