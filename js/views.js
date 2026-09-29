@@ -11,7 +11,7 @@
     groupBy: { all: 'status', client: 'status', criativos: 'status', interno: 'status' },
     view: { all: 'list', criativos: 'board', interno: 'list' },
     open: [], teamPerson: '', homeMine: true, sideOpen: [], clientsStatus: 'ativos', clientsQ: '',
-    diary: { q: '', clientId: '', period: '30', showTasks: false },
+    diary: { q: '', clientId: '', period: '', showTasks: false },
   };
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(VS_KEY) || '{}'); } catch (err) { saved = {}; }

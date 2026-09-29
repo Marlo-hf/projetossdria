@@ -84,8 +84,25 @@
       if (seed && (!data || !Array.isArray(data.clients) || data.settings?.demo || (data.settings?.seedVersion || 0) < (seed.settings?.seedVersion || 0) && !data.settings?.touched)) data = JSON.parse(JSON.stringify(seed));
       if (!data || !Array.isArray(data.clients)) data = Seed.build();
       this.state = this.normalize(data);
+      if (seed && (this.state.settings.seedVersion || 0) < (seed.settings?.seedVersion || 0)) this.mergeSeed(seed);
       this.refreshMeta();
       this.processRecurring();
+    },
+
+    /** Traz dados novos da agência sem apagar o que já foi registrado neste navegador. */
+    mergeSeed(seed) {
+      const st = this.state;
+      const has = (arr) => new Set(arr.map((x) => x.id));
+      const cIds = has(st.clients), tIds = has(st.tasks), lIds = has(st.logs);
+      seed.clients.forEach((sc) => {
+        const c = st.clients.find((x) => x.id === sc.id);
+        if (!c) { st.clients.push(JSON.parse(JSON.stringify(sc))); return; }
+        ['metaPage', 'adAccount', 'niche', 'owner', 'diarySheetUrl', 'clickupUrl'].forEach((k) => { if (!c[k] && sc[k]) c[k] = sc[k]; });
+      });
+      seed.tasks.forEach((t) => { if (!tIds.has(t.id)) st.tasks.push(JSON.parse(JSON.stringify(t))); });
+      seed.logs.forEach((l) => { if (!lIds.has(l.id) && (cIds.has(l.clientId) || st.clients.some((c) => c.id === l.clientId))) st.logs.push(JSON.parse(JSON.stringify(l))); });
+      st.settings.seedVersion = seed.settings.seedVersion;
+      try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (err) { /* ignora */ }
     },
 
     /** Status de tarefa são configuráveis (ex.: os mesmos do ClickUp). O id 'done' é sempre o status final. */
