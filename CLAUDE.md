@@ -1,13 +1,17 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Projeto
 
-## Current State
+**Bordo** — app web estático (HTML/CSS/JS puro, sem build e sem dependências) de gestão de clientes com tarefas, diário de bordo e métricas. Veja `README.md`.
 
-This repository (`Marlo-hf/projetossdria`) is currently **empty** — it has no source code, build configuration, tests, or documentation yet. This file was generated as a placeholder when the repository had no commits.
+## Rodar
 
-## Guidance for Future Sessions
+`python3 -m http.server 8000` e abrir `http://localhost:8000` (ou abrir `index.html` direto). Não há build, lint nem testes automatizados; valide com `node --check js/*.js` e abrindo no navegador.
 
-- There are no build, lint, or test commands to document yet. Once a project is scaffolded here (e.g., `package.json`, `requirements.txt`, `pom.xml`, etc.), update this file with the actual commands for building, running, and testing the code.
-- Once source code exists, replace this section with a description of the project's architecture and key conventions.
-- Do not assume any tooling or framework — inspect the repository first, since this file predates the codebase.
+## Arquitetura
+
+- Scripts clássicos carregados em ordem (`utils → store → components → views → app`), cada um expõe um global (`U`, `Store`/`META`, `UI`/`C`, `Views`/`Forms`/`VS`, `App`). Mantém funcionando via `file://`.
+- Estado em `Store.state` persistido em `localStorage` (`bordo:data:v1`); preferências de visualização em `VS` (`bordo:ui:v1`).
+- Renderização por template strings + `innerHTML`; sempre escapar texto do usuário com `U.esc`.
+- Eventos por delegação: `data-action` (clique → `Actions`), `data-change` (→ `Changes`), `data-input` (→ `Inputs`). `Store.save()` dispara re-render da página e do painel da tarefa.
+- Interface e textos em português (pt-BR).
