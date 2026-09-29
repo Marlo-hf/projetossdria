@@ -150,109 +150,151 @@
     };
   };
 
-  /* ============================== Clientes (CRM) ============================== */
-  const clientsPage = () => {
+  /* ============================== Clientes (CRM em funil) ============================== */
+  const clientStats = (c) => {
+    const open = workTasks(Store.tasks({ clientId: c.id }));
+    return { open: open.length, late: open.filter((t) => Store.isOverdue(t)).length, last: lastDiary(c.id) };
+  };
+  const isStale = (last) => !last || U.diffDays(U.today(), last.date) > (Store.settings.staleDays || 3);
+  const filteredClients = () => {
     let list = Store.clients();
-    const st = VS.clientsStatus;
-    if (st === 'ativos') list = list.filter((c) => c.status !== 'encerrado');
-    else if (st) list = list.filter((c) => c.status === st);
-    if (VS.clientsQ) list = list.filter((c) => U.match([c.name, c.niche, c.owner, c.contact?.name].join(' '), VS.clientsQ));
-    list.sort((a, b) => a.name.localeCompare(b.name));
-    const rows = list.map((c) => {
-      const open = openTasks(Store.tasks({ clientId: c.id })).length;
-      const last = lastDiary(c.id);
-      const s = M.clientStatus[c.status] || M.clientStatus.ativo;
-      return `<tr data-action="goto" data-href="#/c/${c.id}">
-        <td><span class="cname">${C.folder(c)}${e(c.name)}</span></td>
-        <td class="muted">${e(c.niche) || '<span class="add-link">—</span>'}</td>
-        <td>${c.metaPage ? `<a class="lnk" href="${e(url(c.metaPage))}" target="_blank" rel="noopener">${I('link', 12)} Página</a>` : '<span class="add-link">—</span>'}</td>
-        <td>${c.adAccount ? `<a class="lnk" href="${e(adsLink(c.adAccount))}" target="_blank" rel="noopener">${I('ads', 12)} Gerenciador</a>` : '<span class="add-link">—</span>'}</td>
-        <td>${c.owner ? `<span class="row">${C.avatar(c.owner)}<span class="small">${e(c.owner.split(' ')[0])}</span></span>` : '<span class="add-link">—</span>'}</td>
-        <td><span class="st soft" style="--c:${s.color}">${e(s.label)}</span></td>
-        <td class="num">${open || '<span class="muted">0</span>'}</td>
-        <td class="small ${last && U.diffDays(U.today(), last.date) <= (Store.settings.staleDays || 3) ? '' : 'muted'}">${last ? U.daysAgoLabel(last.date) : 'nunca'}</td>
-      </tr>`;
-    }).join('');
+    const f = VS.clientsPre || 'all';
+    if (VS.clientsQ) list = list.filter((c) => U.match([c.name, c.niche, c.owner].join(' '), VS.clientsQ));
+    if (VS.clientsOwner) list = list.filter((c) => c.owner === VS.clientsOwner);
+    if (VS.clientsNiche) list = list.filter((c) => U.match(c.niche, VS.clientsNiche));
+    if (f === 'mine') list = list.filter((c) => c.owner === Store.settings.userName);
+    if (f === 'stale') list = list.filter((c) => c.status !== 'encerrado' && c.status !== 'pausado' && isStale(clientStats(c).last));
+    if (f === 'late') list = list.filter((c) => clientStats(c).late > 0);
+    return list.sort((a, b) => a.name.localeCompare(b.name));
+  };
+  const clientCard = (c) => {
+    const st = clientStats(c);
+    const stale = c.status !== 'encerrado' && c.status !== 'pausado' && isStale(st.last);
+    return `<div class="card lead" draggable="true" data-drag-client="${c.id}" data-action="open-client" data-id="${c.id}">
+      <div class="lead-top">${C.folder(c)}<span class="lead-name">${e(c.name)}</span>${c.metaPage ? `<a class="ibtn sm" href="${e(url(c.metaPage))}" target="_blank" rel="noopener" title="Abrir no Meta">${I('ads', 14)}</a>` : ''}</div>
+      <div class="lead-niche">${e(c.niche) || '<span class="muted">O que ele mexe: —</span>'}</div>
+      <div class="lead-foot">
+        <span class="pillx ${st.late ? 'red' : ''}" title="Demandas abertas">${I('tasks', 12)}${st.open}${st.late ? ` · ${st.late} atrasada${st.late > 1 ? 's' : ''}` : ''}</span>
+        <span class="pillx ${stale ? 'red' : st.last && c.status !== 'encerrado' && c.status !== 'pausado' ? 'ok' : ''}" title="Última atualização do diário">${I('book', 12)}${st.last ? U.daysAgoLabel(st.last.date) : 'sem diário'}</span>
+        ${c.owner ? `<span style="margin-left:auto">${C.avatar(c.owner)}</span>` : ''}
+      </div>
+    </div>`;
+  };
+  const clientsPage = () => {
+    const list = filteredClients();
+    const view = VS.clientsView || 'board';
+    const pre = VS.clientsPre || 'all';
+    const niches = [...new Set(Store.state.clients.flatMap((c) => String(c.niche || '').split('·').map((x) => x.trim())).filter(Boolean))].sort();
+    const owners = [...new Set(Store.state.clients.map((c) => c.owner).filter(Boolean))].sort();
+    const chip = (k, label, n) => `<button class="chipsel ${pre === k ? 'on' : ''}" data-action="clients-pre" data-k="${k}">${label}${n != null ? ` <b>${n}</b>` : ''}</button>`;
+    const all = Store.state.clients.filter((c) => c.status !== 'encerrado');
+    const nStale = all.filter((c) => c.status !== 'pausado' && isStale(clientStats(c).last)).length;
+    const nLate = all.filter((c) => clientStats(c).late > 0).length;
+    let body;
+    if (!list.length) body = C.empty('Nenhum cliente neste filtro', '', '<button class="btn" data-action="clients-pre" data-k="all">Limpar filtro</button>');
+    else if (view === 'board') {
+      body = `<div class="board">${M.CLIENT_STATUSES.map((s) => {
+        const items = list.filter((c) => c.status === s.id);
+        return `<div class="col" data-drop-cstatus="${s.id}"><div class="col-h"><span class="st" style="--c:${s.color}">${e(s.label)}</span><span class="n">${items.length}</span></div>
+          <div class="cards">${items.map(clientCard).join('')}</div>
+          ${s.id === 'onboarding' ? `<button class="col-add" data-action="new-client">${I('plus', 14)} Novo cliente</button>` : ''}</div>`;
+      }).join('')}</div>`;
+    } else {
+      body = `<div style="overflow-x:auto;padding:0 12px"><table class="dt"><thead><tr><th>Cliente</th><th>O que ele mexe</th><th>Meta</th><th>Responsável</th><th>Status</th><th style="text-align:right">Demandas</th><th>Último diário</th></tr></thead><tbody>
+        ${list.map((c) => { const st = clientStats(c); const s = M.clientStatus[c.status] || M.clientStatus.ativo; return `<tr data-action="open-client" data-id="${c.id}">
+          <td><span class="cname">${C.folder(c)}${e(c.name)}</span></td><td class="muted">${e(c.niche) || '—'}</td>
+          <td>${c.metaPage ? `<a class="lnk" href="${e(url(c.metaPage))}" target="_blank" rel="noopener">${I('ads', 12)} Abrir</a>` : '—'}</td>
+          <td>${c.owner ? `<span class="row">${C.avatar(c.owner)}<span class="small">${e(c.owner.split(' ')[0])}</span></span>` : '—'}</td>
+          <td><span class="st soft" style="--c:${s.color}">${e(s.label)}</span></td><td class="num">${st.open}${st.late ? ` <span style="color:var(--red)">(${st.late})</span>` : ''}</td>
+          <td class="small ${isStale(st.last) ? 'muted' : ''}">${st.last ? U.daysAgoLabel(st.last.date) : 'nunca'}</td></tr>`; }).join('')}</tbody></table></div>`;
+    }
     return {
-      head: head({ crumbs: '<span>Espaços</span>', icon: '<span class="space-ic" style="background:#16a34a">C</span>', title: 'Clientes', actions: `<button class="btn btn-primary" data-action="new-client">${I('plus', 15)}Novo cliente</button>` }),
+      head: head({ crumbs: '<span>Espaços</span>', icon: '<span class="space-ic" style="background:#16a34a">C</span>', title: 'Clientes', actions: `<button class="btn btn-primary" data-action="new-client">${I('plus', 15)}Novo cliente</button>`,
+        tabs: tab(view === 'board', 'data-action="clients-view" data-view="board" href="javascript:void 0"', 'board', 'Funil') + tab(view === 'list', 'data-action="clients-view" data-view="list" href="javascript:void 0"', 'list', 'Lista', list.length) }),
       toolbar: `<div class="toolbar">
         <label class="search">${I('search', 14)}<input id="q-clients" placeholder="Buscar cliente" value="${e(VS.clientsQ)}" data-input="clients-q"></label>
-        <select class="chipsel" data-change="clients-status" aria-label="Status">
-          ${[['ativos', 'Ativos e em onboarding'], ['', 'Todos'], ...M.CLIENT_STATUSES.map((s) => [s.id, s.label])].map(([k, l]) => `<option value="${k}" ${st === k ? 'selected' : ''}>${l}</option>`).join('')}
-        </select><span class="small muted">${list.length} clientes</span></div>`,
-      body: list.length ? `<div style="overflow-x:auto;padding:0 12px"><table class="dt"><thead><tr><th>Cliente</th><th>O que ele mexe</th><th>Página do Meta</th><th>Conta de anúncio</th><th>Responsável</th><th>Status</th><th style="text-align:right">Demandas</th><th>Último diário</th></tr></thead><tbody>${rows}</tbody></table></div>`
-        : C.empty('Nenhum cliente encontrado', '', `<button class="btn btn-primary" data-action="new-client">Cadastrar cliente</button>`),
-      flush: true,
+        ${chip('all', 'Todos')}${chip('mine', 'Meus clientes')}${chip('stale', 'Diário atrasado', nStale)}${chip('late', 'Com demandas atrasadas', nLate)}
+        <select class="chipsel" data-change="vs" data-field="clientsOwner" aria-label="Responsável"><option value="">Responsável: todos</option>${owners.map((o) => `<option ${o === VS.clientsOwner ? 'selected' : ''}>${e(o)}</option>`).join('')}</select>
+        <select class="chipsel" data-change="vs" data-field="clientsNiche" aria-label="O que mexe"><option value="">O que mexe: todos</option>${niches.map((o) => `<option ${o === VS.clientsNiche ? 'selected' : ''}>${e(o)}</option>`).join('')}</select>
+      </div>`,
+      body, flush: true,
     };
   };
 
-  /* ============================== Pasta do cliente ============================== */
+  /* ============================== Ficha do cliente (informações + diário) ============================== */
   const prop = (c, icon, label, path, type = 'text', ph = '', extra = '') => {
     const val = path.split('.').reduce((o, k) => (o || {})[k], c) ?? '';
     return `<div class="pl">${I(icon, 15)}${label}</div><div class="pv"><input type="${type}" id="p-${path.replace('.', '-')}" value="${e(val)}" placeholder="${e(ph)}" data-change="client-field" data-id="${c.id}" data-field="${path}">${extra}</div>`;
   };
   const openBtn = (href, label = 'Abrir') => href ? `<a class="lnk" href="${e(href)}" target="_blank" rel="noopener">${I('ext', 12)}${label}</a>` : '';
 
+  const clientInfo = (c) => `
+    <div class="sec"><div class="sec-h">${I('user', 15)} Informações<span class="right small muted">salva sozinho</span></div>
+      <div class="props">
+        ${prop(c, 'folder', 'Cliente', 'name')}
+        ${prop(c, 'target', 'O que ele mexe', 'niche', 'text', 'Ex.: Gestão de passivos')}
+        ${prop(c, 'ads', 'Página do Meta', 'metaPage', 'url', 'Link da conta no Meta', openBtn(url(c.metaPage)))}
+        <div class="pl">${I('team', 15)}Responsável</div><div class="pv"><select id="p-owner" data-change="client-field" data-id="${c.id}" data-field="owner"><option value="">—</option>${[...new Set([...team(), c.owner].filter(Boolean))].map((n) => `<option ${n === c.owner ? 'selected' : ''}>${e(n)}</option>`).join('')}</select></div>
+        <div class="pl">${I('status', 15)}Status</div><div class="pv"><select id="p-status" data-change="client-field" data-id="${c.id}" data-field="status">${M.CLIENT_STATUSES.map((s) => `<option value="${s.id}" ${s.id === c.status ? 'selected' : ''}>${s.label}</option>`).join('')}</select></div>
+        ${prop(c, 'money', 'Teto de investimento', 'investmentCap', 'number', 'R$')}
+        ${prop(c, 'target', 'Meta de CPL', 'goals.cpl', 'number', 'R$')}
+        <div class="pl">${I('note', 15)}Observações</div><div class="pv"><textarea id="p-notes" data-change="client-field" data-id="${c.id}" data-field="notes" placeholder="Combinados, restrições, como o cliente gosta de receber relatório…">${e(c.notes || '')}</textarea></div>
+      </div>
+    </div>`;
+
+  const clientDemands = (c) => {
+    const open = Store.sortTasks(openTasks(Store.tasks({ clientId: c.id })));
+    return `<div class="sec"><div class="sec-h">${I('tasks', 15)} Demandas abertas <span class="muted">${open.length}</span>
+        <button class="btn btn-sm right" data-action="new-task" data-defaults='${e(JSON.stringify({ clientId: c.id }))}'>${I('plus', 13)}Tarefa</button></div>
+      ${open.slice(0, 8).map((t) => `<div class="mini" data-action="open-task" data-id="${t.id}">${C.sdot(t.status)}<span class="grow ellipsis">${e(t.title)}</span>${C.due(t)}${C.avatar(t.assignee)}</div>`).join('') || '<div class="empty" style="padding:18px">Nada pendente</div>'}
+      ${open.length > 8 ? `<a class="mini small" href="#/c/${c.id}/demandas">Ver todas as ${open.length}</a>` : ''}
+    </div>`;
+  };
+
+  /** Ficha completa: informações e demandas à esquerda, diário de bordo à direita — tudo na mesma tela. */
+  const clientSheet = (c) => `
+    <div class="sheet">
+      <div class="sheet-side">${clientInfo(c)}${clientDemands(c)}</div>
+      <div class="sheet-main">
+        <div class="h2">${I('book', 16)} Diário de bordo <span class="muted small" style="font-weight:500">${manualLogs({ clientId: c.id }).length} atualizações</span></div>
+        ${C.diaryComposer({ clientId: c.id })}${diaryFilters('client')}
+        <div style="overflow-x:auto">${C.diaryTable(diaryLogs(c.id))}</div>
+      </div>
+    </div>`;
+
+  const clientPanel = (id) => {
+    const c = Store.client(id); if (!c) return '';
+    const s = M.clientStatus[c.status] || M.clientStatus.ativo;
+    return `<div class="task-wrap"><div class="overlay" data-action="close-client"></div>
+      <div class="task client-panel" role="dialog" aria-label="${e(c.name)}">
+        <div class="task-top">${C.folder(c, 18)}<b style="font-size:16px">${e(c.name)}</b>
+          <button class="cell-btn" data-action="pick-client-status" data-id="${c.id}"><span class="st soft" style="--c:${s.color}">${e(s.label)}</span></button>
+          <span class="grow"></span>
+          ${c.metaPage ? `<a class="btn btn-sm" href="${e(url(c.metaPage))}" target="_blank" rel="noopener">${I('ads', 14)}Meta</a>` : ''}
+          ${c.clickupUrl ? `<a class="btn btn-sm hide-sm" href="${e(url(c.clickupUrl))}" target="_blank" rel="noopener">${I('ext', 14)}ClickUp</a>` : ''}
+          <a class="btn btn-sm" href="#/c/${c.id}" data-action="close-client-nav">${I('folder', 14)}Abrir pasta</a>
+          <button class="ibtn" data-action="close-client" title="Fechar (Esc)">${I('x')}</button>
+        </div>
+        <div class="panel-body">${clientSheet(c)}</div>
+      </div></div>`;
+  };
+
   const clientPage = (id, tabId = 'visao') => {
     const c = Store.client(id);
     if (!c) return { head: head({ title: 'Cliente não encontrado' }), body: C.empty('Cliente não encontrado', 'Ele pode ter sido excluído.', '<a class="btn" href="#/clientes">Ver clientes</a>') };
     const tasks = Store.tasks({ clientId: id });
     const s = M.clientStatus[c.status] || M.clientStatus.ativo;
-    const diaryCount = manualLogs({ clientId: id }).length;
     const base = `#/c/${id}`;
+    if (tabId === 'diario') tabId = 'visao';
     const H = head({
       crumbs: `<a href="#/clientes">Clientes</a>${I('chevR', 12)}<span>${e(c.name)}</span>`,
       icon: C.folder(c, 20), title: e(c.name) + ` <button class="cell-btn" style="margin-left:6px;vertical-align:3px" data-action="pick-client-status" data-id="${c.id}"><span class="st soft" style="--c:${s.color}">${e(s.label)}</span></button>`,
-      actions: `${c.metaPage ? `<a class="btn" href="${e(url(c.metaPage))}" target="_blank" rel="noopener">${I('link', 15)}<span class="hide-sm">Página do Meta</span></a>` : ''}
-        ${c.adAccount ? `<a class="btn" href="${e(adsLink(c.adAccount))}" target="_blank" rel="noopener">${I('ads', 15)}<span class="hide-sm">Gerenciador</span></a>` : ''}
-        ${newTaskBtn({ clientId: id })}`,
-      tabs: tab(tabId === 'visao', `${base}`, 'grid', 'Visão geral') + tab(tabId === 'demandas', `${base}/demandas`, 'list', 'Demandas', openTasks(tasks).length)
-        + tab(tabId === 'quadro', `${base}/quadro`, 'board', 'Quadro') + tab(tabId === 'diario', `${base}/diario`, 'book', 'Diário de bordo', diaryCount),
+      actions: `${c.metaPage ? `<a class="btn" href="${e(url(c.metaPage))}" target="_blank" rel="noopener">${I('ads', 15)}<span class="hide-sm">Meta</span></a>` : ''}${newTaskBtn({ clientId: id })}`,
+      tabs: tab(tabId === 'visao', base, 'book', 'Ficha e diário') + tab(tabId === 'demandas', `${base}/demandas`, 'list', 'Demandas', openTasks(tasks).length) + tab(tabId === 'quadro', `${base}/quadro`, 'board', 'Quadro'),
     });
     if (tabId === 'demandas') return { head: H, toolbar: taskToolbar('client'), body: `<div class="pad">${C.taskList(applyFilters(tasks), { groupBy: VS.groupBy.client, showClient: false, defaults: { clientId: id }, open: VS.open })}</div>` };
     if (tabId === 'quadro') return { head: H, toolbar: taskToolbar('client', { list: false }), body: C.board(applyFilters(tasks), { showClient: false, defaults: { clientId: id } }), flush: true };
-    if (tabId === 'diario') return { head: H, body: clientDiary(c) };
-    return { head: H, body: clientOverview(c, tasks) };
-  };
-
-  const clientOverview = (c, tasks) => {
-    const open = Store.sortTasks(openTasks(tasks));
-    const counts = M.STATUSES.filter((s) => s.id !== 'done').map((s) => ({ s, n: open.filter((t) => t.status === s.id).length })).filter((x) => x.n);
-    const logs = manualLogs({ clientId: c.id }).slice(0, 4);
-    return `<div class="pad"><div class="ov">
-      <div style="min-width:0">
-        <div class="sec"><div class="sec-h">${I('user', 15)} Dados do cliente<span class="right small muted">salva automaticamente</span></div>
-          <div class="props">
-            ${prop(c, 'folder', 'Cliente', 'name')}
-            ${prop(c, 'target', 'O que ele mexe', 'niche', 'text', 'Ex.: Gestão de passivos, Golpe Pix, RCPCC')}
-            ${prop(c, 'link', 'Página do Meta', 'metaPage', 'url', 'https://facebook.com/…', openBtn(url(c.metaPage)))}
-            ${prop(c, 'ads', 'Conta de anúncio', 'adAccount', 'text', 'act_123456789', openBtn(adsLink(c.adAccount), 'Gerenciador'))}
-            ${prop(c, 'insta', 'Instagram', 'instagram', 'text', '@perfil', openBtn(c.instagram ? `https://instagram.com/${String(c.instagram).replace(/^@|https?:\/\/(www\.)?instagram\.com\//g, '')}` : ''))}
-            <div class="pl">${I('team', 15)}Responsável na agência</div><div class="pv"><select id="p-owner" data-change="client-field" data-id="${c.id}" data-field="owner"><option value="">—</option>${[...new Set([...team(), c.owner].filter(Boolean))].map((n) => `<option ${n === c.owner ? 'selected' : ''}>${e(n)}</option>`).join('')}</select></div>
-            <div class="pl">${I('status', 15)}Status</div><div class="pv"><select id="p-status" data-change="client-field" data-id="${c.id}" data-field="status">${M.CLIENT_STATUSES.map((s) => `<option value="${s.id}" ${s.id === c.status ? 'selected' : ''}>${s.label}</option>`).join('')}</select></div>
-            ${prop(c, 'user', 'Contato no cliente', 'contact.name', 'text', 'Nome do advogado / responsável')}
-            ${prop(c, 'phone', 'WhatsApp', 'contact.phone', 'tel', '(11) 99999-9999', openBtn(U.waLink(c.contact?.phone), 'Conversar'))}
-            ${prop(c, 'money', 'Teto de investimento', 'investmentCap', 'number', 'R$')}
-            ${prop(c, 'target', 'Meta de CPL', 'goals.cpl', 'number', 'R$')}
-            ${prop(c, 'calendar', 'Início do contrato', 'contract.start', 'date')}
-            ${prop(c, 'sheet', 'Planilha antiga do diário', 'diarySheetUrl', 'url', 'https://docs.google.com/…', openBtn(url(c.diarySheetUrl)))}
-            ${prop(c, 'ext', 'Pasta no ClickUp', 'clickupUrl', 'url', '', openBtn(url(c.clickupUrl)))}
-            <div class="pl">${I('note', 15)}Observações</div><div class="pv"><textarea id="p-notes" data-change="client-field" data-id="${c.id}" data-field="notes" placeholder="Combinados, restrições, como o cliente gosta de receber relatório…">${e(c.notes || '')}</textarea></div>
-          </div>
-        </div>
-      </div>
-      <div style="min-width:0">
-        <div class="sec"><div class="sec-h">${I('tasks', 15)} Demandas abertas <span class="muted">${open.length}</span><a class="right small" href="#/c/${c.id}/demandas">Ver todas</a></div>
-          ${counts.length ? `<div class="bar">${counts.map(({ s, n }) => `<span style="--c:${s.color};flex:${n}" title="${e(s.label)}: ${n}"></span>`).join('')}</div>
-          <div class="legend">${counts.map(({ s, n }) => `<span><span class="res" style="background:${s.color}"></span>${e(s.label)} <b>${n}</b></span>`).join('')}</div>` : ''}
-          ${open.slice(0, 7).map((t) => `<div class="mini" data-action="open-task" data-id="${t.id}">${C.sdot(t.status)}<span class="grow ellipsis">${e(t.title)}</span>${C.due(t)}${C.avatar(t.assignee)}</div>`).join('') || C.empty('Nada pendente', '', newTaskBtn({ clientId: c.id }))}
-        </div>
-        <div class="sec"><div class="sec-h">${I('book', 15)} Diário de bordo<a class="right small" href="#/c/${c.id}/diario">Abrir diário</a></div>
-          ${logs.length ? logs.map((l) => `<div class="mini" data-action="edit-log" data-id="${l.id}"><div class="grow"><div class="small muted">${U.fmtDate(l.date, true)}${l.author ? ' · ' + e(l.author) : ''}</div><div>${e(l.analysis || l.title || '')}</div>${l.actionsDone ? `<div class="small" style="color:var(--green)">Feito: ${e(l.actionsDone)}</div>` : ''}${l.planned ? `<div class="small" style="color:var(--amber)">Programado: ${e(l.planned)}</div>` : ''}</div></div>`).join('')
-            : C.empty('Nenhuma atualização ainda', '', `<a class="btn btn-sm" href="#/c/${c.id}/diario">Atualizar diário</a>`)}
-        </div>
-      </div>
-    </div></div>`;
+    return { head: H, body: `<div class="pad">${clientSheet(c)}</div>` };
   };
 
   const diaryFilters = (scope) => {
@@ -273,7 +315,6 @@
     if (f.period) filter.from = U.addDays(U.today(), -Number(f.period));
     return Store.logs(filter).filter((l) => (f.showTasks ? true : l.type !== 'tarefa') && !(l.auto && l.type === 'nota'));
   };
-  const clientDiary = (c) => `<div class="pad">${C.diaryComposer({ clientId: c.id })}${diaryFilters('client')}<div style="overflow-x:auto">${C.diaryTable(diaryLogs(c.id))}</div></div>`;
 
   const diaryPage = () => ({
     head: head({ crumbs: '<span>Espaço de trabalho</span>', icon: `<span class="space-ic" style="background:#f59e0b">${I('book', 12)}</span>`, title: 'Diário de bordo' }),
@@ -411,6 +452,6 @@
     </div>`;
 
   window.VS = VS;
-  window.Views = { home, tasks: tasksPage, team: teamPage, clients: clientsPage, client: clientPage, diary: diaryPage, settings: settingsPage, taskView, diaryLogs, manualLogs, adsLink };
+  window.Views = { clientPanel, home, tasks: tasksPage, team: teamPage, clients: clientsPage, client: clientPage, diary: diaryPage, settings: settingsPage, taskView, diaryLogs, manualLogs, adsLink };
   window.Forms = Forms;
 })();

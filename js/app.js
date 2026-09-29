@@ -55,10 +55,10 @@
                 const isOpen = VS.sideOpen.includes(c.id) || active;
                 const n = open.filter((t) => t.clientId === c.id).length;
                 return `<div class="${isOpen ? 'open' : ''}">
-                  <a class="nav ${active && r.params.tab === 'visao' ? 'active' : ''}" href="#/c/${c.id}" title="${e(c.name)}"><span class="caret" data-action="toggle-tree" data-key="${c.id}">${I('chevR', 12)}</span>${C.folder(c)}<span class="grow ellipsis">${e(c.name)}</span>${n ? `<span class="cnt">${n}</span>` : ''}</a>
+                  <a class="nav" href="#/c/${c.id}" title="${e(c.name)}"><span class="caret" data-action="toggle-tree" data-key="${c.id}">${I('chevR', 12)}</span>${C.folder(c)}<span class="grow ellipsis">${e(c.name)}</span>${n ? `<span class="cnt">${n}</span>` : ''}</a>
                   <div class="kids">
+                    <a class="nav ${active && r.params.tab !== 'demandas' && r.params.tab !== 'quadro' ? 'active' : ''}" href="#/c/${c.id}">${I('book', 14)}<span class="grow">Ficha e diário</span></a>
                     <a class="nav ${active && r.params.tab === 'demandas' ? 'active' : ''}" href="#/c/${c.id}/demandas">${I('list', 14)}<span class="grow">Demandas</span></a>
-                    <a class="nav ${active && r.params.tab === 'diario' ? 'active' : ''}" href="#/c/${c.id}/diario">${I('book', 14)}<span class="grow">Diário de bordo</span></a>
                   </div></div>`;
               }).join('')}
               ${closed ? `<a class="nav small muted" href="#/clientes" data-action="show-closed">${I('folder', 14)}Encerrados (${closed})</a>` : ''}
@@ -136,11 +136,27 @@
       const ci = root.querySelector('#comment-input'); if (ci) ci.value = comment;
     });
   };
+  App.renderPanel = () => {
+    const root = document.getElementById('panel-root');
+    if (!App.clientId || !Store.client(App.clientId)) { root.innerHTML = ''; App.clientId = null; return; }
+    const body = root.querySelector('.panel-body');
+    const pos = body ? body.scrollTop : 0;
+    const comp = root.querySelector('#composer');
+    const draft = comp ? [...comp.querySelectorAll('[name]')].map((x) => [x.name, x.type === 'checkbox' ? x.checked : x.value]) : null;
+    keepFocus(() => {
+      root.innerHTML = Views.clientPanel(App.clientId);
+      const b2 = root.querySelector('.panel-body'); if (b2) b2.scrollTop = pos;
+      const c2 = root.querySelector('#composer');
+      if (draft && c2) draft.forEach(([k, v]) => { const f = c2.querySelector(`[name="${k}"]`); if (f) { if (f.type === 'checkbox') f.checked = v; else f.value = v; } });
+    });
+  };
+  App.openClient = (id) => { App.clientId = id; App.renderPanel(); };
+  App.closeClient = () => { App.clientId = null; App.renderPanel(); };
   App.openTask = (id) => { App.taskId = id; App.renderTask(); };
   App.closeTask = () => { App.taskId = null; App.renderTask(); };
 
   let queued = false;
-  const schedule = () => { if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; App.render(); if (App.taskId) App.renderTask(); }); };
+  const schedule = () => { if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; App.render(); if (App.clientId) App.renderPanel(); if (App.taskId) App.renderTask(); }); };
 
   const applyTheme = () => {
     const t = Store.settings.theme;
@@ -221,6 +237,11 @@
       else VS.sideOpen = VS.sideOpen.includes(k) ? VS.sideOpen.filter((x) => x !== k) : [...VS.sideOpen, k];
       VS.save(); renderSidebar();
     },
+    'open-client': (el) => App.openClient(el.dataset.id),
+    'close-client': () => App.closeClient(),
+    'close-client-nav': () => App.closeClient(),
+    'clients-pre': (el) => { VS.clientsPre = el.dataset.k; if (el.dataset.k === 'all') { VS.clientsOwner = ''; VS.clientsNiche = ''; VS.clientsQ = ''; } VS.save(); App.render(); },
+    'clients-view': (el) => { VS.clientsView = el.dataset.view; VS.save(); App.render(); },
     'show-closed': () => { VS.clientsStatus = 'encerrado'; VS.save(); App.render(); },
     'cycle-theme': () => { const o = ['auto', 'light', 'dark']; Store.settings.theme = o[(o.indexOf(Store.settings.theme) + 1) % 3]; applyTheme(); Store.save(); },
     'set-theme': (el) => { Store.settings.theme = el.dataset.theme; applyTheme(); Store.save(); },
@@ -487,6 +508,7 @@
       if (UI._pop) { UI.closePopover(); return; }
       if (UI.closeModal()) return;
       if (App.taskId) { App.closeTask(); return; }
+      if (App.clientId) { App.closeClient(); return; }
       document.getElementById('app').classList.remove('side-open');
       return;
     }
@@ -513,16 +535,25 @@
   });
 
   /* ---------- Arrastar e soltar ---------- */
-  document.addEventListener('dragstart', (ev) => { const c = ev.target.closest && ev.target.closest('[data-drag-task]'); if (!c) return; ev.dataTransfer.setData('text/plain', c.dataset.dragTask); c.classList.add('dragging'); });
+  document.addEventListener('dragstart', (ev) => {
+    const c = ev.target.closest && ev.target.closest('[data-drag-task], [data-drag-client]'); if (!c) return;
+    ev.dataTransfer.setData('text/plain', c.dataset.dragTask ? 'task:' + c.dataset.dragTask : 'client:' + c.dataset.dragClient); c.classList.add('dragging');
+  });
   document.addEventListener('dragend', (ev) => { ev.target.classList && ev.target.classList.remove('dragging'); document.querySelectorAll('.over').forEach((n) => n.classList.remove('over')); });
   document.addEventListener('dragover', (ev) => {
-    const z = ev.target.closest && ev.target.closest('[data-drop-status], [data-drop-assignee]'); if (!z) return;
+    const z = ev.target.closest && ev.target.closest('[data-drop-status], [data-drop-assignee], [data-drop-cstatus]'); if (!z) return;
     ev.preventDefault(); document.querySelectorAll('.over').forEach((n) => n !== z && n.classList.remove('over')); z.classList.add('over');
   });
   document.addEventListener('drop', (ev) => {
-    const z = ev.target.closest && ev.target.closest('[data-drop-status], [data-drop-assignee]'); if (!z) return;
+    const z = ev.target.closest && ev.target.closest('[data-drop-status], [data-drop-assignee], [data-drop-cstatus]'); if (!z) return;
     ev.preventDefault(); z.classList.remove('over');
-    const id = ev.dataTransfer.getData('text/plain'); const t = Store.task(id); if (!t) return;
+    const [kind, id] = ev.dataTransfer.getData('text/plain').split(':');
+    if (kind === 'client') {
+      const c = Store.client(id);
+      if (c && z.dataset.dropCstatus && c.status !== z.dataset.dropCstatus) { Store.updateClient(id, { status: z.dataset.dropCstatus }); UI.toast(`${c.name}: ${M.clientStatus[z.dataset.dropCstatus].label}`); }
+      return;
+    }
+    const t = Store.task(id); if (!t || !z.dataset.dropStatus && z.dataset.dropAssignee === undefined) return;
     if (z.dataset.dropStatus !== undefined) setStatus(id, z.dataset.dropStatus);
     else if (z.dataset.dropAssignee !== t.assignee) { Store.updateTask(id, { assignee: z.dataset.dropAssignee }); UI.toast(`Demanda passada para ${z.dataset.dropAssignee || 'ninguém'}`); }
   });
@@ -531,7 +562,7 @@
   Store.load();
   applyTheme();
   Store.onChange(schedule);
-  window.addEventListener('hashchange', () => { UI.closeModal(); UI.closePopover(); App.render(); });
+  window.addEventListener('hashchange', () => { UI.closeModal(); UI.closePopover(); App.clientId = null; App.renderPanel(); App.render(); });
   App.render();
   window.App = App;
 })();
