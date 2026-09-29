@@ -908,7 +908,7 @@
       <label class="toggle"><input type="checkbox" class="check" name="logIt" checked> Registrar o envio no diário de bordo</label>
     </div>
     <div class="modal-foot">
-      ${U.waLink(c.contact?.phone) ? '<button class="btn" data-action="report-whatsapp">🟢 Abrir no WhatsApp</button>' : ''}
+      ${U.waLink(c.contact?.phone) ? '<a class="btn" href="#" target="_blank" rel="noopener" data-action="report-whatsapp">🟢 Abrir no WhatsApp</a>' : ''}
       <button class="btn btn-primary" data-action="report-copy">📋 Copiar</button>
     </div>`;
 

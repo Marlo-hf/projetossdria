@@ -518,11 +518,11 @@
         root.querySelector('[name=logIt]').checked = false;
       }
     },
-    'report-whatsapp': () => {
+    'report-whatsapp': (el) => {
       const root = document.getElementById('report-form');
       const c = Store.client(root.dataset.client);
       const text = root.querySelector('[name=text]').value;
-      window.open(`${U.waLink(c.contact.phone)}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+      el.href = `${U.waLink(c.contact.phone)}?text=${encodeURIComponent(text)}`;
       if (root.querySelector('[name=logIt]').checked) {
         Store.addLog({ clientId: c.id, type: 'relatorio', title: 'Relatório semanal enviado ao cliente', body: text });
         root.querySelector('[name=logIt]').checked = false;
@@ -605,7 +605,7 @@
       const file = el.files[0]; el.value = ''; if (!file) return;
       const clientId = currentClientId(); const c = Store.client(clientId); if (!c) return;
       try {
-        await loadScript('assets/vendor/xlsx.full.min.js', 'XLSX');
+        await loadScript('assets/vendor/xlsx.full.min.js', 'XLSX').catch(() => loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js', 'XLSX'));
         const wb = XLSX.read(await file.arrayBuffer());
         const { entries, adAccount } = parseDiarySheet(wb);
         if (!entries.length) { UI.toast('Não encontrei linhas com Data + Análise na planilha.'); return; }

@@ -134,6 +134,19 @@
   U.debounce = (fn, ms = 200) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
 
   U.download = (filename, text, mime = 'text/plain') => {
+    // Dentro de páginas incorporadas (iframe) o download costuma ser bloqueado: mostra o conteúdo para copiar.
+    let framed = false; try { framed = window.self !== window.top; } catch (err) { framed = true; }
+    if (framed && window.UI) {
+      const m = UI.modal(`<div class="modal-head"><h2>${U.esc(filename)}</h2><button class="icon-btn" style="margin-left:auto" data-modal-close>✕</button></div>
+        <div class="modal-body"><div class="small muted">Aqui o download direto não está disponível. Copie o conteúdo e salve em um arquivo com o nome acima.</div>
+        <textarea class="textarea" id="download-text" readonly style="min-height:320px;font-family:monospace;font-size:12px"></textarea></div>
+        <div class="modal-foot"><button class="btn btn-primary" id="download-copy">Copiar conteúdo</button></div>`, { wide: true });
+      const ta = m.querySelector('#download-text'); ta.value = text;
+      m.querySelector('#download-copy').addEventListener('click', async () => {
+        if (await U.copy(text)) UI.toast('Copiado'); else { ta.focus(); ta.select(); UI.toast('Selecionado — use Ctrl+C'); }
+      });
+      return;
+    }
     const blob = new Blob([text], { type: mime + ';charset=utf-8' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
