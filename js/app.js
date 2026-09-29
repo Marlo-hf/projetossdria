@@ -559,10 +559,48 @@
   });
 
   /* ============================== Início ============================== */
-  Store.load();
-  applyTheme();
-  Store.onChange(schedule);
-  window.addEventListener('hashchange', () => { UI.closeModal(); UI.closePopover(); App.clientId = null; App.renderPanel(); App.render(); });
-  App.render();
+  const boot = () => {
+    Store.load();
+    applyTheme();
+    Store.onChange(schedule);
+    window.addEventListener('hashchange', () => { UI.closeModal(); UI.closePopover(); App.clientId = null; App.renderPanel(); App.render(); });
+    App.render();
+  };
   window.App = App;
+
+  /* ---------- Código de acesso (dados da agência criptografados na versão publicada) ---------- */
+  const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+  const decryptSeed = async (code) => {
+    const enc = window.BORDO_SEED_ENC;
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(code), 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64(enc.salt), iterations: enc.iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(enc.iv) }, key, b64(enc.data));
+    return JSON.parse(new TextDecoder().decode(plain));
+  };
+  const CODE_KEY = 'bordo:acesso';
+  const appEl = document.getElementById('app');
+  const shell = appEl.innerHTML;
+  const open = async (code) => {
+    window.BORDO_SEED = await decryptSeed(code);
+    try { localStorage.setItem(CODE_KEY, code); } catch (err) { /* ignora */ }
+    appEl.innerHTML = shell;
+    boot();
+  };
+  const showLock = () => {
+    appEl.innerHTML = `<div class="lock"><form class="lock-card" id="lock-form">
+      <div class="ws-logo" style="width:40px;height:40px;font-size:18px">U</div>
+      <h1>Unlockify</h1><p class="muted">Espaço interno da agência. Digite o código de acesso.</p>
+      <input class="input" id="lock-code" type="password" autocomplete="current-password" placeholder="Código de acesso" autofocus>
+      <div class="small" id="lock-err" style="color:var(--red);min-height:18px"></div>
+      <button class="btn btn-primary" style="justify-content:center">Entrar</button></form></div>`;
+    document.getElementById('lock-form').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      try { await open(document.getElementById('lock-code').value.trim()); }
+      catch (err) { document.getElementById('lock-err').textContent = 'Código incorreto. Confira e tente de novo.'; }
+    });
+  };
+  if (window.BORDO_SEED_ENC && !window.BORDO_SEED) {
+    let saved = ''; try { saved = localStorage.getItem(CODE_KEY) || ''; } catch (err) { saved = ''; }
+    if (saved) open(saved).catch(showLock); else showLock();
+  } else boot();
 })();

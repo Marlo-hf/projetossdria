@@ -101,6 +101,7 @@
       });
       seed.tasks.forEach((t) => { if (!tIds.has(t.id)) st.tasks.push(JSON.parse(JSON.stringify(t))); });
       seed.logs.forEach((l) => { if (!lIds.has(l.id) && (cIds.has(l.clientId) || st.clients.some((c) => c.id === l.clientId))) st.logs.push(JSON.parse(JSON.stringify(l))); });
+      if (!st.settings.workspaceName || st.settings.workspaceName === 'Agência') st.settings.workspaceName = seed.settings.workspaceName;
       st.settings.seedVersion = seed.settings.seedVersion;
       try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (err) { /* ignora */ }
     },
