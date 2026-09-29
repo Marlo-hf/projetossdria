@@ -14,7 +14,8 @@
     journal: { q: '', type: '', clientId: '', period: '30', hideAuto: false },
     clientLog: { q: '', type: '', hideAuto: false },
     clientsFilter: { status: '', q: '', sort: 'health' },
-    composerType: 'otimizacao',
+    composerType: 'analise',
+    logView: 'timeline',
     bannerClosed: false,
   };
   let saved = {};
@@ -34,6 +35,12 @@
   const teamOptions = (selected, withNone = true) => {
     const team = [...new Set([...(Store.settings.team || []), ...(selected ? [selected] : [])])];
     return (withNone ? `<option value="" ${!selected ? 'selected' : ''}>Sem responsável</option>` : '') + team.map((n) => `<option ${n === selected ? 'selected' : ''}>${e(n)}</option>`).join('');
+  };
+  const adsLink = (acc) => {
+    const v = String(acc || '').trim();
+    if (/^https?:/i.test(v)) return v;
+    const id = v.replace(/^act_/i, '').replace(/\D/g, '');
+    return id ? `https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=${id}` : '';
   };
   const greeting = () => { const h = new Date().getHours(); return h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite'; };
 
@@ -308,11 +315,15 @@
               ${c.niche ? `<span>🏷️ ${e(c.niche)}</span>` : ''}
               ${c.contact?.name ? `<span>👤 ${e(c.contact.name)}</span>` : ''}
               ${c.contract?.fee ? `<span>💰 ${U.fmtMoney(Number(c.contract.fee))}/mês</span>` : ''}
+              ${c.investmentCap ? `<span>🎚️ teto ${U.fmtMoney(Number(c.investmentCap))}</span>` : ''}
+              ${c.goals?.cpl ? `<span>🎯 meta CPL ${U.fmtMoney(Number(c.goals.cpl))}</span>` : ''}
               ${c.contract?.start ? `<span>📅 cliente desde ${U.fmtDate(c.contract.start, true)}</span>` : ''}
             </div>
           </div>
           <div class="hero-actions">
             ${C.health(h, true)}
+            ${c.adAccount ? `<a class="btn" href="${e(adsLink(c.adAccount))}" target="_blank" rel="noopener" title="Conta ${e(c.adAccount)}">📈 Conta de anúncio</a>` : ''}
+            ${c.clickupUrl ? `<a class="icon-btn" href="${e(c.clickupUrl)}" target="_blank" rel="noopener" title="Abrir no ClickUp">↗</a>` : ''}
             ${wa ? `<a class="btn" href="${wa}" target="_blank" rel="noopener">🟢 WhatsApp</a>` : ''}
             <button class="btn" data-action="weekly-report" data-id="${c.id}">📋 Relatório da semana</button>
             <button class="btn" data-action="edit-client" data-id="${c.id}">✏️ Editar</button>
@@ -408,14 +419,36 @@
   const clientTasks = (c) => `${taskToolbar({ scope: 'client', clientId: c.id })}<div id="tasks-content">${taskBody('client', c.id)}</div>`;
 
   /* ---------- Compositor do diário ---------- */
+  const PRESETS = [
+    'Performance ok, gerando leads.',
+    'Não gerou leads ontem, ainda cedo pra mexer. Deixar rodar.',
+    'Deu uma caída, seguir analisando.',
+    'CPL acima da meta.',
+    'Gasto elevado sem resultado.',
+    'Campanha em fase de aprendizado.',
+    'Performance dentro do orçamento.',
+  ];
   const composer = ({ clientId, showClientSelect }) => {
     const type = VS.composerType;
+    const c = clientId ? Store.client(clientId) : null;
     return `
-    <div class="card composer" id="composer" data-client="${e(clientId || '')}">
+    <div class="card composer ${type === 'analise' ? 'is-analise' : ''}" id="composer" data-client="${e(clientId || '')}">
       <div class="type-row">${M.LOG_TYPES.filter((t) => t.id !== 'tarefa').map((t) => `<button type="button" class="chip ${t.id === type ? 'active' : ''}" data-action="composer-type" data-type="${t.id}">${t.icon} ${t.label}</button>`).join('')}</div>
       <input type="hidden" name="type" value="${type}">
-      <input class="input title-input" name="title" placeholder="O que aconteceu? (ex.: Pausei o conjunto X por CPL alto)" autocomplete="off">
-      <textarea class="textarea body-input" name="body" placeholder="Detalhes, contexto, próximos passos… Use - para listas e **texto** para negrito. Ctrl+Enter para salvar."></textarea>
+      <div class="mode-analise">
+        <div class="window-note">* A análise é feita sempre na janela do dia anterior e de uma semana para trás.${c && c.adAccount ? ` · <a href="${e(adsLink(c.adAccount))}" target="_blank" rel="noopener">Abrir conta de anúncio ↗</a>` : ''}</div>
+        <div class="grid-3 analysis-grid">
+          <div class="field"><label>🔎 Análise</label><textarea class="textarea" name="analysis" placeholder="Como está a campanha? Leads, CPL, gasto vs. orçamento…"></textarea>
+            <div class="presets">${PRESETS.map((p) => `<button type="button" class="chip" data-action="preset" data-text="${e(p)}">${e(p)}</button>`).join('')}</div></div>
+          <div class="field"><label>🎯 Ações programadas p/ melhoria</label><textarea class="textarea" name="planned" placeholder="O que precisa ser feito? (pode virar tarefa)"></textarea>
+            <label class="toggle small" style="margin-top:6px"><input type="checkbox" class="check" name="plannedTask"> Criar tarefa com a ação programada</label></div>
+          <div class="field"><label>✅ Ações realizadas</label><textarea class="textarea" name="actionsDone" placeholder="O que já foi feito hoje?"></textarea></div>
+        </div>
+      </div>
+      <div class="mode-other">
+        <input class="input title-input" name="title" placeholder="O que aconteceu? (ex.: Pausei o conjunto X por CPL alto)" autocomplete="off">
+        <textarea class="textarea body-input" name="body" placeholder="Detalhes, contexto, próximos passos… Use - para listas e **texto** para negrito. Ctrl+Enter para salvar."></textarea>
+      </div>
       <div class="composer-extra hidden" id="composer-extra">
         <div class="field"><label>Investimento (R$)</label><input class="input input-sm" name="spend" inputmode="decimal" placeholder="0,00"></div>
         <div class="field"><label>Leads</label><input class="input input-sm" name="leads" inputmode="numeric" placeholder="0"></div>
@@ -423,13 +456,13 @@
         <div class="field"><label>Tags (vírgula)</label><input class="input input-sm" name="tags" placeholder="verba, teste"></div>
       </div>
       <div class="composer-foot">
-        ${showClientSelect ? `<select class="select select-sm" style="width:auto;max-width:200px" name="clientId">${clientOptions(clientId, { placeholder: 'Escolha o cliente…' })}</select>` : ''}
+        ${showClientSelect ? `<select class="select select-sm" style="width:auto;max-width:220px" name="clientId">${clientOptions(clientId, { placeholder: 'Escolha o cliente…' })}</select>` : ''}
         <input type="date" class="input input-sm" style="width:auto" name="date" value="${U.today()}">
         <input type="time" class="input input-sm" style="width:auto" name="time" value="${U.nowTime()}">
         <select class="select select-sm" style="width:auto" name="impact">
-          <option value="neutro">⚪ Neutro</option><option value="positivo">🟢 Positivo</option><option value="negativo">🔴 Negativo</option>
+          <option value="neutro">⚪ Neutro</option><option value="positivo">🟢 Bom</option><option value="negativo">🔴 Ruim</option>
         </select>
-        <button type="button" class="btn btn-sm btn-ghost" data-action="composer-extra">📊 Métricas & tags</button>
+        <button type="button" class="btn btn-sm btn-ghost" data-action="composer-extra">📊 Números & tags</button>
         <button type="button" class="btn btn-primary btn-sm" style="margin-left:auto" data-action="submit-composer">Registrar no diário</button>
       </div>
     </div>`;
@@ -461,6 +494,12 @@
           <div class="stat-line"><span>Positivos / negativos</span><b><span style="color:var(--good)">${pos}</span> / <span style="color:var(--bad)">${neg}</span></b></div>
           <div class="stat-line"><span>Último registro</span><b>${manual[0] ? U.daysAgoLabel(manual[0].date) : '—'}</b></div>
         </div>
+        ${(() => {
+          const pend = logs.filter((l) => l.planned && !l.actionsDone && !l.plannedTaskId).slice(0, 6);
+          return pend.length ? `<div class="card card-pad"><h3 style="font-size:14px;margin-bottom:6px">🎯 Ações programadas em aberto</h3>
+            ${pend.map((l) => `<div class="stat-line" style="align-items:flex-start;gap:8px"><span class="small"><b>${U.fmtDate(l.date)}</b> ${e(l.planned.slice(0, 90))}${l.planned.length > 90 ? '…' : ''}</span>
+              <button class="btn btn-sm" data-action="planned-to-task" data-id="${l.id}" title="Criar tarefa">➕</button></div>`).join('')}</div>` : '';
+        })()}
         <div class="card card-pad">
           <h3 style="font-size:14px;margin-bottom:10px">🧭 Por tipo</h3>
           ${Object.keys(byType).length ? Object.entries(byType).sort((a, b) => b[1] - a[1]).map(([k, v]) => `
@@ -478,9 +517,11 @@
         ${[['7', 'Últimos 7 dias'], ['30', 'Últimos 30 dias'], ['90', 'Últimos 90 dias'], ['', 'Todo o período']].map(([k, l]) => `<option value="${k}" ${f.period === k ? 'selected' : ''}>${l}</option>`).join('')}</select>` : ''}
       <label class="toggle small"><input type="checkbox" class="check" data-change="log-filter" data-scope="${scope}" data-field="hideAuto" ${f.hideAuto ? 'checked' : ''}> Ocultar automáticos</label>
       <div class="row" style="margin-left:auto">
+        <div class="seg"><button class="${VS.logView !== 'sheet' ? 'active' : ''}" data-action="log-view" data-view="timeline">🕓 Linha do tempo</button><button class="${VS.logView === 'sheet' ? 'active' : ''}" data-action="log-view" data-view="sheet">▦ Planilha</button></div>
         <button class="btn btn-sm" data-action="copy-journal" data-scope="${scope}" title="Copia os registros filtrados em formato de mensagem">📋 Copiar resumo</button>
         <button class="btn btn-sm" data-action="export-journal" data-scope="${scope}">⬇️ Exportar</button>
         <button class="btn btn-sm" data-action="print">🖨️ PDF</button>
+        ${scope === 'client' ? `<label class="btn btn-sm" title="Importar planilha de diário de bordo (.xlsx) — colunas Data, Análise, Ações programadas, Ações realizadas">📥 Importar planilha<input type="file" accept=".xlsx,.xls,.csv" hidden data-change="import-diary-xlsx"></label>` : ''}
       </div>
     </div>`;
 
@@ -499,7 +540,7 @@
         <div>
           ${composer({ clientId: c.id, showClientSelect: false })}
           ${logFilters(VS.clientLog, 'client')}
-          ${C.timeline(logs)}
+          ${VS.logView === 'sheet' ? C.logTable(logs) : C.timeline(logs)}
         </div>
         ${journalSide(Store.logs({ clientId: c.id }))}
       </div>`;
@@ -515,7 +556,7 @@
         <div>
           ${composer({ clientId: VS.journal.clientId, showClientSelect: true })}
           ${logFilters(VS.journal, 'all')}
-          ${C.timeline(logs, { showClient: true })}
+          ${VS.logView === 'sheet' ? C.logTable(logs, { showClient: true }) : C.timeline(logs, { showClient: true })}
         </div>
         ${journalSide(logs)}
       </div>`;
@@ -602,6 +643,11 @@
           <div class="grid-2">${infoField(c, 'niche', 'Nicho / produto', 'text', 'Ex.: Gestão de passivos')}
             <div class="field"><label>Tags (vírgula)</label><input class="input" value="${e((c.tags || []).join(', '))}" data-change="client-tags" data-id="${c.id}" placeholder="Meta Ads, Premium"></div></div>
           <div class="field"><label>Cor da pasta</label><div class="row-wrap">${M.CLIENT_COLORS.map((col) => `<button class="avatar" style="background:${col};border:3px solid ${col === c.color ? 'var(--text)' : 'transparent'}" data-action="client-color" data-id="${c.id}" data-color="${col}" aria-label="Cor ${col}"></button>`).join('')}</div></div>
+        </div></div>
+        <div class="card"><div class="card-head"><h3>📣 Campanha</h3></div><div class="card-body stack">
+          <div class="grid-2">${infoField(c, 'adAccount', 'Conta de anúncio (ID act_…)', 'text', 'act_123456789')}${infoField(c, 'investmentCap', 'Teto de investimento (R$)', 'number')}</div>
+          <div class="grid-2">${infoField(c, 'diarySheetUrl', 'Planilha do diário (Google Sheets)', 'url', 'https://docs.google.com/…')}${infoField(c, 'clickupUrl', 'Pasta no ClickUp', 'url')}</div>
+          ${c.adAccount ? `<a class="btn btn-sm" style="align-self:flex-start" href="${e(adsLink(c.adAccount))}" target="_blank" rel="noopener">📈 Abrir no Gerenciador de Anúncios ↗</a>` : ''}
         </div></div>
         <div class="card"><div class="card-head"><h3>👤 Contato</h3></div><div class="card-body stack">
           <div class="grid-2">${infoField(c, 'contact.name', 'Nome do responsável')}${infoField(c, 'contact.role', 'Cargo')}</div>
@@ -777,12 +823,17 @@
         <div class="field"><label>Cliente *</label><select class="select" name="clientId">${clientOptions(l.clientId, { placeholder: 'Escolha o cliente…' })}</select></div>
         <div class="field"><label>Tipo</label><select class="select" name="type">${M.LOG_TYPES.map((t) => `<option value="${t.id}" ${t.id === l.type ? 'selected' : ''}>${t.icon} ${t.label}</option>`).join('')}</select></div>
       </div>
-      <div class="field"><label>Título</label><input class="input" name="title" value="${e(l.title || '')}" placeholder="O que aconteceu?" autofocus></div>
-      <div class="field"><label>Detalhes</label><textarea class="textarea" name="body" style="min-height:120px" placeholder="Contexto, decisão, próximos passos…">${e(l.body || '')}</textarea></div>
+      <div class="field"><label>🔎 Análise</label><textarea class="textarea" name="analysis" style="min-height:70px" placeholder="Como está a campanha? (janela do dia anterior e 7 dias)" autofocus>${e(l.analysis || '')}</textarea></div>
+      <div class="grid-2">
+        <div class="field"><label>🎯 Ações programadas p/ melhoria</label><textarea class="textarea" name="planned" style="min-height:70px">${e(l.planned || '')}</textarea></div>
+        <div class="field"><label>✅ Ações realizadas</label><textarea class="textarea" name="actionsDone" style="min-height:70px">${e(l.actionsDone || '')}</textarea></div>
+      </div>
+      <div class="field"><label>Título (opcional)</label><input class="input" name="title" value="${e(l.title || '')}" placeholder="Resumo em uma linha"></div>
+      <div class="field"><label>Observações</label><textarea class="textarea" name="body" style="min-height:60px" placeholder="Contexto, decisão, próximos passos…">${e(l.body || '')}</textarea></div>
       <div class="grid-3">
         <div class="field"><label>Data</label><input class="input" type="date" name="date" value="${e(l.date)}"></div>
         <div class="field"><label>Hora</label><input class="input" type="time" name="time" value="${e(l.time || '')}"></div>
-        <div class="field"><label>Impacto</label><select class="select" name="impact">${[['neutro', '⚪ Neutro'], ['positivo', '🟢 Positivo'], ['negativo', '🔴 Negativo']].map(([k, t]) => `<option value="${k}" ${l.impact === k ? 'selected' : ''}>${t}</option>`).join('')}</select></div>
+        <div class="field"><label>Impacto</label><select class="select" name="impact">${[['neutro', '⚪ Neutro'], ['positivo', '🟢 Bom'], ['negativo', '🔴 Ruim']].map(([k, t]) => `<option value="${k}" ${l.impact === k ? 'selected' : ''}>${t}</option>`).join('')}</select></div>
       </div>
       <div class="grid-3">
         <div class="field"><label>Investimento (R$)</label><input class="input" name="spend" inputmode="decimal" value="${e(l.metrics?.spend ?? '')}"></div>
@@ -832,7 +883,7 @@
     const relevant = logs.filter((l) => l.type !== 'tarefa');
     if (relevant.length) {
       t += '🛠️ *O que fizemos*\n';
-      relevant.forEach((l) => { t += `• ${l.title || M.logType[l.type]?.label}\n`; });
+      relevant.forEach((l) => { t += `• ${l.actionsDone || l.title || l.analysis || M.logType[l.type]?.label}\n`; });
       t += '\n';
     }
     if (done.length) {

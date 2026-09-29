@@ -2,7 +2,7 @@
 (function () {
   const KEY = 'bordo:data:v1';
 
-  const STATUSES = [
+  const DEFAULT_STATUSES = [
     { id: 'todo', label: 'A fazer', color: '#8b93a7' },
     { id: 'doing', label: 'Em andamento', color: '#2f7de1' },
     { id: 'waiting', label: 'Aguardando cliente', color: '#d88a06' },
@@ -16,6 +16,7 @@
     { id: 'low', label: 'Baixa', color: '#94a3b8', weight: 1 },
   ];
   const LOG_TYPES = [
+    { id: 'analise', label: 'Análise diária', icon: '🔎' },
     { id: 'otimizacao', label: 'Otimização', icon: '🛠️' },
     { id: 'campanha', label: 'Campanha', icon: '🎯' },
     { id: 'criativo', label: 'Criativo', icon: '🎨' },
@@ -64,8 +65,8 @@
 
   const byId = (arr) => Object.fromEntries(arr.map((x) => [x.id, x]));
   const META = {
-    STATUSES, PRIORITIES, LOG_TYPES, CLIENT_STATUSES, RECURRENCES, CLIENT_COLORS,
-    status: byId(STATUSES), priority: byId(PRIORITIES), logType: byId(LOG_TYPES),
+    DEFAULT_STATUSES, STATUSES: DEFAULT_STATUSES, PRIORITIES, LOG_TYPES, CLIENT_STATUSES, RECURRENCES, CLIENT_COLORS,
+    status: byId(DEFAULT_STATUSES), priority: byId(PRIORITIES), logType: byId(LOG_TYPES),
     clientStatus: byId(CLIENT_STATUSES), recurrence: byId(RECURRENCES),
   };
 
@@ -79,7 +80,15 @@
       try { data = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { data = null; }
       if (!data || !Array.isArray(data.clients)) data = Seed.build();
       this.state = this.normalize(data);
+      this.refreshMeta();
       this.processRecurring();
+    },
+
+    /** Status de tarefa são configuráveis (ex.: os mesmos do ClickUp). O id 'done' é sempre o status final. */
+    refreshMeta() {
+      const list = Array.isArray(this.settings.statuses) && this.settings.statuses.some((x) => x.id === 'done') ? this.settings.statuses : DEFAULT_STATUSES;
+      META.STATUSES = list;
+      META.status = byId(list);
     },
 
     normalize(d) {
@@ -277,20 +286,20 @@
         if (filter.to && l.date > filter.to) return false;
         if (filter.hideAuto && l.auto) return false;
         if (filter.impact && l.impact !== filter.impact) return false;
-        if (filter.q && !U.match([l.title, l.body, (l.tags || []).join(' ')].join(' '), filter.q)) return false;
+        if (filter.q && !U.match([l.title, l.body, l.analysis, l.planned, l.actionsDone, (l.tags || []).join(' ')].join(' '), filter.q)) return false;
         return true;
       }).sort((a, b) => (b.date + (b.time || '')).localeCompare(a.date + (a.time || '')) || b.createdAt - a.createdAt);
     },
     addLog(data, { silent = false } = {}) {
       const l = {
-        id: U.uid(), clientId: '', date: U.today(), time: U.nowTime(), type: 'nota', title: '', body: '',
+        id: U.uid(), clientId: '', date: U.today(), time: U.nowTime(), type: 'nota', title: '', body: '', analysis: '', planned: '', actionsDone: '',
         impact: 'neutro', tags: [], metrics: {}, author: this.settings.userName, createdAt: Date.now(), ...data,
       };
       this.state.logs.push(l);
       if (!silent) this.save();
       return l;
     },
-    updateLog(id, patch) { const l = this.log(id); if (!l) return; Object.assign(l, patch, { editedAt: Date.now() }); this.save(); },
+    updateLog(id, patch) { const l = this.log(id); if (!l) return; Object.assign(l, { editedAt: Date.now() }, patch); this.save(); },
     removeLog(id) { const l = this.log(id); this.state.logs = this.state.logs.filter((x) => x.id !== id); this.save(); return l; },
     restoreLog(l) { this.state.logs.push(l); this.save(); },
     lastLog(clientId, { manualOnly = true } = {}) {
@@ -371,12 +380,14 @@
       const d = JSON.parse(text);
       if (!d || !Array.isArray(d.clients)) throw new Error('Arquivo inválido');
       this.state = this.normalize(d);
+      this.refreshMeta();
       this.save();
     },
     reset(withDemo) {
       const keep = { ...this.settings, demo: false };
       this.state = withDemo ? this.normalize(Seed.build()) : this.normalize({ clients: [], tasks: [], logs: [], metrics: [], settings: keep });
-      if (withDemo) this.state.settings = { ...this.state.settings, userName: keep.userName, team: keep.team, theme: keep.theme };
+      if (withDemo) this.state.settings = { ...this.state.settings, userName: keep.userName, team: keep.team, theme: keep.theme, statuses: null };
+      this.refreshMeta();
       this.save();
     },
   };

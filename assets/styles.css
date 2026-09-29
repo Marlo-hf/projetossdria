@@ -641,3 +641,24 @@ table.data tr:hover td { background: var(--surface-2); }
   .day-head { position: static; }
   .log-card { break-inside: avoid; }
 }
+
+/* ---------- Diário: seções da análise diária ---------- */
+.l-secs { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; margin-top: 8px; }
+.l-sec { border-radius: 9px; padding: 8px 11px; background: var(--surface-2); border-left: 3px solid var(--border-strong); }
+.l-sec.sec-a { border-left-color: var(--info); }
+.l-sec.sec-p { border-left-color: var(--warn); }
+.l-sec.sec-d { border-left-color: var(--good); }
+.l-sec-h { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 2px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.l-sec-h .btn { text-transform: none; letter-spacing: 0; }
+table.data.sheet td.wrap { white-space: normal; min-width: 180px; max-width: 360px; vertical-align: top; font-size: 13px; }
+table.data.sheet td { vertical-align: top; }
+table.data.sheet ul { margin: 2px 0; padding-left: 18px; }
+.composer .mode-analise, .composer .mode-other { display: none; }
+.composer.is-analise .mode-analise { display: grid; }
+.composer:not(.is-analise) .mode-other { display: block; }
+.analysis-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 4px; }
+.analysis-grid .textarea { min-height: 96px; font-size: 13.5px; }
+.presets { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.presets .chip { font-weight: 500; font-size: 11.5px; }
+.window-note { font-size: 12px; color: var(--muted); margin: -4px 0 10px; }
+@media (max-width: 860px) { .analysis-grid { grid-template-columns: 1fr; } }

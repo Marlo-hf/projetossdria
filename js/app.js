@@ -165,9 +165,10 @@
     keys.slice(0, -1).forEach((k) => { if (!o[k] || typeof o[k] !== 'object') o[k] = {}; o = o[k]; });
     o[keys[keys.length - 1]] = val;
   };
-  const NUMERIC_PATHS = /^(contract\.(fee|budget|payday)|goals\.)/;
+  const NUMERIC_PATHS = /^(contract\.(fee|budget|payday)|goals\.|investmentCap$)/;
 
   const openNewTask = (defaults = {}) => {
+    App.pendingPlannedLog = null;
     if (defaults.clientId === undefined && currentClientId()) defaults.clientId = currentClientId();
     UI.modal(Forms.task(defaults), { wide: true });
   };
@@ -211,7 +212,8 @@
       const tp = M.logType[l.type] || M.logType.nota;
       const c = Store.client(l.clientId);
       out += `${markdown ? '- ' : ''}${tp.icon} ${l.title || tp.label}${c && title.indexOf(c.name) === -1 ? ` (${c.name})` : ''}\n`;
-      if (l.body) out += l.body.split('\n').map((x) => (markdown ? '  ' : '   ') + x).join('\n') + '\n';
+      const ind = (txt, label) => { if (txt) out += txt.split('\n').map((x, i) => (markdown ? '  ' : '   ') + (i === 0 && label ? label + ': ' : '') + x).join('\n') + '\n'; };
+      ind(l.analysis, 'Análise'); ind(l.planned, 'Ações programadas'); ind(l.actionsDone, 'Ações realizadas'); ind(l.body);
     });
     return out.trim();
   };
@@ -221,6 +223,44 @@
     const c = Store.client(currentClientId());
     const title = scope === 'all' ? 'Diário de bordo' : `Diário de bordo — ${c ? c.name : ''}`;
     return { logs, title };
+  };
+
+  const loadScript = (src, globalName) => new Promise((resolve, reject) => {
+    if (window[globalName]) return resolve();
+    const sc = document.createElement('script'); sc.src = src; sc.onload = resolve; sc.onerror = () => reject(new Error('sem conexão para carregar o leitor de planilhas'));
+    document.head.appendChild(sc);
+  });
+
+  /** Lê uma planilha no formato do diário de bordo (Data | Análise | Ações programadas | Ações realizadas). */
+  const parseDiarySheet = (wb) => {
+    const entries = []; let adAccount = '';
+    const norm = (v) => U.norm(String(v || '')).trim();
+    wb.SheetNames.forEach((name) => {
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, raw: true, defval: '' });
+      let col = null;
+      rows.forEach((row) => {
+        row.forEach((v) => { const m = String(v).match(/act=(\d+)/); if (m && !adAccount) adAccount = 'act_' + m[1]; });
+        if (!col) {
+          const i = row.findIndex((v) => norm(v) === 'data');
+          if (i >= 0) {
+            col = { date: i };
+            row.forEach((v, j) => { const n = norm(v); if (n.startsWith('analise')) col.analysis = j; else if (n.includes('programad')) col.planned = j; else if (n.includes('realizad')) col.done = j; });
+          }
+          return;
+        }
+        let d = row[col.date];
+        if (typeof d === 'number') { const u = new Date(Math.round((d - 25569) * 864e5)); d = new Date(u.getUTCFullYear(), u.getUTCMonth(), u.getUTCDate()); }
+        else if (typeof d === 'string' && /^\d{1,2}\/\d{1,2}\/\d{2,4}$/.test(d.trim())) { const [dd, mm, yy] = d.trim().split('/').map(Number); d = new Date(yy < 100 ? 2000 + yy : yy, mm - 1, dd); }
+        if (!(d instanceof Date) || isNaN(d)) return;
+        const g = (k) => (col[k] != null ? String(row[col[k]] || '').trim() : '');
+        const x = { date: U.toISO(d), analysis: g('analysis'), planned: g('planned'), actionsDone: g('done') };
+        if (!x.analysis && !x.planned && !x.actionsDone) return;
+        const t = U.norm(x.analysis + ' ' + x.planned);
+        x.impact = /ruim|caida|falho|nao ta tendo|custo alto|elevado|nao gerou/.test(t) ? 'negativo' : /\bok\b|bom|bem|voltando/.test(t) ? 'positivo' : 'neutro';
+        entries.push(x);
+      });
+    });
+    return { entries, adAccount };
   };
 
   /* ============================== Ações (cliques) ============================== */
@@ -255,6 +295,7 @@
         checklist: d.checklist.split('\n').map((x) => x.trim()).filter(Boolean).map((text) => ({ id: U.uid(), text, done: false })),
         completedAt: d.status === 'done' ? Date.now() : null,
       });
+      if (App.pendingPlannedLog) { const pl = Store.log(App.pendingPlannedLog); if (pl) Store.updateLog(pl.id, { plannedTaskId: t.id, editedAt: pl.editedAt }); App.pendingPlannedLog = null; }
       UI.closeModal();
       UI.toast('Tarefa criada');
       if (d.openAfter) App.openTask(t.id);
@@ -367,9 +408,9 @@
       const root = document.getElementById('log-form');
       const d = UI.formData(root);
       if (!d.clientId) { UI.toast('Escolha o cliente.'); root.querySelector('[name=clientId]').focus(); return; }
-      if (!d.title && !d.body) { UI.toast('Escreva um título ou detalhes.'); return; }
+      if (!d.title && !d.body && !d.analysis && !d.planned && !d.actionsDone) { UI.toast('Preencha a análise ou os detalhes.'); return; }
       const data = {
-        clientId: d.clientId, type: d.type, title: d.title, body: d.body, date: d.date || U.today(), time: d.time, impact: d.impact,
+        clientId: d.clientId, type: d.type, title: d.title, body: d.body, analysis: d.analysis, planned: d.planned, actionsDone: d.actionsDone, date: d.date || U.today(), time: d.time, impact: d.impact,
         tags: splitTags(d.tags), metrics: { spend: U.num(d.spend), leads: U.num(d.leads), contracts: U.num(d.contracts) },
       };
       if (root.dataset.id) { Store.updateLog(root.dataset.id, data); UI.toast('Registro atualizado'); }
@@ -393,8 +434,23 @@
       const comp = document.getElementById('composer');
       comp.querySelectorAll('[data-action="composer-type"]').forEach((b) => b.classList.toggle('active', b === el));
       comp.querySelector('[name=type]').value = el.dataset.type;
+      comp.classList.toggle('is-analise', el.dataset.type === 'analise');
       VS.composerType = el.dataset.type; VS.save();
-      comp.querySelector('[name=title]').focus();
+      comp.querySelector(el.dataset.type === 'analise' ? '[name=analysis]' : '[name=title]').focus();
+    },
+    preset: (el) => {
+      const ta = document.querySelector('#composer [name=analysis]'); if (!ta) return;
+      ta.value = (ta.value.trim() ? ta.value.trim() + ' ' : '') + el.dataset.text;
+      ta.focus();
+    },
+    'log-view': (el) => { VS.logView = el.dataset.view; VS.save(); App.render(); },
+    'planned-to-task': (el) => {
+      const l = Store.log(el.dataset.id);
+      openNewTask({ clientId: l.clientId, due: U.addDays(U.today(), 1), status: M.status.todo ? 'todo' : undefined });
+      App.pendingPlannedLog = l.id;
+      const f = document.getElementById('task-form');
+      f.querySelector('[name=title]').value = l.planned.split('\n')[0].slice(0, 140);
+      f.querySelector('[name=description]').value = `Ação programada no diário de bordo (${U.fmtDate(l.date)}):\n${l.planned}${l.analysis ? `\n\nAnálise: ${l.analysis}` : ''}`;
     },
     'composer-extra': () => document.getElementById('composer-extra').classList.toggle('hidden'),
     'submit-composer': () => {
@@ -402,12 +458,19 @@
       const d = UI.formData(comp);
       const clientId = d.clientId !== undefined ? d.clientId : comp.dataset.client;
       if (!clientId) { UI.toast('Escolha o cliente do registro.'); comp.querySelector('[name=clientId]')?.focus(); return; }
-      if (!d.title && !d.body) { UI.toast('Escreva o que aconteceu.'); comp.querySelector('[name=title]').focus(); return; }
-      Store.addLog({
-        clientId, type: d.type, title: d.title, body: d.body, date: d.date || U.today(), time: d.time || U.nowTime(), impact: d.impact,
+      const isA = d.type === 'analise';
+      const data = isA ? { analysis: d.analysis, planned: d.planned, actionsDone: d.actionsDone } : { title: d.title, body: d.body };
+      if (!Object.values(data).some(Boolean)) { UI.toast('Escreva o que aconteceu.'); comp.querySelector(isA ? '[name=analysis]' : '[name=title]').focus(); return; }
+      const log = Store.addLog({
+        clientId, type: d.type, ...data, date: d.date || U.today(), time: d.time || U.nowTime(), impact: d.impact,
         tags: splitTags(d.tags), metrics: { spend: U.num(d.spend), leads: U.num(d.leads), contracts: U.num(d.contracts) },
       });
-      ['title', 'body', 'spend', 'leads', 'contracts', 'tags'].forEach((k) => { const f = comp.querySelector(`[name=${k}]`); if (f) f.value = ''; });
+      if (isA && d.plannedTask && d.planned) {
+        const t = Store.addTask({ clientId, title: d.planned.split('\n')[0].slice(0, 140), due: U.addDays(U.today(), 1), priority: 'high', status: M.status.todo ? 'todo' : M.STATUSES[0].id, description: `Ação programada no diário de bordo (${U.fmtDate(log.date)})${d.analysis ? `\nAnálise: ${d.analysis}` : ''}` });
+        Store.updateLog(log.id, { plannedTaskId: t.id, editedAt: undefined });
+      }
+      ['title', 'body', 'analysis', 'planned', 'actionsDone', 'spend', 'leads', 'contracts', 'tags'].forEach((k) => { const f = comp.querySelector(`[name=${k}]`); if (f) f.value = ''; });
+      const pt = comp.querySelector('[name=plannedTask]'); if (pt) pt.checked = false;
       comp.querySelector('[name=impact]').value = 'neutro';
       UI.toast('Registrado no diário 📓');
     },
@@ -538,6 +601,23 @@
       Store.settings.team = [...new Set(team)]; Store.save(); UI.toast('Equipe atualizada');
     },
     'setting-onboarding': (el) => { Store.settings.onboardingTemplate = el.value.split('\n').map((x) => x.trim()).filter(Boolean); Store.save(); UI.toast('Modelo salvo'); },
+    'import-diary-xlsx': async (el) => {
+      const file = el.files[0]; el.value = ''; if (!file) return;
+      const clientId = currentClientId(); const c = Store.client(clientId); if (!c) return;
+      try {
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js', 'XLSX');
+        const wb = XLSX.read(await file.arrayBuffer());
+        const { entries, adAccount } = parseDiarySheet(wb);
+        if (!entries.length) { UI.toast('Não encontrei linhas com Data + Análise na planilha.'); return; }
+        const existing = new Set(Store.logs({ clientId }).map((l) => l.date + '|' + (l.analysis || '').trim()));
+        const fresh = entries.filter((x) => !existing.has(x.date + '|' + x.analysis));
+        if (!(await UI.confirm(`Importar ${fresh.length} registro(s) para o diário de ${c.name}?${entries.length - fresh.length ? ` (${entries.length - fresh.length} já existiam e serão ignorados)` : ''}`, { title: 'Importar planilha', ok: 'Importar' }))) return;
+        fresh.forEach((x) => Store.addLog({ clientId, type: 'analise', time: '', ...x }, { silent: true }));
+        if (adAccount && !c.adAccount) c.adAccount = adAccount;
+        Store.save();
+        UI.toast(`${fresh.length} registros importados 📓`);
+      } catch (err) { UI.toast('Não foi possível ler a planilha: ' + err.message); }
+    },
     'import-json': (el) => {
       const file = el.files[0]; if (!file) return;
       const reader = new FileReader();

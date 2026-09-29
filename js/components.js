@@ -244,12 +244,49 @@
       </div>
       ${l.title ? `<div class="l-title">${e(l.title)}</div>` : ''}
       ${l.body ? `<div class="l-body">${U.rich(l.body)}</div>` : ''}
+      ${C.logSections(l)}
       ${chips.length || (l.tags || []).length || task ? `<div class="l-foot">
         ${chips.length ? `<div class="metric-chips">${chips.map((x) => `<span class="metric-chip">${e(x)}</span>`).join('')}</div>` : ''}
         ${(l.tags || []).map((x) => `<span class="tag">#${e(x)}</span>`).join('')}
         ${task ? `<a href="javascript:void 0" data-action="open-task" data-id="${task.id}" class="small">🔗 ${e(task.title)}</a>` : ''}
       </div>` : ''}
     </article>`;
+  };
+
+  /** Os três campos do diário (igual à planilha): análise, ações programadas, ações realizadas. */
+  C.logSections = (l) => {
+    if (!l.analysis && !l.planned && !l.actionsDone) return '';
+    const block = (cls, label, text, extra = '') => text ? `<div class="l-sec ${cls}"><div class="l-sec-h">${label}${extra}</div><div class="l-body">${U.rich(text)}</div></div>` : '';
+    const pending = l.planned && !l.actionsDone && !l.plannedTaskId;
+    return `<div class="l-secs">
+      ${block('sec-a', '🔎 Análise', l.analysis)}
+      ${block('sec-p', '🎯 Ações programadas p/ melhoria', l.planned, l.plannedTaskId ? ' <span class="tag">tarefa criada</span>' : pending ? ` <button class="btn btn-sm btn-ghost" data-action="planned-to-task" data-id="${l.id}" title="Criar tarefa com esta ação">➕ virar tarefa</button>` : '')}
+      ${block('sec-d', '✅ Ações realizadas', l.actionsDone)}
+    </div>`;
+  };
+
+  /** Visão "planilha" do diário — mesmas colunas da planilha de diário de bordo. */
+  C.logTable = (logs, { showClient = false } = {}) => {
+    if (!logs.length) return C.empty('📓', 'Nenhum registro encontrado');
+    const imp = { positivo: '🟢', neutro: '⚪', negativo: '🔴' };
+    const cell = (l) => {
+      if (l.analysis || l.planned || l.actionsDone) return [l.analysis || l.title, l.planned, l.actionsDone];
+      const tp = M().logType[l.type] || M().logType.nota;
+      return [`${tp.icon} ${[l.title, l.body].filter(Boolean).join(' — ')}`, '', ''];
+    };
+    return `<div class="card table-wrap"><table class="data sheet">
+      <thead><tr><th>Data</th>${showClient ? '<th>Cliente</th>' : ''}<th></th><th>Análise</th><th>Ações programadas p/ melhoria</th><th>Ações realizadas</th><th></th></tr></thead>
+      <tbody>${logs.map((l) => {
+        const [a, p, d] = cell(l);
+        const c = showClient ? Store.client(l.clientId) : null;
+        return `<tr data-action="edit-log" data-id="${l.id}" style="cursor:pointer">
+          <td><b>${U.fmtDate(l.date, true)}</b><div class="small muted">${U.WD[U.parse(l.date).getDay()]}</div></td>
+          ${showClient ? `<td>${c ? `<span class="client-chip"><span class="dot" style="background:${e(c.color)}"></span>${e(c.name)}</span>` : ''}</td>` : ''}
+          <td title="${e(l.impact)}">${imp[l.impact] || ''}</td>
+          <td class="wrap">${U.rich(a || '')}</td><td class="wrap">${U.rich(p || '')}</td><td class="wrap">${U.rich(d || '')}</td>
+          <td>${l.pinned ? '📌' : ''}</td>
+        </tr>`;
+      }).join('')}</tbody></table></div>`;
   };
 
   C.timeline = (logs, { showClient = false } = {}) => {
