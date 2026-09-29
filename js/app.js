@@ -605,7 +605,7 @@
       const file = el.files[0]; el.value = ''; if (!file) return;
       const clientId = currentClientId(); const c = Store.client(clientId); if (!c) return;
       try {
-        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js', 'XLSX');
+        await loadScript('assets/vendor/xlsx.full.min.js', 'XLSX');
         const wb = XLSX.read(await file.arrayBuffer());
         const { entries, adAccount } = parseDiarySheet(wb);
         if (!entries.length) { UI.toast('Não encontrei linhas com Data + Análise na planilha.'); return; }

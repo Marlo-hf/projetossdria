@@ -662,3 +662,10 @@ table.data.sheet ul { margin: 2px 0; padding-left: 18px; }
 .presets .chip { font-weight: 500; font-size: 11.5px; }
 .window-note { font-size: 12px; color: var(--muted); margin: -4px 0 10px; }
 @media (max-width: 860px) { .analysis-grid { grid-template-columns: 1fr; } }
+
+/* Listas compactas dentro de cartões (Início / visão geral do cliente) */
+.dash-col .task-row { grid-template-columns: 26px minmax(0, 1fr) 150px 36px 90px; }
+.dash-col .task-row.no-client { grid-template-columns: 26px minmax(0, 1fr) 36px 90px 150px; }
+.dash-col .task-row .c-prio { display: none; }
+.dash-col .task-row:not(.no-client) .c-status { display: none; }
+@media (max-width: 860px) { .dash-col .task-row, .dash-col .task-row.no-client { grid-template-columns: 26px minmax(0, 1fr) auto; } }

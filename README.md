@@ -16,13 +16,18 @@ python3 -m http.server 8000
 Os dados ficam salvos no navegador (localStorage). Use **Ajustes → Exportar backup** para salvar/transportar os dados.
 Na primeira abertura aparecem dados de exemplo; clique em **Começar do zero** para usar com seus clientes reais.
 
+## Trazendo seus dados (ClickUp e planilhas)
+
+- **ClickUp:** importe o arquivo `bordo-clickup-import.json` em **Ajustes → Importar backup**. Ele traz clientes, tarefas, status, equipe e o histórico de tarefas concluídas. Por segurança, esse arquivo **não** fica no repositório (que é público).
+- **Planilhas de diário de bordo (.xlsx):** na pasta do cliente, aba **Diário de bordo → 📥 Importar planilha**. Lê as colunas *Data · Análise · Ações programadas para buscar melhoria · Ações realizadas* e ignora linhas já importadas. No Google Sheets, use *Arquivo → Fazer download → Microsoft Excel*.
+
 ## O que tem
 
 - **Início**: foco do dia (atrasadas + hoje), alertas inteligentes ("precisa de atenção"), saúde de cada cliente, atividade recente do diário, produtividade da semana.
 - **Pasta do cliente** com abas:
   - **Visão geral** — KPIs, próximas tarefas, últimos registros, gráfico Leads × CPL, metas, contato, links e notas.
   - **Tarefas** — lista (agrupada por prazo/status/prioridade/responsável) ou quadro Kanban com arrastar e soltar.
-  - **Diário de bordo** — registro rápido por tipo (otimização, campanha, criativo, reunião, problema, resultado…), impacto positivo/negativo, métricas e tags; linha do tempo por dia, registros fixados, mapa de frequência, busca/filtros, copiar resumo para WhatsApp, exportar `.md` e imprimir/PDF.
+  - **Diário de bordo** — no mesmo formato da planilha (Análise · Ações programadas · Ações realizadas), com frases prontas, ação programada que vira tarefa, visão *Linha do tempo* ou *Planilha*; além de registro rápido por tipo (otimização, campanha, criativo, reunião, problema, resultado…), impacto positivo/negativo, métricas e tags; linha do tempo por dia, registros fixados, mapa de frequência, busca/filtros, copiar resumo para WhatsApp, exportar `.md` e imprimir/PDF.
   - **Métricas** — histórico semanal (investimento, leads, qualificados, reuniões, contratos, honorários) com CPL, custo por contrato, ROAS e comparação com a semana anterior.
   - **Informações & acessos** — dados, contato, contrato, metas, links, IDs de contas e notas (salva automaticamente).
 - **Saúde do cliente (0–100)**: calculada por tarefas atrasadas, dias sem registro no diário, CPL vs meta e métricas desatualizadas.

@@ -49,7 +49,7 @@
     const c = Store.client(l.clientId);
     return `<div class="mini-item" data-action="goto" data-href="#/cliente/${l.clientId}/diario" >
       <span style="font-size:16px">${tp.icon}</span>
-      <div class="grow"><div class="ellipsis" style="font-weight:600">${e(l.title || tp.label)}</div>
+      <div class="grow"><div class="ellipsis" style="font-weight:600">${e(l.title || l.analysis || l.actionsDone || l.planned || tp.label)}</div>
       <div class="small muted ellipsis">${c ? `<span style="color:${e(c.color)}">●</span> ${e(c.name)} · ` : ''}${e(U.fmtDayLabel(l.date))} ${e(l.time || '')}</div></div>
       ${l.impact !== 'neutro' ? `<span class="impact ${l.impact}">${l.impact === 'positivo' ? '▲' : '▼'}</span>` : ''}
     </div>`;
@@ -925,6 +925,7 @@
       <div class="drawer-head">
         ${c ? `<a class="client-chip" href="#/cliente/${c.id}" data-action="close-drawer-nav"><span class="dot" style="background:${e(c.color)}"></span>${e(c.name)}</a>` : '<span class="client-chip muted">Interno</span>'}
         <span class="muted small">· criada ${U.timeAgo(t.createdAt)}</span>
+        ${t.clickupUrl ? `<a class="small" href="${e(t.clickupUrl)}" target="_blank" rel="noopener">↗ ClickUp</a>` : ''}
         <div style="margin-left:auto" class="row">
           <button class="btn btn-sm ${t.status === 'done' ? '' : 'btn-primary'}" data-action="toggle-done" data-id="${t.id}">${t.status === 'done' ? '↺ Reabrir' : '✓ Concluir'}</button>
           <button class="icon-btn" data-action="duplicate-task" data-id="${t.id}" title="Duplicar">⧉</button>
