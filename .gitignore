@@ -1,3 +1,4 @@
 data/
 *.local.json
 bordo-*.json
+js/seed-data.js

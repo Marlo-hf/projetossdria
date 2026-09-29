@@ -23,19 +23,15 @@ Na primeira abertura aparecem dados de exemplo; clique em **Começar do zero** p
 
 ## O que tem
 
-- **Início**: foco do dia (atrasadas + hoje), alertas inteligentes ("precisa de atenção"), saúde de cada cliente, atividade recente do diário, produtividade da semana.
-- **Pasta do cliente** com abas:
-  - **Visão geral** — KPIs, próximas tarefas, últimos registros, gráfico Leads × CPL, metas, contato, links e notas.
-  - **Tarefas** — lista (agrupada por prazo/status/prioridade/responsável) ou quadro Kanban com arrastar e soltar.
-  - **Diário de bordo** — no mesmo formato da planilha (Análise · Ações programadas · Ações realizadas), com frases prontas, ação programada que vira tarefa, visão *Linha do tempo* ou *Planilha*; além de registro rápido por tipo (otimização, campanha, criativo, reunião, problema, resultado…), impacto positivo/negativo, métricas e tags; linha do tempo por dia, registros fixados, mapa de frequência, busca/filtros, copiar resumo para WhatsApp, exportar `.md` e imprimir/PDF.
-  - **Métricas** — histórico semanal (investimento, leads, qualificados, reuniões, contratos, honorários) com CPL, custo por contrato, ROAS e comparação com a semana anterior.
-  - **Informações & acessos** — dados, contato, contrato, metas, links, IDs de contas e notas (salva automaticamente).
-- **Saúde do cliente (0–100)**: calculada por tarefas atrasadas, dias sem registro no diário, CPL vs meta e métricas desatualizadas.
-- **Relatório da semana** gerado automaticamente (métricas + diário + tarefas), pronto para copiar ou abrir no WhatsApp.
-- **Tarefas completas**: checklist, comentários, histórico, tempo gasto, recorrência (diária/semanal/quinzenal/mensal), tags, responsável.
-- Tarefa concluída vira registro automático no diário do cliente.
-- **Calendário** mensal com prazos e registros (arraste para mudar prazo).
-- **Busca global / comandos** (`Ctrl+K`), atalhos (`N` tarefa, `D` diário, `C` cliente, `G` + `I/T/C/D/K` navegar), desfazer exclusões, modo escuro e layout para celular.
+Interface no estilo do ClickUp, mais enxuta:
+
+- **Barra lateral em árvore:** Início, Demandas, Demandas da equipe, Diário de bordo e o espaço **Clientes** com uma pasta por cliente (Visão geral · Demandas · Diário de bordo), além de Produção de criativos e Interno.
+- **Clientes (CRM):** tabela com cliente, o que ele mexe, página do Meta, conta de anúncio, responsável na agência, status, demandas abertas e data do último diário.
+- **Pasta do cliente:** Visão geral com os dados do cliente editáveis (salvam sozinhos), Demandas em lista agrupada por status, Quadro e Diário de bordo.
+- **Diário de bordo:** tabela no formato da planilha (Data · Análise · Ações programadas p/ melhoria · Ações realizadas). A ação programada pode virar tarefa; dá para importar planilhas .xlsx e copiar o diário.
+- **Demandas da equipe:** o que falta fazer por pessoa (abertas e atrasadas); arrastar um cartão passa a demanda para outra pessoa.
+- **Tarefas:** status, responsável, vencimento e prioridade editáveis direto na lista (clique na célula), janela da tarefa com descrição, checklist e atividade/comentários.
+- Busca com `Ctrl+K`, `N` cria tarefa, tema claro/escuro e layout para celular.
 
 ## Estrutura
 

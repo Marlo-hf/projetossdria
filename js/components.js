@@ -1,29 +1,71 @@
-/* Infraestrutura de UI (toast, modal, confirmação) e componentes reutilizáveis. */
+/* Infraestrutura de UI (ícones, toast, modal, menus) e componentes reutilizáveis. */
 (function () {
   const e = U.esc;
 
+  /* ============================== Ícones (traço, 24×24) ============================== */
+  const ICONS = {
+    home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/>',
+    tasks: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="m8 12 3 3 5-6"/>',
+    team: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18 14.8c1.8.7 3 2.5 3.5 5.2"/>',
+    book: '<path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H20v15H5.5A1.5 1.5 0 0 0 4 19.5z"/><path d="M4 19.5A1.5 1.5 0 0 0 5.5 21H20"/><path d="M8 7h8M8 11h6"/>',
+    folder: '<path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2.5h8.5A1.5 1.5 0 0 1 21 9v9.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z"/>',
+    list: '<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/>',
+    board: '<rect x="3" y="3" width="7" height="18" rx="1.5"/><rect x="14" y="3" width="7" height="11" rx="1.5"/>',
+    grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+    search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    chevR: '<path d="m9 6 6 6-6 6"/>',
+    chevD: '<path d="m6 9 6 6 6-6"/>',
+    x: '<path d="M6 6l12 12M18 6 6 18"/>',
+    trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+    flag: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+    calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+    settings: '<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>',
+    ext: '<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+    msg: '<path d="M4 5h16v11H9l-5 4z"/>',
+    clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
+    copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
+    check: '<path d="m5 12 5 5 9-10"/>',
+    link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+    ads: '<path d="M3 10v4h4l8 5V5L7 10z"/><path d="M19 9a4 4 0 0 1 0 6"/>',
+    image: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/>',
+    inbox: '<path d="M3 13h5l1.5 3h5L16 13h5"/><path d="M5 5h14l2 8v6H3v-6z"/>',
+    menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
+    moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+    tag: '<path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="8" cy="8" r="1.5"/>',
+    status: '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l2.5 2.5"/>',
+    note: '<path d="M5 3h10l4 4v14H5z"/><path d="M9 12h6M9 16h6M9 8h3"/>',
+    phone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
+    money: '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
+    target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".6"/>',
+    insta: '<rect x="4" y="4" width="16" height="16" rx="4.5"/><circle cx="12" cy="12" r="3.5"/><circle cx="16.8" cy="7.2" r=".6"/>',
+    sheet: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 3v18"/>',
+    download: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+    upload: '<path d="M12 20V9M7 14l5-5 5 5M5 4h14"/>',
+  };
+  const I = (name, size = 16, extra = '') => `<svg class="ic" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${ICONS[name] || ''}</svg>`;
+
   /* ============================== UI infra ============================== */
   const UI = {
-    toast(msg, { undo, undoLabel = 'Desfazer', duration = 4200 } = {}) {
+    toast(msg, { undo, undoLabel = 'Desfazer', duration = 4000 } = {}) {
       const root = document.getElementById('toast-root');
       const el = document.createElement('div');
       el.className = 'toast';
       el.innerHTML = `<span>${e(msg)}</span>${undo ? `<button type="button">${e(undoLabel)}</button>` : ''}`;
       root.appendChild(el);
-      const kill = () => el.remove();
-      if (undo) el.querySelector('button').onclick = () => { undo(); kill(); };
-      setTimeout(kill, duration);
+      if (undo) el.querySelector('button').onclick = () => { undo(); el.remove(); };
+      setTimeout(() => el.remove(), duration);
     },
 
-    modal(html, { wide = false, className = '', onMount, onClose } = {}) {
+    modal(html, { wide = false, className = '', onClose } = {}) {
       UI.closeModal();
       const root = document.getElementById('modal-root');
       root.innerHTML = `<div class="modal-wrap"><div class="overlay" data-modal-close></div><div class="modal ${wide ? 'wide' : ''} ${className}" role="dialog" aria-modal="true">${html}</div></div>`;
       UI._onClose = onClose;
       const modal = root.querySelector('.modal');
       root.querySelectorAll('[data-modal-close]').forEach((b) => b.addEventListener('click', () => UI.closeModal()));
-      if (onMount) onMount(modal);
-      const first = modal.querySelector('[autofocus], input:not([type=hidden]):not([type=checkbox]), textarea, select');
+      const first = modal.querySelector('[autofocus], input:not([type=hidden]):not([type=checkbox]):not([type=date]), textarea');
       if (first) setTimeout(() => first.focus(), 20);
       return modal;
     },
@@ -41,338 +83,208 @@
       return new Promise((resolve) => {
         let answered = false;
         const modal = UI.modal(`
-          <div class="modal-head"><h2>${e(title)}</h2></div>
-          <div class="modal-body"><p style="margin:0">${e(message)}</p></div>
-          <div class="modal-foot">
-            <button class="btn" data-modal-close>Cancelar</button>
-            <button class="btn ${danger ? 'btn-danger' : 'btn-primary'}" data-ok>${e(ok)}</button>
-          </div>`, { onClose: () => { if (!answered) resolve(false); } });
+          <div class="modal-h"><h2>${e(title)}</h2></div>
+          <div class="modal-b"><p style="margin:0">${e(message)}</p></div>
+          <div class="modal-f"><button class="btn" data-modal-close>Cancelar</button><button class="btn ${danger ? 'btn-danger' : 'btn-primary'}" data-ok>${e(ok)}</button></div>`,
+        { onClose: () => { if (!answered) resolve(false); } });
         modal.querySelector('[data-ok]').addEventListener('click', () => { answered = true; UI.closeModal(); resolve(true); });
-        setTimeout(() => modal.querySelector('[data-ok]').focus(), 30);
       });
     },
 
-    /** Lê os campos [name] de um formulário para um objeto. */
     formData(root) {
       const out = {};
-      root.querySelectorAll('[name]').forEach((el) => {
-        if (el.type === 'checkbox') out[el.name] = el.checked;
-        else out[el.name] = el.value.trim();
-      });
+      root.querySelectorAll('[name]').forEach((el) => { out[el.name] = el.type === 'checkbox' ? el.checked : el.value.trim(); });
       return out;
+    },
+
+    /** Menu suspenso ancorado em um elemento (status, responsável, prioridade, data…). */
+    popover(anchor, html, onMount) {
+      UI.closePopover();
+      const pop = document.createElement('div');
+      pop.className = 'pop';
+      pop.innerHTML = html;
+      document.body.appendChild(pop);
+      const r = anchor.getBoundingClientRect();
+      const w = pop.offsetWidth, h = pop.offsetHeight;
+      const left = Math.min(r.left, window.innerWidth - w - 8);
+      let top = r.bottom + 4;
+      if (top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 4);
+      pop.style.left = Math.max(8, left) + 'px';
+      pop.style.top = top + 'px';
+      UI._pop = pop;
+      setTimeout(() => document.addEventListener('mousedown', UI._popAway = (ev) => { if (!pop.contains(ev.target)) UI.closePopover(); }), 0);
+      if (onMount) onMount(pop);
+      return pop;
+    },
+    menu(anchor, items, onPick) {
+      const html = items.map((it, i) => it === '-' ? '<div class="sep"></div>' : `<div class="opt ${it.current ? 'cur' : ''}" data-i="${i}">${it.html || e(it.label)}</div>`).join('');
+      return UI.popover(anchor, html, (pop) => {
+        pop.querySelectorAll('[data-i]').forEach((o) => o.addEventListener('click', () => { const it = items[Number(o.dataset.i)]; UI.closePopover(); onPick(it.value, it); }));
+      });
+    },
+    closePopover() {
+      if (UI._pop) { UI._pop.remove(); UI._pop = null; }
+      if (UI._popAway) { document.removeEventListener('mousedown', UI._popAway); UI._popAway = null; }
     },
   };
 
   /* ============================== Componentes ============================== */
   const M = () => window.META;
-
-  const C = {};
+  const C = { I };
 
   C.avatar = (name, cls = '') => name
-    ? `<span class="avatar ${cls}" style="background:${U.hashColor(name)}" title="${e(name)}">${e(U.initials(name))}</span>`
-    : `<span class="avatar ${cls}" style="background:var(--surface-3);color:var(--muted)" title="Sem responsável">–</span>`;
+    ? `<span class="av ${cls}" style="background:${U.hashColor(name)}" title="${e(name)}">${e(U.initials(name))}</span>`
+    : `<span class="av empty ${cls}" title="Sem responsável">${I('user', 12)}</span>`;
 
-  C.clientAvatar = (c, cls = 'md') => `<span class="avatar ${cls}" style="background:${e(c.color)}">${e(U.initials(c.name))}</span>`;
+  C.statusOf = (id) => M().status[id] || M().STATUSES[0];
+  C.status = (id, soft) => { const s = C.statusOf(id); return `<span class="st ${soft ? 'soft' : ''}" style="--c:${s.color}">${e(s.label)}</span>`; };
+  C.sdot = (id) => { const s = C.statusOf(id); return `<span class="sdot ${id === 'done' ? 'done' : ''}" style="--c:${s.color}">${id === 'done' ? I('check', 9, 'stroke-width="3.5"') : ''}</span>`; };
 
-  C.clientChip = (clientId) => {
-    const c = clientId ? Store.client(clientId) : null;
-    if (!c) return '<span class="client-chip muted"><span class="dot" style="background:var(--border-strong)"></span>Interno</span>';
-    return `<span class="client-chip"><span class="dot" style="background:${e(c.color)}"></span><span class="ellipsis">${e(c.name)}</span></span>`;
-  };
-
-  C.statusPill = (id) => {
-    const s = M().status[id] || M().STATUSES[0];
-    return `<span class="pill" style="color:${s.color};background:${s.color}1f">${e(s.label)}</span>`;
-  };
-  C.clientStatusPill = (id) => {
-    const s = M().clientStatus[id] || M().CLIENT_STATUSES[1];
-    return `<span class="pill" style="color:${s.color};background:${s.color}1f">${e(s.label)}</span>`;
-  };
-  C.prio = (id) => {
+  const PRIO_COLOR = { urgent: 'var(--red)', high: 'var(--amber)', normal: 'var(--blue)', low: 'var(--gray)' };
+  C.prio = (id, label = true) => {
+    if (!id || id === 'none') return `<span class="flag" style="--c:var(--line-2)">${I('flag', 14)}</span>`;
     const p = M().priority[id] || M().priority.normal;
-    return `<span class="prio" style="color:${p.color}"><span class="flag">⚑</span>${e(p.label)}</span>`;
+    return `<span class="flag" style="--c:${PRIO_COLOR[p.id]}">${I('flag', 14, 'fill="currentColor" fill-opacity=".18"')}${label ? e(p.label) : ''}</span>`;
   };
   C.due = (t) => {
-    if (!t.due) return '<span class="due none">Sem prazo</span>';
-    const cls = t.status === 'done' ? '' : t.due < U.today() ? 'overdue' : t.due === U.today() ? 'today' : '';
+    if (!t.due) return `<span class="due none">${I('calendar', 14)}</span>`;
+    const cls = t.status === 'done' ? '' : t.due < U.today() ? 'late' : t.due === U.today() ? 'today' : '';
     return `<span class="due ${cls}" title="${e(U.fmtLong(t.due))}">${e(U.fmtDue(t.due))}</span>`;
   };
-  C.health = (h, lg) => {
-    if (h.score == null) return `<div class="health ${lg ? 'lg' : ''}" style="--p:0"><span>—</span></div>`;
-    const col = h.level === 'good' ? 'var(--good)' : h.level === 'warn' ? 'var(--warn)' : 'var(--bad)';
-    return `<div class="health ${lg ? 'lg' : ''}" style="--p:${h.score};--c:${col}" title="Saúde: ${h.score}/100 — ${e(h.reasons.join(' · '))}"><span>${h.score}</span></div>`;
+  C.clientTag = (clientId) => {
+    const c = clientId ? Store.client(clientId) : null;
+    if (!c) return '<span class="ctag muted"><span class="sq" style="--c:var(--line-2)"></span>Interno</span>';
+    return `<span class="ctag"><span class="sq" style="--c:${e(c.color)}"></span><span class="ellipsis">${e(c.name)}</span></span>`;
   };
-  C.healthColor = (h) => h.score == null ? 'var(--border-strong)' : h.level === 'good' ? 'var(--good)' : h.level === 'warn' ? 'var(--warn)' : 'var(--bad)';
+  C.folder = (c, size = 16) => `<span class="folder-ic" style="--c:${e(c.color)}">${I('folder', size, 'fill="currentColor" fill-opacity=".25"')}</span>`;
+  C.empty = (title, sub = '', action = '') => `<div class="empty"><b>${e(title)}</b>${e(sub)}${action ? `<div style="margin-top:12px">${action}</div>` : ''}</div>`;
 
-  C.empty = (icon, title, sub = '', action = '') => `
-    <div class="empty"><div class="big">${icon}</div><strong>${e(title)}</strong>${sub ? `<div>${e(sub)}</div>` : ''}${action ? `<div style="margin-top:12px">${action}</div>` : ''}</div>`;
-
-  C.taskMeta = (t) => {
+  C.meta = (t) => {
     const bits = [];
-    if (t.checklist.length) {
-      const d = t.checklist.filter((i) => i.done).length;
-      bits.push(`<span title="Checklist">☑ ${d}/${t.checklist.length}</span>`);
-    }
-    if (t.comments.length) bits.push(`<span title="Comentários">💬 ${t.comments.length}</span>`);
-    if (t.recurrence && t.recurrence !== 'none') bits.push('<span title="Recorrente">🔁</span>');
-    if (t.description) bits.push('<span title="Tem descrição">≡</span>');
-    const tags = (t.tags || []).slice(0, 3).map((x) => `<span class="tag">${e(x)}</span>`).join('');
-    return `<span class="t-meta">${tags}${bits.join('')}</span>`;
+    if (t.checklist.length) bits.push(`<span title="Checklist">${I('tasks', 12)} ${t.checklist.filter((i) => i.done).length}/${t.checklist.length}</span>`);
+    if (t.comments.length) bits.push(`<span title="Comentários">${I('msg', 12)} ${t.comments.length}</span>`);
+    if (t.description) bits.push(`<span title="Tem descrição">${I('note', 12)}</span>`);
+    (t.tags || []).filter((x) => x !== 'Produção de criativos').slice(0, 2).forEach((x) => bits.push(`<span class="tag">${e(x)}</span>`));
+    return bits.length ? `<span class="meta">${bits.join('')}</span>` : '';
   };
 
-  C.taskRow = (t, { showClient = true } = {}) => `
-    <div class="task-row ${t.status === 'done' ? 'done' : ''} ${showClient ? '' : 'no-client'}" data-action="open-task" data-id="${t.id}">
-      <input type="checkbox" class="check" data-action="toggle-done" data-id="${t.id}" ${t.status === 'done' ? 'checked' : ''} aria-label="Concluir">
-      <div class="t-title"><span class="name">${e(t.title)}</span>${C.taskMeta(t)}</div>
-      ${showClient ? `<div class="c-client">${C.clientChip(t.clientId)}</div>` : ''}
-      <div class="c-assignee">${C.avatar(t.assignee)}</div>
-      <div>${C.due(t)}</div>
-      <div class="c-prio">${C.prio(t.priority)}</div>
-      <div class="c-status">${C.statusPill(t.status)}</div>
+  /* ---------- Lista (agrupada) ---------- */
+  const cols = ({ showClient, showStatus }) => ['minmax(260px,1fr)', showClient ? '180px' : null, '110px', '120px', '110px', showStatus ? '160px' : null].filter(Boolean).join(' ');
+
+  C.row = (t, o) => `
+    <div class="tr ${t.status === 'done' ? 'done' : ''}" data-action="open-task" data-id="${t.id}">
+      <div class="name"><button class="cell-btn" data-action="pick-status" data-id="${t.id}" title="Mudar status">${C.sdot(t.status)}</button><span class="t">${e(t.title)}</span>${C.meta(t)}</div>
+      ${o.showClient ? `<div class="ellipsis">${C.clientTag(t.clientId)}</div>` : ''}
+      <div><button class="cell-btn" data-action="pick-assignee" data-id="${t.id}" title="${e(t.assignee || 'Definir responsável')}">${C.avatar(t.assignee)}</button></div>
+      <div><button class="cell-btn" data-action="pick-due" data-id="${t.id}">${C.due(t)}</button></div>
+      <div><button class="cell-btn" data-action="pick-prio" data-id="${t.id}">${C.prio(t.priority)}</button></div>
+      ${o.showStatus ? `<div><button class="cell-btn" data-action="pick-status" data-id="${t.id}">${C.status(t.status, true)}</button></div>` : ''}
     </div>`;
 
-  C.taskHead = (showClient) => `
-    <div class="task-row head ${showClient ? '' : 'no-client'}">
-      <span></span><span>Tarefa</span>${showClient ? '<span class="c-client">Cliente</span>' : ''}<span class="c-assignee">Resp.</span><span>Prazo</span><span class="c-prio">Prioridade</span><span class="c-status">Status</span>
-    </div>`;
-
-  /** Agrupa tarefas conforme o critério escolhido. */
-  C.groupTasks = (tasks, groupBy) => {
+  C.groupTasks = (tasks, by) => {
     const T = U.today();
-    const groups = [];
-    const push = (key, label, color, items, defaults = {}) => groups.push({ key, label, color, items, defaults });
-    if (groupBy === 'status') {
-      M().STATUSES.forEach((s) => push('s:' + s.id, s.label, s.color, tasks.filter((t) => t.status === s.id), { status: s.id }));
-    } else if (groupBy === 'priority') {
-      M().PRIORITIES.forEach((p) => push('p:' + p.id, p.label, p.color, tasks.filter((t) => t.priority === p.id && t.status !== 'done'), { priority: p.id }));
-      push('p:done', 'Concluídas', '#12a36b', tasks.filter((t) => t.status === 'done'), { status: 'done' });
-    } else if (groupBy === 'client') {
-      const ids = [...new Set(tasks.map((t) => t.clientId || ''))];
-      const cs = Store.clients().filter((c) => ids.includes(c.id));
-      cs.forEach((c) => push('c:' + c.id, c.name, c.color, tasks.filter((t) => t.clientId === c.id), { clientId: c.id }));
-      if (ids.includes('')) push('c:', 'Interno (sem cliente)', '#8b93a7', tasks.filter((t) => !t.clientId), { clientId: '' });
-    } else if (groupBy === 'assignee') {
-      const names = [...new Set(tasks.map((t) => t.assignee || ''))].sort();
-      names.forEach((n) => push('a:' + n, n || 'Sem responsável', n ? U.hashColor(n) : '#8b93a7', tasks.filter((t) => (t.assignee || '') === n), { assignee: n }));
+    const g = [];
+    const push = (key, head, items, defaults = {}) => g.push({ key, head, items, defaults });
+    if (by === 'status') {
+      M().STATUSES.forEach((s) => push('s:' + s.id, C.status(s.id), tasks.filter((t) => t.status === s.id), { status: s.id }));
+    } else if (by === 'assignee') {
+      const names = [...new Set([...(Store.settings.team || []), ...tasks.map((t) => t.assignee || '')])];
+      names.forEach((n) => push('a:' + n, `<span class="row">${C.avatar(n)}<b>${e(n || 'Sem responsável')}</b></span>`, tasks.filter((t) => (t.assignee || '') === n), { assignee: n }));
+    } else if (by === 'client') {
+      Store.clients().forEach((c) => push('c:' + c.id, `<span class="row">${C.folder(c)}<b>${e(c.name)}</b></span>`, tasks.filter((t) => t.clientId === c.id), { clientId: c.id }));
+      push('c:', '<span class="row"><b>Interno</b></span>', tasks.filter((t) => !t.clientId), { clientId: '' });
+    } else if (by === 'priority') {
+      M().PRIORITIES.forEach((p) => push('p:' + p.id, `<b>${C.prio(p.id)}</b>`, tasks.filter((t) => t.priority === p.id), { priority: p.id }));
     } else {
       const open = tasks.filter((t) => t.status !== 'done');
-      const wkEnd = U.addDays(U.weekStart(T), 6);
-      push('d:overdue', 'Atrasadas', '#e0443e', open.filter((t) => t.due && t.due < T), { due: T });
-      push('d:today', 'Hoje', '#d88a06', open.filter((t) => t.due === T), { due: T });
-      push('d:tomorrow', 'Amanhã', '#2f7de1', open.filter((t) => t.due === U.addDays(T, 1)), { due: U.addDays(T, 1) });
-      push('d:week', 'Ainda esta semana', '#5b5bd6', open.filter((t) => t.due > U.addDays(T, 1) && t.due <= wkEnd), { due: wkEnd });
-      push('d:later', 'Mais tarde', '#9333ea', open.filter((t) => t.due > wkEnd && t.due > U.addDays(T, 1)), {});
-      push('d:none', 'Sem prazo', '#8b93a7', open.filter((t) => !t.due), { due: '' });
-      push('d:done', 'Concluídas', '#12a36b', tasks.filter((t) => t.status === 'done'), { status: 'done' });
+      const lbl = (txt, color) => `<span class="st" style="--c:${color}">${txt}</span>`;
+      push('d:late', lbl('Atrasadas', 'var(--red)'), open.filter((t) => t.due && t.due < T), { due: T });
+      push('d:today', lbl('Hoje', 'var(--amber)'), open.filter((t) => t.due === T), { due: T });
+      push('d:next', lbl('Próximos 7 dias', 'var(--blue)'), open.filter((t) => t.due > T && t.due <= U.addDays(T, 7)), { due: U.addDays(T, 1) });
+      push('d:later', lbl('Mais tarde', '#8b5cf6'), open.filter((t) => t.due > U.addDays(T, 7)), {});
+      push('d:none', lbl('Sem data', 'var(--gray)'), open.filter((t) => !t.due), { due: '' });
+      push('d:done', lbl('Concluídas', 'var(--green)'), tasks.filter((t) => t.status === 'done'), { status: 'done' });
     }
-    return groups;
+    return g;
   };
 
-  C.taskList = (tasks, { groupBy = 'status', showClient = true, defaults = {}, collapsed = [] } = {}) => {
-    const groups = C.groupTasks(Store.sortTasks(tasks), groupBy);
-    const visible = groups.filter((g) => g.items.length || ['s:todo', 'd:today', 'c:' + (defaults.clientId || '')].includes(g.key) || (groupBy === 'status' && g.key !== 's:done'));
-    if (!tasks.length && !visible.length) return C.empty('🗂️', 'Nenhuma tarefa aqui', 'Crie a primeira tarefa para começar.');
-    return visible.map((g) => {
-      const isCol = collapsed.includes(g.key) || (g.key.endsWith(':done') && !collapsed.includes('open:' + g.key));
+  C.taskList = (tasks, { groupBy = 'status', showClient = true, defaults = {}, open = [] } = {}) => {
+    const showStatus = groupBy !== 'status';
+    const o = { showClient, showStatus };
+    const groups = C.groupTasks(Store.sortTasks(tasks), groupBy).filter((g, i) => g.items.length || (groupBy === 'status' && i === 0));
+    if (!groups.length) return C.empty('Nenhuma tarefa', 'Crie a primeira tarefa com o botão "Tarefa".');
+    return groups.map((g) => {
+      const isDone = g.key === 's:done' || g.key === 'd:done';
+      const closed = isDone ? !open.includes(g.key) : open.includes('x' + g.key);
       const d = { ...defaults, ...g.defaults };
       return `
-      <section class="task-group">
-        <div class="group-head ${isCol ? 'collapsed' : ''}" data-action="toggle-group" data-key="${e(g.key)}">
-          <span class="caret">▼</span><span class="gbar" style="background:${e(g.color)}"></span>
-          <span>${e(g.label)}</span><span class="gcount">${g.items.length}</span>
+      <section class="grp ${closed ? 'closed' : ''}">
+        <div class="grp-h"><button class="caret" data-action="toggle-group" data-key="${e(g.key)}" aria-label="Recolher">${I('chevD', 14)}</button>${g.head}<span class="n">${g.items.length}</span></div>
+        <div class="tbl" style="--cols:${cols(o)}">
+          <div class="tr th"><span style="padding-left:22px">Nome</span>${showClient ? '<span>Cliente</span>' : ''}<span>Responsável</span><span>Vencimento</span><span>Prioridade</span>${showStatus ? '<span>Status</span>' : ''}</div>
+          ${g.items.map((t) => C.row(t, o)).join('')}
+          ${isDone ? '' : `<div class="qadd">${I('plus', 14)}<input data-quickadd='${e(JSON.stringify(d))}' placeholder="Adicionar tarefa"></div>`}
         </div>
-        ${isCol ? '' : `
-        <div class="task-table">
-          ${g.items.length ? C.taskHead(showClient) : ''}
-          ${g.items.map((t) => C.taskRow(t, { showClient })).join('')}
-          ${g.key.endsWith(':done') ? '' : `<div class="quick-add"><span class="muted">＋</span><input data-quickadd='${e(JSON.stringify(d))}' placeholder="Adicionar tarefa e pressionar Enter…"></div>`}
-        </div>`}
       </section>`;
     }).join('');
   };
 
-  C.kanban = (tasks, { showClient = true, defaults = {} } = {}) => {
-    const sorted = Store.sortTasks(tasks);
-    return `<div class="kanban">${M().STATUSES.map((s) => {
-      const items = sorted.filter((t) => t.status === s.id);
-      return `
-      <div class="k-col" data-drop-status="${s.id}">
-        <div class="k-col-head"><span class="gbar" style="width:4px;height:14px;border-radius:2px;background:${s.color}"></span>${e(s.label)}<span class="muted" style="font-weight:600">${items.length}</span></div>
-        <div class="k-cards">
-          ${items.map((t) => {
-            const p = M().priority[t.priority] || M().priority.normal;
-            const ckd = t.checklist.filter((i) => i.done).length;
-            return `
-            <div class="k-card" draggable="true" data-drag-task="${t.id}" data-action="open-task" data-id="${t.id}" style="border-left-color:${p.color}">
-              ${showClient ? `<div style="margin-bottom:4px">${C.clientChip(t.clientId)}</div>` : ''}
-              <div class="k-title">${e(t.title)}</div>
-              ${t.checklist.length ? `<div class="progress" style="margin-bottom:8px"><span style="width:${(ckd / t.checklist.length) * 100}%"></span></div>` : ''}
-              <div class="k-foot">${C.due(t)}${C.taskMeta(t)}<span style="margin-left:auto">${C.avatar(t.assignee)}</span></div>
-            </div>`;
-          }).join('')}
-        </div>
-        <button class="k-add" data-action="new-task" data-defaults='${e(JSON.stringify({ ...defaults, status: s.id }))}'>＋ Nova tarefa</button>
-      </div>`;
-    }).join('')}</div>`;
-  };
-
-  /* ---------- Diário ---------- */
-  C.logCard = (l, { showClient = false } = {}) => {
-    const tp = M().logType[l.type] || M().logType.nota;
-    const c = l.clientId ? Store.client(l.clientId) : null;
-    const m = l.metrics || {};
-    const chips = [];
-    if (m.spend != null && m.spend !== '') chips.push(`Invest. ${U.fmtMoney(m.spend)}`);
-    if (m.leads != null && m.leads !== '') chips.push(`${U.fmtNum(m.leads)} leads`);
-    if (m.spend && m.leads) chips.push(`CPL ${U.fmtMoney(m.spend / m.leads)}`);
-    if (m.contracts != null && m.contracts !== '') chips.push(`${U.fmtNum(m.contracts)} contratos`);
-    const task = l.taskId ? Store.task(l.taskId) : null;
-    return `
-    <article class="card log-card ${l.pinned ? 'pinned' : ''}" data-icon="${tp.icon}" id="log-${l.id}">
-      <div class="l-head">
-        <span class="l-type">${tp.icon} ${e(tp.label)}</span>
-        ${showClient && c ? `<a class="log-client" href="#/cliente/${c.id}/diario"><span class="dot" style="background:${e(c.color)}"></span>${e(c.name)}</a>` : ''}
-        <span class="l-time">${e(l.time || '')}${l.author ? ' · ' + e(l.author) : ''}${l.auto ? ' · automático' : ''}${l.editedAt ? ' · editado' : ''}</span>
-        ${l.pinned ? '<span title="Fixado">📌</span>' : ''}
-        ${l.impact && l.impact !== 'neutro' ? `<span class="impact ${l.impact}">${l.impact === 'positivo' ? '▲ Positivo' : '▼ Negativo'}</span>` : ''}
-        <div class="l-actions">
-          <button class="icon-btn sm" data-action="pin-log" data-id="${l.id}" title="${l.pinned ? 'Desafixar' : 'Fixar'}">📌</button>
-          <button class="icon-btn sm" data-action="edit-log" data-id="${l.id}" title="Editar">✏️</button>
-          <button class="icon-btn sm" data-action="log-to-task" data-id="${l.id}" title="Criar tarefa a partir deste registro">➕</button>
-          <button class="icon-btn sm" data-action="delete-log" data-id="${l.id}" title="Excluir">🗑️</button>
-        </div>
-      </div>
-      ${l.title ? `<div class="l-title">${e(l.title)}</div>` : ''}
-      ${l.body ? `<div class="l-body">${U.rich(l.body)}</div>` : ''}
-      ${C.logSections(l)}
-      ${chips.length || (l.tags || []).length || task ? `<div class="l-foot">
-        ${chips.length ? `<div class="metric-chips">${chips.map((x) => `<span class="metric-chip">${e(x)}</span>`).join('')}</div>` : ''}
-        ${(l.tags || []).map((x) => `<span class="tag">#${e(x)}</span>`).join('')}
-        ${task ? `<a href="javascript:void 0" data-action="open-task" data-id="${task.id}" class="small">🔗 ${e(task.title)}</a>` : ''}
-      </div>` : ''}
-    </article>`;
-  };
-
-  /** Os três campos do diário (igual à planilha): análise, ações programadas, ações realizadas. */
-  C.logSections = (l) => {
-    if (!l.analysis && !l.planned && !l.actionsDone) return '';
-    const block = (cls, label, text, extra = '') => text ? `<div class="l-sec ${cls}"><div class="l-sec-h">${label}${extra}</div><div class="l-body">${U.rich(text)}</div></div>` : '';
-    const pending = l.planned && !l.actionsDone && !l.plannedTaskId;
-    return `<div class="l-secs">
-      ${block('sec-a', '🔎 Análise', l.analysis)}
-      ${block('sec-p', '🎯 Ações programadas p/ melhoria', l.planned, l.plannedTaskId ? ' <span class="tag">tarefa criada</span>' : pending ? ` <button class="btn btn-sm btn-ghost" data-action="planned-to-task" data-id="${l.id}" title="Criar tarefa com esta ação">➕ virar tarefa</button>` : '')}
-      ${block('sec-d', '✅ Ações realizadas', l.actionsDone)}
+  /* ---------- Quadro ---------- */
+  C.card = (t, showClient) => `
+    <div class="card" draggable="true" data-drag-task="${t.id}" data-action="open-task" data-id="${t.id}">
+      ${showClient ? `<div class="small">${C.clientTag(t.clientId)}</div>` : ''}
+      <div class="ct">${e(t.title)}</div>
+      <div class="cf">${C.due(t)}${C.prio(t.priority, false)}${C.meta(t)}${C.avatar(t.assignee)}</div>
     </div>`;
-  };
 
-  /** Visão "planilha" do diário — mesmas colunas da planilha de diário de bordo. */
-  C.logTable = (logs, { showClient = false } = {}) => {
-    if (!logs.length) return C.empty('📓', 'Nenhum registro encontrado');
-    const imp = { positivo: '🟢', neutro: '⚪', negativo: '🔴' };
-    const cell = (l) => {
-      if (l.analysis || l.planned || l.actionsDone) return [l.analysis || l.title, l.planned, l.actionsDone];
-      const tp = M().logType[l.type] || M().logType.nota;
-      return [`${tp.icon} ${[l.title, l.body].filter(Boolean).join(' — ')}`, '', ''];
-    };
-    return `<div class="card table-wrap"><table class="data sheet">
-      <thead><tr><th>Data</th>${showClient ? '<th>Cliente</th>' : ''}<th></th><th>Análise</th><th>Ações programadas p/ melhoria</th><th>Ações realizadas</th><th></th></tr></thead>
-      <tbody>${logs.map((l) => {
-        const [a, p, d] = cell(l);
-        const c = showClient ? Store.client(l.clientId) : null;
-        return `<tr data-action="edit-log" data-id="${l.id}" style="cursor:pointer">
-          <td><b>${U.fmtDate(l.date, true)}</b><div class="small muted">${U.WD[U.parse(l.date).getDay()]}</div></td>
-          ${showClient ? `<td>${c ? `<span class="client-chip"><span class="dot" style="background:${e(c.color)}"></span>${e(c.name)}</span>` : ''}</td>` : ''}
-          <td title="${e(l.impact)}">${imp[l.impact] || ''}</td>
-          <td class="wrap">${U.rich(a || '')}</td><td class="wrap">${U.rich(p || '')}</td><td class="wrap">${U.rich(d || '')}</td>
-          <td>${l.pinned ? '📌' : ''}</td>
-        </tr>`;
-      }).join('')}</tbody></table></div>`;
-  };
-
-  C.timeline = (logs, { showClient = false } = {}) => {
-    if (!logs.length) return C.empty('📓', 'Nenhum registro encontrado', 'Use o campo acima para registrar a primeira entrada.');
-    const pinned = logs.filter((l) => l.pinned);
-    const byDay = new Map();
-    logs.forEach((l) => { if (!byDay.has(l.date)) byDay.set(l.date, []); byDay.get(l.date).push(l); });
-    let html = '';
-    if (pinned.length) {
-      html += `<div class="day-group"><div class="day-head"><div class="d-num">📌</div><span class="d-label">Fixados</span><span class="d-count">${pinned.length}</span></div>
-        <div class="day-entries">${pinned.map((l) => C.logCard(l, { showClient: true })).join('')}</div></div>`;
-    }
-    for (const [date, items] of byDay) {
-      const d = U.parse(date);
-      html += `
-      <div class="day-group">
-        <div class="day-head">
-          <div class="d-num"><div><b>${d.getDate()}</b><small>${U.MONTHS[d.getMonth()]}</small></div></div>
-          <span class="d-label">${e(U.fmtDayLabel(date))}</span>
-          <span class="d-count">· ${items.length} registro${items.length > 1 ? 's' : ''}</span>
-        </div>
-        <div class="day-entries">${items.map((l) => C.logCard(l, { showClient })).join('')}</div>
-      </div>`;
-    }
-    return `<div class="timeline">${html}</div>`;
-  };
-
-  /** Calendário de calor com os registros das últimas 5 semanas */
-  C.heatmap = (logs) => {
-    const T = U.today();
-    const start = U.addDays(U.weekStart(T), -28);
-    const counts = {};
-    logs.filter((l) => !l.auto).forEach((l) => { counts[l.date] = (counts[l.date] || 0) + 1; });
-    let cells = '';
-    for (let i = 0; i < 35; i++) {
-      const day = U.addDays(start, i);
-      const n = counts[day] || 0;
-      const lv = n === 0 ? '' : n === 1 ? 'l1' : n <= 3 ? 'l2' : 'l3';
-      const future = day > T;
-      cells += `<span class="${lv} ${day === T ? 'today' : ''}" style="${future ? 'opacity:.35' : ''}" title="${U.fmtDate(day)}: ${n} registro(s)"></span>`;
-    }
-    return `<div class="heat">${cells}</div>
-      <div class="row small muted" style="margin-top:6px;justify-content:space-between"><span>${U.fmtDate(start)}</span><span>hoje</span></div>`;
-  };
-
-  /* ---------- Gráficos ---------- */
-  /** Barras + linha. data: [{label, bar, line}] */
-  C.comboChart = (data, { barColor = 'var(--accent)', lineColor = 'var(--warn)', lineFmt = (v) => v, barFmt = (v) => v, target } = {}) => {
-    if (!data.length) return '';
-    const W = 640, H = 220, P = { l: 40, r: 48, t: 14, b: 26 };
-    const iw = W - P.l - P.r, ih = H - P.t - P.b;
-    const maxB = Math.max(1, ...data.map((d) => d.bar || 0)) * 1.15;
-    const lines = data.map((d) => d.line).filter((v) => v != null);
-    const maxL = Math.max(1, ...lines, target || 0) * 1.2;
-    const bw = Math.min(46, (iw / data.length) * 0.55);
-    const x = (i) => P.l + (iw / data.length) * (i + 0.5);
-    const yb = (v) => P.t + ih - (v / maxB) * ih;
-    const yl = (v) => P.t + ih - (v / maxL) * ih;
-    let s = '';
-    for (let g = 0; g <= 4; g++) {
-      const y = P.t + (ih / 4) * g;
-      s += `<line class="grid-line" x1="${P.l}" x2="${W - P.r}" y1="${y}" y2="${y}"/>`;
-      s += `<text x="${P.l - 6}" y="${y + 3}" text-anchor="end">${barFmt(Math.round(maxB - (maxB / 4) * g))}</text>`;
-      s += `<text x="${W - P.r + 6}" y="${y + 3}">${lineFmt(maxL - (maxL / 4) * g)}</text>`;
-    }
-    data.forEach((d, i) => {
-      const h = ((d.bar || 0) / maxB) * ih;
-      s += `<rect x="${x(i) - bw / 2}" y="${yb(d.bar || 0)}" width="${bw}" height="${Math.max(0, h)}" rx="4" fill="${barColor}" opacity=".85"><title>${U.esc(d.label)}: ${barFmt(d.bar || 0)}</title></rect>`;
-      s += `<text x="${x(i)}" y="${H - 8}" text-anchor="middle">${U.esc(d.label)}</text>`;
-    });
-    if (target) {
-      s += `<line x1="${P.l}" x2="${W - P.r}" y1="${yl(target)}" y2="${yl(target)}" stroke="${lineColor}" stroke-dasharray="4 4" opacity=".6"/>`;
-      s += `<text x="${W - P.r - 4}" y="${yl(target) - 5}" text-anchor="end" style="fill:${lineColor}">meta</text>`;
-    }
-    const pts = data.map((d, i) => d.line != null ? [x(i), yl(d.line)] : null).filter(Boolean);
-    if (pts.length > 1) s += `<polyline points="${pts.map((p) => p.join(',')).join(' ')}" fill="none" stroke="${lineColor}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
-    data.forEach((d, i) => { if (d.line != null) s += `<circle cx="${x(i)}" cy="${yl(d.line)}" r="4" fill="var(--surface)" stroke="${lineColor}" stroke-width="2.5"><title>${U.esc(d.label)}: ${lineFmt(d.line)}</title></circle>`; });
-    return `<svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img">${s}</svg>`;
-  };
-
-  C.miniBars = (values, labels, highlightLast = true) => {
-    const max = Math.max(1, ...values);
-    return `<div class="bars">${values.map((v, i) => `
-      <div class="b ${highlightLast && i === values.length - 1 ? 'today' : ''}" title="${U.esc(labels[i])}: ${v}">
-        <small>${v || ''}</small><span style="height:${(v / max) * 70}%"></span><small>${U.esc(labels[i])}</small>
+  C.board = (tasks, { showClient = true, defaults = {}, by = 'status' } = {}) => {
+    const sorted = Store.sortTasks(tasks);
+    const colsList = by === 'assignee'
+      ? [...new Set([...(Store.settings.team || []), ...tasks.map((t) => t.assignee || '')])].map((n) => ({ head: `${C.avatar(n)}<b>${e(n || 'Sem responsável')}</b>`, items: sorted.filter((t) => (t.assignee || '') === n), drop: `data-drop-assignee="${e(n)}"`, def: { assignee: n } }))
+      : M().STATUSES.map((s) => ({ head: C.status(s.id), items: sorted.filter((t) => t.status === s.id), drop: `data-drop-status="${s.id}"`, def: { status: s.id } }));
+    return `<div class="board">${colsList.map((c) => `
+      <div class="col" ${c.drop}>
+        <div class="col-h">${c.head}<span class="n">${c.items.length}</span></div>
+        <div class="cards">${c.items.map((t) => C.card(t, showClient)).join('')}</div>
+        <button class="col-add" data-action="new-task" data-defaults='${e(JSON.stringify({ ...defaults, ...c.def }))}'>${I('plus', 14)} Adicionar tarefa</button>
       </div>`).join('')}</div>`;
+  };
+
+  /* ---------- Diário de bordo (tabela no formato da planilha) ---------- */
+  const IMPACT = { positivo: ['Bom', 'var(--green)'], neutro: ['Neutro', 'var(--gray)'], negativo: ['Ruim', 'var(--red)'] };
+  C.diaryComposer = ({ clientId, withClient }) => `
+    <div class="composer" id="composer">
+      <div class="composer-grid ${withClient ? 'with-client' : ''}">
+        <div><label for="cp-date">Data</label><input type="date" id="cp-date" name="date" value="${U.today()}"></div>
+        ${withClient ? `<div><label for="cp-client">Cliente</label><select id="cp-client" name="clientId"><option value="">Escolha…</option>${Store.clients({ includeClosed: false }).map((c) => `<option value="${c.id}" ${c.id === clientId ? 'selected' : ''}>${e(c.name)}</option>`).join('')}</select></div>` : ''}
+        <div><label for="cp-a">Análise</label><textarea id="cp-a" name="analysis" placeholder="Como está a campanha? Leads, CPL, gasto…"></textarea></div>
+        <div><label for="cp-p">Ações programadas p/ melhoria</label><textarea id="cp-p" name="planned" placeholder="O que precisa ser feito"></textarea></div>
+        <div><label for="cp-d">Ações realizadas</label><textarea id="cp-d" name="actionsDone" placeholder="O que foi feito"></textarea></div>
+      </div>
+      <div class="composer-foot">
+        <span class="note">A análise é feita sempre na janela do dia anterior e de uma semana para trás.</span>
+        <select class="chipsel" name="impact" id="cp-impact" style="margin-left:auto"><option value="neutro">Resultado: neutro</option><option value="positivo">Resultado: bom</option><option value="negativo">Resultado: ruim</option></select>
+        <label class="row small" title="Cria uma tarefa com a ação programada"><input type="checkbox" class="check" name="plannedTask" id="cp-task"> Virar tarefa</label>
+        <button class="btn btn-primary btn-sm" data-action="submit-composer" data-client="${e(clientId || '')}">Adicionar ao diário</button>
+      </div>
+    </div>`;
+
+  C.diaryTable = (logs, { showClient = false } = {}) => {
+    if (!logs.length) return C.empty('Nenhuma atualização no diário', 'Use o campo acima para registrar a primeira.');
+    return `<table class="dt"><thead><tr><th>Data</th>${showClient ? '<th>Cliente</th>' : ''}<th>Análise</th><th>Ações programadas p/ melhoria</th><th>Ações realizadas</th><th>Por</th></tr></thead><tbody>
+      ${logs.map((l) => {
+        const c = showClient ? Store.client(l.clientId) : null;
+        const [lbl, col] = IMPACT[l.impact] || IMPACT.neutro;
+        const a = l.analysis || [l.title, l.body].filter(Boolean).join(' — ');
+        return `<tr data-action="edit-log" data-id="${l.id}">
+          <td class="top date"><span class="res" style="background:${col}" title="Resultado: ${lbl}"></span>${U.fmtDate(l.date, true)}<div class="small muted" style="padding-left:14px">${U.WD[U.parse(l.date).getDay()]}</div></td>
+          ${showClient ? `<td class="top">${c ? `<span class="ctag"><span class="sq" style="--c:${e(c.color)}"></span>${e(c.name)}</span>` : ''}</td>` : ''}
+          <td class="top wrap">${e(a)}</td>
+          <td class="top wrap">${e(l.planned || '')}${l.plannedTaskId ? ' <span class="tag">tarefa criada</span>' : ''}</td>
+          <td class="top wrap">${e(l.actionsDone || '')}</td>
+          <td class="top">${l.author ? C.avatar(l.author) : ''}</td>
+        </tr>`;
+      }).join('')}</tbody></table>`;
   };
 
   window.UI = UI;

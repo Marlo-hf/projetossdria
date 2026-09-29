@@ -3,7 +3,7 @@
   const KEY = 'bordo:data:v1';
 
   const DEFAULT_STATUSES = [
-    { id: 'todo', label: 'A fazer', color: '#8b93a7' },
+    { id: 'todo', label: 'Para fazer', color: '#8b93a7' },
     { id: 'doing', label: 'Em andamento', color: '#2f7de1' },
     { id: 'waiting', label: 'Aguardando cliente', color: '#d88a06' },
     { id: 'review', label: 'Em revisão', color: '#9333ea' },
@@ -46,6 +46,7 @@
 
   const DEFAULT_SETTINGS = {
     userName: 'Você',
+    workspaceName: 'Agência',
     team: ['Você'],
     theme: 'auto',
     staleDays: 7,
@@ -78,6 +79,9 @@
     load() {
       let data = null;
       try { data = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { data = null; }
+      // Página privada pode trazer os dados reais da agência (window.BORDO_SEED); substitui os dados de exemplo.
+      const seed = window.BORDO_SEED;
+      if (seed && (!data || !Array.isArray(data.clients) || data.settings?.demo || (data.settings?.seedVersion || 0) < (seed.settings?.seedVersion || 0) && !data.settings?.touched)) data = JSON.parse(JSON.stringify(seed));
       if (!data || !Array.isArray(data.clients)) data = Seed.build();
       this.state = this.normalize(data);
       this.refreshMeta();
@@ -94,7 +98,7 @@
     normalize(d) {
       return {
         version: 1,
-        clients: (d.clients || []).map((c) => ({ links: [], access: [], goals: {}, contact: {}, contract: {}, notes: '', tags: [], ...c })),
+        clients: (d.clients || []).map((c) => ({ links: [], access: [], goals: {}, contact: {}, contract: {}, notes: '', tags: [], metaPage: '', instagram: '', owner: '', adAccount: '', ...c })),
         tasks: (d.tasks || []).map((t) => ({ tags: [], checklist: [], comments: [], activity: [], timeSpent: 0, recurrence: 'none', priority: 'normal', status: 'todo', description: '', ...t })),
         logs: (d.logs || []).map((l) => ({ tags: [], metrics: {}, impact: 'neutro', type: 'nota', ...l })),
         metrics: d.metrics || [],
@@ -103,6 +107,7 @@
     },
 
     save() {
+      this.state.settings.touched = true;
       try { localStorage.setItem(KEY, JSON.stringify(this.state)); } catch (e) {
         window.UI && UI.toast('Não foi possível salvar no navegador (armazenamento cheio ou bloqueado).');
       }
@@ -412,7 +417,7 @@
           ],
           access: [{ label: 'Conta de anúncios', value: 'act_0000000000' }, { label: 'Página FB', value: 'Almeida & Rocha' }],
           notes: 'Cliente prefere receber relatório **toda segunda até 10h** pelo WhatsApp.\n- Não usar imagens de dinheiro nos criativos\n- Foco: empresário com dívida bancária acima de R$ 100 mil',
-          tags: ['Meta Ads', 'Premium'], createdAt: now - 150 * 864e5,
+          tags: ['Meta Ads', 'Premium'], createdAt: now - 150 * 864e5, metaPage: 'https://facebook.com/', owner: 'Você', adAccount: 'act_000000001',
         },
         {
           id: 'c2', name: 'Costa Direito Bancário', company: 'Costa & Lima Advocacia', niche: 'Golpe PIX / fraude bancária', status: 'ativo', color: '#12a36b',
