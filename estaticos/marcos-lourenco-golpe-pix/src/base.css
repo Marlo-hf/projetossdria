@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --navy: #0b1a2e;
+  --navy-2: #12263f;
+  --gold: #d4a64a;
+  --gold-2: #f1d08a;
+  --red: #e5383b;
+  --green: #32bcad;
+  --white: #ffffff;
+  --muted: #9fb0c5;
+}
+
+html, body { width: 1080px; height: 1350px; }
+
+body {
+  font-family: 'Montserrat', 'Liberation Sans', sans-serif;
+  color: var(--white);
+  background: var(--navy);
+  overflow: hidden;
+  position: relative;
+}
+
+.brand {
+  display: flex; align-items: center; gap: 18px;
+}
+.brand .mark {
+  width: 64px; height: 64px; border-radius: 50%;
+  border: 3px solid var(--gold);
+  display: grid; place-items: center;
+  font-family: 'Playfair Display', serif; font-weight: 800; font-size: 26px;
+  color: var(--gold);
+}
+.brand .name { font-weight: 800; font-size: 26px; letter-spacing: .5px; }
+.brand .sub { font-weight: 600; font-size: 16px; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; }
+
+.cta {
+  display: inline-flex; align-items: center; gap: 18px;
+  background: linear-gradient(180deg, #2fd27a, #1fa85d);
+  color: #fff; font-weight: 800; font-size: 34px;
+  padding: 28px 46px; border-radius: 999px;
+  box-shadow: 0 14px 40px rgba(31,168,93,.45);
+  text-transform: uppercase; letter-spacing: .5px;
+}
+.cta svg { width: 40px; height: 40px; }
+
+.disclaimer {
+  font-size: 15px; font-weight: 500; color: var(--muted); line-height: 1.4;
+}
