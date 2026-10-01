@@ -1,292 +1,166 @@
-/* Infraestrutura de UI (ícones, toast, modal, menus) e componentes reutilizáveis. */
+/* Ícones, infraestrutura de UI (toast, modal, menus), números do Meta Ads por período e peças reutilizáveis. */
 (function () {
   const e = U.esc;
 
-  /* ============================== Ícones (traço, 24×24) ============================== */
-  const ICONS = {
-    home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/>',
-    tasks: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="m8 12 3 3 5-6"/>',
-    team: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18 14.8c1.8.7 3 2.5 3.5 5.2"/>',
-    book: '<path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H20v15H5.5A1.5 1.5 0 0 0 4 19.5z"/><path d="M4 19.5A1.5 1.5 0 0 0 5.5 21H20"/><path d="M8 7h8M8 11h6"/>',
-    folder: '<path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2.5h8.5A1.5 1.5 0 0 1 21 9v9.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z"/>',
-    list: '<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/>',
-    board: '<rect x="3" y="3" width="7" height="18" rx="1.5"/><rect x="14" y="3" width="7" height="11" rx="1.5"/>',
-    grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
-    search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
-    plus: '<path d="M12 5v14M5 12h14"/>',
-    chevR: '<path d="m9 6 6 6-6 6"/>',
-    chevD: '<path d="m6 9 6 6 6-6"/>',
-    x: '<path d="M6 6l12 12M18 6 6 18"/>',
-    trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
-    flag: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
-    calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
-    settings: '<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>',
-    ext: '<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
-    msg: '<path d="M4 5h16v11H9l-5 4z"/>',
-    clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
-    user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
-    copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
-    check: '<path d="m5 12 5 5 9-10"/>',
-    link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
-    ads: '<path d="M3 10v4h4l8 5V5L7 10z"/><path d="M19 9a4 4 0 0 1 0 6"/>',
-    image: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/>',
-    inbox: '<path d="M3 13h5l1.5 3h5L16 13h5"/><path d="M5 5h14l2 8v6H3v-6z"/>',
-    menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
-    moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
-    tag: '<path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="8" cy="8" r="1.5"/>',
-    status: '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l2.5 2.5"/>',
-    note: '<path d="M5 3h10l4 4v14H5z"/><path d="M9 12h6M9 16h6M9 8h3"/>',
-    phone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
-    money: '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
-    target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".6"/>',
-    insta: '<rect x="4" y="4" width="16" height="16" rx="4.5"/><circle cx="12" cy="12" r="3.5"/><circle cx="16.8" cy="7.2" r=".6"/>',
-    sheet: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 3v18"/>',
-    download: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
-    upload: '<path d="M12 20V9M7 14l5-5 5 5M5 4h14"/>',
+  /* ============================== Ícones ============================== */
+  const P = {
+    painel: 'M4 13h6V4H4zM14 20h6V11h-6zM4 20h6v-3H4zM14 7h6V4h-6z',
+    diario: 'M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3zM9 9h6M9 13h4',
+    clientes: 'M3 7h18v13H3zM8 7V4h8v3',
+    equipe: 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21c0-4 3-6 7-6s7 2 7 6M17 3.5a4 4 0 0 1 0 7.5M22 21c0-3-1.5-5-4-5.7',
+    criativos: 'M4 5h16v14H4zM4 15l5-5 4 4 3-3 4 4M15 9h.01',
+    ajustes: 'M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1M15 4v4M9 10v4M17 16v4',
+    spark: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z',
+    back: 'm15 6-6 6 6 6',
+    plus: 'M12 5v14M5 12h14',
+    x: 'M6 6l12 12M18 6 6 18',
+    check: 'm5 12 5 5 9-10',
+    search: 'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 20l-3.5-3.5',
+    send: 'M12 19V5M5 12l7-7 7 7',
+    stop: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM9 9h6v6H9z',
+    up: 'M3 17l6-6 4 4 8-8M15 7h6v6',
+    zero: 'M12 8v5M12 16.5v.5M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18',
+    book: 'M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z',
+    trash: 'M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3',
+    ext: 'M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5',
+    copy: 'M8 8h12v12H8zM16 8V4H4v12h4',
+    upload: 'M12 20V9M7 14l5-5 5 5M5 4h14',
+    clock: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7v5l3 2',
   };
-  const I = (name, size = 16, extra = '') => `<svg class="ic" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${ICONS[name] || ''}</svg>`;
+  const I = (n, s = 18, w = 1.9) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${P[n] || ''}"/></svg>`;
 
-  /* ============================== UI infra ============================== */
+  /* ============================== UI ============================== */
   const UI = {
     toast(msg, { undo, undoLabel = 'Desfazer', duration = 4000 } = {}) {
-      const root = document.getElementById('toast-root');
       const el = document.createElement('div');
       el.className = 'toast';
       el.innerHTML = `<span>${e(msg)}</span>${undo ? `<button type="button">${e(undoLabel)}</button>` : ''}`;
-      root.appendChild(el);
+      document.getElementById('toast-root').appendChild(el);
       if (undo) el.querySelector('button').onclick = () => { undo(); el.remove(); };
       setTimeout(() => el.remove(), duration);
     },
-
-    modal(html, { wide = false, className = '', onClose } = {}) {
+    modal(html, { wide = false, onClose } = {}) {
       UI.closeModal();
       const root = document.getElementById('modal-root');
-      root.innerHTML = `<div class="modal-wrap"><div class="overlay" data-modal-close></div><div class="modal ${wide ? 'wide' : ''} ${className}" role="dialog" aria-modal="true">${html}</div></div>`;
+      root.innerHTML = `<div class="modal-wrap"><div class="overlay" data-modal-close></div><div class="modal ${wide ? 'wide' : ''}" role="dialog" aria-modal="true">${html}</div></div>`;
       UI._onClose = onClose;
-      const modal = root.querySelector('.modal');
       root.querySelectorAll('[data-modal-close]').forEach((b) => b.addEventListener('click', () => UI.closeModal()));
-      const first = modal.querySelector('[autofocus], input:not([type=hidden]):not([type=checkbox]):not([type=date]), textarea');
-      if (first) setTimeout(() => first.focus(), 20);
-      return modal;
+      const m = root.querySelector('.modal');
+      const f = m.querySelector('[autofocus]'); if (f) setTimeout(() => f.focus(), 30);
+      return m;
     },
     closeModal() {
       const root = document.getElementById('modal-root');
       if (!root.innerHTML) return false;
       root.innerHTML = '';
-      const cb = UI._onClose; UI._onClose = null;
-      if (cb) cb();
+      const cb = UI._onClose; UI._onClose = null; if (cb) cb();
       return true;
     },
     isModalOpen() { return !!document.getElementById('modal-root').innerHTML; },
-
     confirm(message, { title = 'Confirmar', ok = 'Confirmar', danger = false } = {}) {
       return new Promise((resolve) => {
-        let answered = false;
-        const modal = UI.modal(`
-          <div class="modal-h"><h2>${e(title)}</h2></div>
-          <div class="modal-b"><p style="margin:0">${e(message)}</p></div>
-          <div class="modal-f"><button class="btn" data-modal-close>Cancelar</button><button class="btn ${danger ? 'btn-danger' : 'btn-primary'}" data-ok>${e(ok)}</button></div>`,
-        { onClose: () => { if (!answered) resolve(false); } });
-        modal.querySelector('[data-ok]').addEventListener('click', () => { answered = true; UI.closeModal(); resolve(true); });
+        let done = false;
+        const m = UI.modal(`<div class="modal-h"><h2>${e(title)}</h2></div><div class="modal-b"><p style="margin:0;color:var(--text-2)">${e(message)}</p></div>
+          <div class="modal-f"><button class="btn" data-modal-close>Cancelar</button><button class="btn ${danger ? 'btn-danger' : 'btn-violet'}" data-ok>${e(ok)}</button></div>`,
+        { onClose: () => { if (!done) resolve(false); } });
+        m.querySelector('[data-ok]').addEventListener('click', () => { done = true; UI.closeModal(); resolve(true); });
       });
     },
-
     formData(root) {
-      const out = {};
-      root.querySelectorAll('[name]').forEach((el) => { out[el.name] = el.type === 'checkbox' ? el.checked : el.value.trim(); });
-      return out;
-    },
-
-    /** Menu suspenso ancorado em um elemento (status, responsável, prioridade, data…). */
-    popover(anchor, html, onMount) {
-      UI.closePopover();
-      const pop = document.createElement('div');
-      pop.className = 'pop';
-      pop.innerHTML = html;
-      document.body.appendChild(pop);
-      const r = anchor.getBoundingClientRect();
-      const w = pop.offsetWidth, h = pop.offsetHeight;
-      const left = Math.min(r.left, window.innerWidth - w - 8);
-      let top = r.bottom + 4;
-      if (top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 4);
-      pop.style.left = Math.max(8, left) + 'px';
-      pop.style.top = top + 'px';
-      UI._pop = pop;
-      setTimeout(() => document.addEventListener('mousedown', UI._popAway = (ev) => { if (!pop.contains(ev.target)) UI.closePopover(); }), 0);
-      if (onMount) onMount(pop);
-      return pop;
+      const o = {};
+      root.querySelectorAll('[name]').forEach((el) => { o[el.name] = el.type === 'checkbox' ? el.checked : el.value.trim(); });
+      return o;
     },
     menu(anchor, items, onPick) {
-      const html = items.map((it, i) => it === '-' ? '<div class="sep"></div>' : `<div class="opt ${it.current ? 'cur' : ''}" data-i="${i}">${it.html || e(it.label)}</div>`).join('');
-      return UI.popover(anchor, html, (pop) => {
-        pop.querySelectorAll('[data-i]').forEach((o) => o.addEventListener('click', () => { const it = items[Number(o.dataset.i)]; UI.closePopover(); onPick(it.value, it); }));
-      });
+      UI.closeMenu();
+      const pop = document.createElement('div');
+      pop.className = 'pop-menu';
+      pop.innerHTML = items.map((it, i) => `<div class="opt ${it.current ? 'cur' : ''}" data-i="${i}">${it.html || e(it.label)}</div>`).join('');
+      document.body.appendChild(pop);
+      const r = anchor.getBoundingClientRect();
+      pop.style.left = Math.max(8, Math.min(r.left, innerWidth - pop.offsetWidth - 8)) + 'px';
+      let top = r.bottom + 6; if (top + pop.offsetHeight > innerHeight - 8) top = Math.max(8, r.top - pop.offsetHeight - 6);
+      pop.style.top = top + 'px';
+      pop.querySelectorAll('[data-i]').forEach((o) => o.addEventListener('click', () => { const it = items[+o.dataset.i]; UI.closeMenu(); onPick(it.value); }));
+      UI._menu = pop;
+      setTimeout(() => document.addEventListener('mousedown', UI._away = (ev) => { if (!pop.contains(ev.target)) UI.closeMenu(); }), 0);
     },
-    closePopover() {
-      if (UI._pop) { UI._pop.remove(); UI._pop = null; }
-      if (UI._popAway) { document.removeEventListener('mousedown', UI._popAway); UI._popAway = null; }
+    closeMenu() {
+      if (UI._menu) { UI._menu.remove(); UI._menu = null; }
+      if (UI._away) { document.removeEventListener('mousedown', UI._away); UI._away = null; }
     },
   };
 
-  /* ============================== Componentes ============================== */
-  const M = () => window.META;
-  const C = { I };
+  /* ============================== Meta Ads ============================== */
+  const brl = (v) => 'R$ ' + Number(v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const kk = (v) => (v >= 1000 ? 'R$ ' + (v / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mil' : 'R$ ' + Math.round(v || 0).toLocaleString('pt-BR'));
+  const pct = (a, b) => (a && b ? Math.round((a / b - 1) * 100) : null);
+  const dm = (iso) => { const d = U.parse(iso); return `${d.getDate()}/${d.getMonth() + 1}`; };
 
-  C.avatar = (name, cls = '') => name
-    ? `<span class="av ${cls}" style="background:${U.hashColor(name)}" title="${e(name)}">${e(U.initials(name))}</span>`
-    : `<span class="av empty ${cls}" title="Sem responsável">${I('user', 12)}</span>`;
-
-  C.statusOf = (id) => M().status[id] || M().STATUSES[0];
-  C.status = (id, soft) => { const s = C.statusOf(id); return `<span class="st ${soft ? 'soft' : ''}" style="--c:${s.color}">${e(s.label)}</span>`; };
-  C.sdot = (id) => { const s = C.statusOf(id); return `<span class="sdot ${id === 'done' ? 'done' : ''}" style="--c:${s.color}">${id === 'done' ? I('check', 9, 'stroke-width="3.5"') : ''}</span>`; };
-
-  const PRIO_COLOR = { urgent: 'var(--red)', high: 'var(--amber)', normal: 'var(--blue)', low: 'var(--gray)' };
-  C.prio = (id, label = true) => {
-    if (!id || id === 'none') return `<span class="flag" style="--c:var(--line-2)">${I('flag', 14)}</span>`;
-    const p = M().priority[id] || M().priority.normal;
-    return `<span class="flag" style="--c:${PRIO_COLOR[p.id]}">${I('flag', 14, 'fill="currentColor" fill-opacity=".18"')}${label ? e(p.label) : ''}</span>`;
-  };
-  C.due = (t) => {
-    if (!t.due) return `<span class="due none">${I('calendar', 14)}</span>`;
-    const cls = t.status === 'done' ? '' : t.due < U.today() ? 'late' : t.due === U.today() ? 'today' : '';
-    return `<span class="due ${cls}" title="${e(U.fmtLong(t.due))}">${e(U.fmtDue(t.due))}</span>`;
-  };
-  C.clientTag = (clientId) => {
-    const c = clientId ? Store.client(clientId) : null;
-    if (!c) return '<span class="ctag muted"><span class="sq" style="--c:var(--line-2)"></span>Interno</span>';
-    return `<span class="ctag"><span class="sq" style="--c:${e(c.color)}"></span><span class="ellipsis">${e(c.name)}</span></span>`;
-  };
-  C.folder = (c, size = 16) => `<span class="folder-ic" style="--c:${e(c.color)}">${I('folder', size, 'fill="currentColor" fill-opacity=".25"')}</span>`;
-  C.empty = (title, sub = '', action = '') => `<div class="empty"><b>${e(title)}</b>${e(sub)}${action ? `<div style="margin-top:12px">${action}</div>` : ''}</div>`;
-
-  C.meta = (t) => {
-    const bits = [];
-    if (t.checklist.length) bits.push(`<span title="Checklist">${I('tasks', 12)} ${t.checklist.filter((i) => i.done).length}/${t.checklist.length}</span>`);
-    if (t.comments.length) bits.push(`<span title="Comentários">${I('msg', 12)} ${t.comments.length}</span>`);
-    if (t.description) bits.push(`<span title="Tem descrição">${I('note', 12)}</span>`);
-    (t.tags || []).filter((x) => x !== 'Produção de criativos').slice(0, 2).forEach((x) => bits.push(`<span class="tag">${e(x)}</span>`));
-    return bits.length ? `<span class="meta">${bits.join('')}</span>` : '';
-  };
-
-  /* ---------- Lista (agrupada) ---------- */
-  const cols = ({ showClient, showStatus }) => ['minmax(260px,1fr)', showClient ? '180px' : null, '110px', '120px', '110px', showStatus ? '160px' : null].filter(Boolean).join(' ');
-
-  C.row = (t, o) => `
-    <div class="tr ${t.status === 'done' ? 'done' : ''}" data-action="open-task" data-id="${t.id}">
-      <div class="name"><button class="cell-btn" data-action="pick-status" data-id="${t.id}" title="Mudar status">${C.sdot(t.status)}</button><span class="t">${e(t.title)}</span>${C.meta(t)}</div>
-      ${o.showClient ? `<div class="ellipsis">${C.clientTag(t.clientId)}</div>` : ''}
-      <div><button class="cell-btn" data-action="pick-assignee" data-id="${t.id}" title="${e(t.assignee || 'Definir responsável')}">${C.avatar(t.assignee)}</button></div>
-      <div><button class="cell-btn" data-action="pick-due" data-id="${t.id}">${C.due(t)}</button></div>
-      <div><button class="cell-btn" data-action="pick-prio" data-id="${t.id}">${C.prio(t.priority)}</button></div>
-      ${o.showStatus ? `<div><button class="cell-btn" data-action="pick-status" data-id="${t.id}">${C.status(t.status, true)}</button></div>` : ''}
-    </div>`;
-
-  C.groupTasks = (tasks, by) => {
-    const T = U.today();
-    const g = [];
-    const push = (key, head, items, defaults = {}) => g.push({ key, head, items, defaults });
-    if (by === 'status') {
-      M().STATUSES.forEach((s) => push('s:' + s.id, C.status(s.id), tasks.filter((t) => t.status === s.id), { status: s.id }));
-    } else if (by === 'assignee') {
-      const names = [...new Set([...(Store.settings.team || []), ...tasks.map((t) => t.assignee || '')])];
-      names.forEach((n) => push('a:' + n, `<span class="row">${C.avatar(n)}<b>${e(n || 'Sem responsável')}</b></span>`, tasks.filter((t) => (t.assignee || '') === n), { assignee: n }));
-    } else if (by === 'client') {
-      Store.clients().forEach((c) => push('c:' + c.id, `<span class="row">${C.folder(c)}<b>${e(c.name)}</b></span>`, tasks.filter((t) => t.clientId === c.id), { clientId: c.id }));
-      push('c:', '<span class="row"><b>Interno</b></span>', tasks.filter((t) => !t.clientId), { clientId: '' });
-    } else if (by === 'priority') {
-      M().PRIORITIES.forEach((p) => push('p:' + p.id, `<b>${C.prio(p.id)}</b>`, tasks.filter((t) => t.priority === p.id), { priority: p.id }));
-    } else {
-      const open = tasks.filter((t) => t.status !== 'done');
-      const lbl = (txt, color) => `<span class="st" style="--c:${color}">${txt}</span>`;
-      push('d:late', lbl('Atrasadas', 'var(--red)'), open.filter((t) => t.due && t.due < T), { due: T });
-      push('d:today', lbl('Hoje', 'var(--amber)'), open.filter((t) => t.due === T), { due: T });
-      push('d:next', lbl('Próximos 7 dias', 'var(--blue)'), open.filter((t) => t.due > T && t.due <= U.addDays(T, 7)), { due: U.addDays(T, 1) });
-      push('d:later', lbl('Mais tarde', '#8b5cf6'), open.filter((t) => t.due > U.addDays(T, 7)), {});
-      push('d:none', lbl('Sem data', 'var(--gray)'), open.filter((t) => !t.due), { due: '' });
-      push('d:done', lbl('Concluídas', 'var(--green)'), tasks.filter((t) => t.status === 'done'), { status: 'done' });
-    }
-    return g;
+  const Ads = {
+    data: null,
+    init(seed) { this.data = (seed && seed.ads) || null; this.today = (this.data && this.data.to) || U.today(); },
+    has(id) { return !!(this.data && this.data.clients && this.data.clients[id]); },
+    ids() { return this.data ? Object.keys(this.data.clients) : []; },
+    day(id, iso) {
+      if (!this.data) return [0, 0];
+      if (id === '*') return this.ids().reduce((a, k) => { const v = this.data.clients[k].days[iso] || [0, 0]; return [a[0] + v[0], a[1] + v[1]]; }, [0, 0]);
+      const c = this.data.clients[id]; return (c && c.days[iso]) || [0, 0];
+    },
+    range(id, from, to) {
+      let s = 0, l = 0;
+      for (let d = from; d <= to; d = U.addDays(d, 1)) { const v = this.day(id, d); s += v[0]; l += v[1]; }
+      return { s, l, cpl: l ? s / l : null };
+    },
+    /** Janela do período escolhido e a janela anterior de mesmo tamanho para comparar. */
+    win(per) {
+      const T = this.today, Y = U.addDays(T, -1);
+      const n = { '7d': 7, '14d': 14, '30d': 30 }[per];
+      if (per === 'hoje') return { from: T, to: T, pfrom: Y, pto: Y, label: `Hoje, ${U.fmtDate(T)} · parcial`, short: 'hoje', prev: 'ontem' };
+      if (per === 'ontem') { const P2 = U.addDays(Y, -1); return { from: Y, to: Y, pfrom: P2, pto: P2, label: `Ontem, ${U.fmtDate(Y)}`, short: 'ontem', prev: 'anteontem' }; }
+      const from = U.addDays(Y, -(n - 1));
+      return { from, to: Y, pfrom: U.addDays(from, -n), pto: U.addDays(from, -1), label: `${U.fmtDate(from)} – ${U.fmtDate(Y)}`, short: `${n} dias`, prev: `${n} dias antes` };
+    },
+    stats(id, per) {
+      const w = this.win(per);
+      const cur = this.range(id, w.from, w.to), prev = this.range(id, w.pfrom, w.pto);
+      const hasPrev = this.data && U.diffDays(w.pto, this.data.from || w.pfrom) >= Math.floor(U.diffDays(w.pto, w.pfrom) * 0.9);
+      return { ...cur, prev: hasPrev ? prev : null, dCpl: hasPrev && cur.cpl && prev.cpl ? pct(cur.cpl, prev.cpl) : null, dLeads: hasPrev && prev.l ? pct(cur.l, prev.l) : null, w };
+    },
+    /** Dias mostrados nos gráficos (14 terminando ontem; 7 no período de 7 dias; hoje inclui o dia atual). */
+    chartDays(per) {
+      const T = this.today, Y = U.addDays(T, -1);
+      const end = per === 'hoje' ? T : Y, n = per === '7d' ? 7 : 14;
+      return [...Array(n)].map((_, i) => U.addDays(end, i - n + 1));
+    },
   };
 
-  C.taskList = (tasks, { groupBy = 'status', showClient = true, defaults = {}, open = [] } = {}) => {
-    const showStatus = groupBy !== 'status';
-    const o = { showClient, showStatus };
-    const groups = C.groupTasks(Store.sortTasks(tasks), groupBy).filter((g, i) => g.items.length || (groupBy === 'status' && i === 0));
-    if (!groups.length) return C.empty('Nenhuma tarefa', 'Crie a primeira tarefa com o botão "Tarefa".');
-    return groups.map((g) => {
-      const isDone = g.key === 's:done' || g.key === 'd:done';
-      const closed = isDone ? !open.includes(g.key) : open.includes('x' + g.key);
-      const d = { ...defaults, ...g.defaults };
-      return `
-      <section class="grp ${closed ? 'closed' : ''}">
-        <div class="grp-h"><button class="caret" data-action="toggle-group" data-key="${e(g.key)}" aria-label="Recolher">${I('chevD', 14)}</button>${g.head}<span class="n">${g.items.length}</span></div>
-        <div class="tbl" style="--cols:${cols(o)}">
-          <div class="tr th"><span style="padding-left:22px">Nome</span>${showClient ? '<span>Cliente</span>' : ''}<span>Responsável</span><span>Vencimento</span><span>Prioridade</span>${showStatus ? '<span>Status</span>' : ''}</div>
-          ${g.items.map((t) => C.row(t, o)).join('')}
-          ${isDone ? '' : `<div class="qadd">${I('plus', 14)}<input data-quickadd='${e(JSON.stringify(d))}' placeholder="Adicionar tarefa"></div>`}
-        </div>
-      </section>`;
-    }).join('');
+  /* ============================== Peças ============================== */
+  const RC = { b: '#3DD68C', n: '#A3A6B8', r: '#FF6B5E', x: '#F4C04E' };
+  const RB = { b: 'rgba(61,214,140,.14)', n: 'rgba(255,255,255,.07)', r: 'rgba(255,107,94,.14)', x: 'rgba(244,192,78,.14)' };
+  const RL = { b: 'bom', n: 'neutro', r: 'ruim', x: 'sem diário' };
+  const resOf = (l) => (!l ? 'x' : l.impact === 'positivo' ? 'b' : l.impact === 'negativo' ? 'r' : 'n');
+  const C = { I, brl, kk, pct, dm, RC, RB, RL, resOf };
+
+  C.avatar = (name, cls = '') => name ? `<span class="av ${cls}" style="background:${U.hashColor(name)}" title="${e(name)}">${e(U.initials(name))}</span>` : `<span class="av none ${cls}" title="Sem responsável">–</span>`;
+  C.resPill = (r) => `<span class="res" style="background:${RB[r]};color:${RC[r]}">${RL[r]}</span>`;
+  C.deltaPill = (d, invert = true) => d == null ? '<span class="pill">–</span>' : `<span class="pill ${(d > 0) === invert ? 'bad' : 'good'}">${d > 0 ? '+' : ''}${d}%</span>`;
+  C.empty = (t, s = '') => `<div class="empty"><b>${e(t)}</b>${e(s)}</div>`;
+  C.spark = (arr, color, h = 34) => {
+    const max = Math.max(...arr, 1), n = Math.max(arr.length, 2);
+    const line = 'M' + arr.map((v, i) => `${((i / (n - 1)) * 100).toFixed(1)} ${(h - 2 - (v / max) * (h - 6)).toFixed(1)}`).join(' L');
+    return `<svg viewBox="0 0 100 ${h}" preserveAspectRatio="none"><path d="${line} L100 ${h} L0 ${h} Z" fill="${color}" fill-opacity=".14"/><path class="line-a" d="${line}" fill="none" stroke="${color}" stroke-width="1.4" vector-effect="non-scaling-stroke"/></svg>`;
+  };
+  C.ring = (done, total) => {
+    const circ = 2 * Math.PI * 44, dash = total ? (circ * done) / total : 0;
+    return `<div class="ring"><svg width="100" height="100" viewBox="0 0 104 104"><circle cx="52" cy="52" r="44" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="10"/><circle cx="52" cy="52" r="44" fill="none" stroke="#F4C04E" stroke-width="10" stroke-linecap="round" stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}" transform="rotate(-90 52 52)" style="transition:stroke-dasharray .6s;filter:drop-shadow(0 0 8px rgba(244,192,78,.6))"/></svg>
+      <div class="c"><b>${done}<small>/${total}</small></b><span class="small muted">hoje</span></div></div>`;
+  };
+  C.duePill = (t) => {
+    if (!t.due) return '<span class="pill mono">sem prazo</span>';
+    const late = t.status !== 'done' && t.due < U.today();
+    return `<span class="pill mono ${late ? 'bad' : t.due === U.today() ? 'warn' : ''}">${e(U.fmtDue(t.due))}</span>`;
   };
 
-  /* ---------- Quadro ---------- */
-  C.card = (t, showClient) => `
-    <div class="card" draggable="true" data-drag-task="${t.id}" data-action="open-task" data-id="${t.id}">
-      ${showClient ? `<div class="small">${C.clientTag(t.clientId)}</div>` : ''}
-      <div class="ct">${e(t.title)}</div>
-      <div class="cf">${C.due(t)}${C.prio(t.priority, false)}${C.meta(t)}${C.avatar(t.assignee)}</div>
-    </div>`;
-
-  C.board = (tasks, { showClient = true, defaults = {}, by = 'status' } = {}) => {
-    const sorted = Store.sortTasks(tasks);
-    const colsList = by === 'assignee'
-      ? [...new Set([...(Store.settings.team || []), ...tasks.map((t) => t.assignee || '')])].map((n) => ({ head: `${C.avatar(n)}<b>${e(n || 'Sem responsável')}</b>`, items: sorted.filter((t) => (t.assignee || '') === n), drop: `data-drop-assignee="${e(n)}"`, def: { assignee: n } }))
-      : M().STATUSES.map((s) => ({ head: C.status(s.id), items: sorted.filter((t) => t.status === s.id), drop: `data-drop-status="${s.id}"`, def: { status: s.id } }));
-    return `<div class="board">${colsList.map((c) => `
-      <div class="col" ${c.drop}>
-        <div class="col-h">${c.head}<span class="n">${c.items.length}</span></div>
-        <div class="cards">${c.items.map((t) => C.card(t, showClient)).join('')}</div>
-        <button class="col-add" data-action="new-task" data-defaults='${e(JSON.stringify({ ...defaults, ...c.def }))}'>${I('plus', 14)} Adicionar tarefa</button>
-      </div>`).join('')}</div>`;
-  };
-
-  /* ---------- Diário de bordo (tabela no formato da planilha) ---------- */
-  const IMPACT = { positivo: ['Bom', 'var(--green)'], neutro: ['Neutro', 'var(--gray)'], negativo: ['Ruim', 'var(--red)'] };
-  C.diaryComposer = ({ clientId, withClient }) => `
-    <div class="composer" id="composer">
-      <div class="composer-grid ${withClient ? 'with-client' : ''}">
-        <div><label for="cp-date">Data</label><input type="date" id="cp-date" name="date" value="${U.today()}"></div>
-        ${withClient ? `<div><label for="cp-client">Cliente</label><select id="cp-client" name="clientId"><option value="">Escolha…</option>${Store.clients({ includeClosed: false }).map((c) => `<option value="${c.id}" ${c.id === clientId ? 'selected' : ''}>${e(c.name)}</option>`).join('')}</select></div>` : ''}
-        <div><label for="cp-a">Análise</label><textarea id="cp-a" name="analysis" placeholder="Como está a campanha? Leads, CPL, gasto…"></textarea></div>
-        <div><label for="cp-p">Ações programadas p/ melhoria</label><textarea id="cp-p" name="planned" placeholder="O que precisa ser feito"></textarea></div>
-        <div><label for="cp-d">Ações realizadas</label><textarea id="cp-d" name="actionsDone" placeholder="O que foi feito"></textarea></div>
-      </div>
-      <div class="composer-foot">
-        <span class="note">A análise é feita sempre na janela do dia anterior e de uma semana para trás.</span>
-        <select class="chipsel" name="impact" id="cp-impact" style="margin-left:auto"><option value="neutro">Resultado: neutro</option><option value="positivo">Resultado: bom</option><option value="negativo">Resultado: ruim</option></select>
-        <label class="row small" title="Cria uma tarefa com a ação programada"><input type="checkbox" class="check" name="plannedTask" id="cp-task"> Virar tarefa</label>
-        <button class="btn btn-primary btn-sm" data-action="submit-composer" data-client="${e(clientId || '')}">Adicionar ao diário</button>
-      </div>
-    </div>`;
-
-  C.diaryTable = (logs, { showClient = false } = {}) => {
-    if (!logs.length) return C.empty('Nenhuma atualização no diário', 'Use o campo acima para registrar a primeira.');
-    return `<table class="dt"><thead><tr><th>Data</th>${showClient ? '<th>Cliente</th>' : ''}<th>Análise</th><th>Ações programadas p/ melhoria</th><th>Ações realizadas</th><th>Por</th></tr></thead><tbody>
-      ${logs.map((l) => {
-        const c = showClient ? Store.client(l.clientId) : null;
-        const [lbl, col] = IMPACT[l.impact] || IMPACT.neutro;
-        const a = l.analysis || [l.title, l.body].filter(Boolean).join(' — ');
-        return `<tr data-action="edit-log" data-id="${l.id}">
-          <td class="top date"><span class="res" style="background:${col}" title="Resultado: ${lbl}"></span>${U.fmtDate(l.date, true)}<div class="small muted" style="padding-left:14px">${U.WD[U.parse(l.date).getDay()]}</div></td>
-          ${showClient ? `<td class="top">${c ? `<span class="ctag"><span class="sq" style="--c:${e(c.color)}"></span>${e(c.name)}</span>` : ''}</td>` : ''}
-          <td class="top wrap">${e(a)}</td>
-          <td class="top wrap">${e(l.planned || '')}${l.plannedTaskId ? ' <span class="tag">tarefa criada</span>' : ''}</td>
-          <td class="top wrap">${e(l.actionsDone || '')}</td>
-          <td class="top">${l.author ? C.avatar(l.author) : ''}</td>
-        </tr>`;
-      }).join('')}</tbody></table>`;
-  };
-
-  window.UI = UI;
-  window.C = C;
+  window.UI = UI; window.C = C; window.Ads = Ads;
 })();

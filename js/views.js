@@ -1,457 +1,477 @@
-/* Páginas, formulários e a janela da tarefa. Cada página devolve { head, toolbar, body, flush }. */
+/* Telas da Central: Painel, Clientes, Cliente (diário/desempenho/demandas/informações), Equipe, Criativos, Ajustes e janelas. */
 (function () {
   const e = U.esc;
   const M = window.META;
-  const I = C.I;
+  const { I, brl, kk, dm, RC, RB, RL, resOf } = C;
 
-  /* ============================== Estado de visualização ============================== */
-  const VS_KEY = 'bordo:ui:v2';
-  const VS_DEFAULT = {
-    q: '', assignee: '', showDone: false,
-    groupBy: { all: 'status', client: 'status', criativos: 'status', interno: 'status' },
-    view: { all: 'list', criativos: 'board', interno: 'list' },
-    open: [], teamPerson: '', homeMine: true, sideOpen: [], clientsStatus: 'ativos', clientsQ: '',
-    diary: { q: '', clientId: '', period: '', showTasks: false },
-  };
-  let saved = {};
-  try { saved = JSON.parse(localStorage.getItem(VS_KEY) || '{}'); } catch (err) { saved = {}; }
-  const VS = { ...VS_DEFAULT, ...saved };
-  ['groupBy', 'view', 'diary'].forEach((k) => { VS[k] = { ...VS_DEFAULT[k], ...(saved[k] || {}) }; });
-  VS.save = () => { try { const { save, ...rest } = VS; localStorage.setItem(VS_KEY, JSON.stringify(rest)); } catch (err) { /* ignora */ } };
+  /* ============================== Estado de tela ============================== */
+  const VS_KEY = 'bordo:central:v1';
+  let saved = {}; try { saved = JSON.parse(localStorage.getItem(VS_KEY) || '{}'); } catch (err) { saved = {}; }
+  const VS = { per: '30d', sort: 'spend', cf: 'todos', ctab: 'diario', person: '', q: '', ai: false, aiQ: '', ...saved };
+  VS.save = () => { try { const { save, ...r } = VS; localStorage.setItem(VS_KEY, JSON.stringify(r)); } catch (err) { /* ignora */ } };
 
-  /* ============================== Helpers ============================== */
-  const adsLink = (acc) => {
-    const v = String(acc || '').trim();
-    if (/^https?:/i.test(v)) return v;
-    const id = v.replace(/^act_/i, '').replace(/\D/g, '');
-    return id ? `https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=${id}` : '';
-  };
-  const url = (v) => { v = String(v || '').trim(); return !v ? '' : /^https?:\/\//i.test(v) ? v : 'https://' + v; };
+  /* ============================== Dados derivados ============================== */
+  const T = () => U.today();
   const team = () => Store.settings.team || [];
-  const openTasks = (list) => list.filter((t) => t.status !== 'done');
-  /** Demandas de verdade: abertas e que não são a rotina de acompanhamento diário. */
-  const workTasks = (list) => list.filter((t) => t.status !== 'done' && t.status !== 'daily');
-  const manualLogs = (filter) => Store.logs(filter).filter((l) => l.type !== 'tarefa' && !(l.auto && l.type === 'nota'));
-  const lastDiary = (clientId) => manualLogs({ clientId })[0] || null;
+  const isActive = (c) => c.status === 'ativo' || c.status === 'onboarding';
+  const entries = (cid) => Store.logs({ clientId: cid }).filter((l) => l.type !== 'tarefa' && !(l.auto && l.type === 'nota'));
+  const lastEntry = (cid) => entries(cid)[0] || null;
+  const doneToday = (cid) => entries(cid).some((l) => l.date === T());
+  const ORDER = { r: 0, x: 1, n: 2, b: 3 };
+  const diaryClients = () => Store.clients().filter(isActive).sort((a, b) => a.name.localeCompare(b.name));
+  const pendingList = () => diaryClients().filter((c) => !doneToday(c.id)).sort((a, b) => ORDER[resOf(lastEntry(a.id))] - ORDER[resOf(lastEntry(b.id))] || a.name.localeCompare(b.name));
+  const work = (list) => list.filter((t) => t.status !== 'done' && t.status !== 'daily');
+  const isLate = (t) => t.status !== 'done' && t.due && t.due < T();
+  const entryText = (l) => (l ? (l.analysis || l.title || l.actionsDone || l.planned || 'Registro sem análise.') : 'Nenhum registro no diário.');
+  const lastLabel = (l) => (l ? dm(l.date) : 'nunca');
+  const url = (v) => { v = String(v || '').trim(); return !v ? '' : /^https?:\/\//i.test(v) ? v : 'https://' + v; };
+  const wdName = (iso) => U.WD_FULL[U.parse(iso).getDay()].replace('-feira', '');
 
-  const head = ({ crumbs = '', icon = '', title, actions = '', tabs = '' }) => `
-    <header class="head">
-      <div class="crumbs"><button class="ibtn menu-btn" data-action="open-sidebar" aria-label="Menu">${I('menu')}</button>${crumbs}</div>
-      <div class="title-row">${icon}<h1>${title}</h1><div class="actions">${actions}</div></div>
-      ${tabs ? `<nav class="views">${tabs}</nav>` : '<div style="height:8px"></div>'}
+  /* ============================== Moldura ============================== */
+  const RAIL = [['painel', 'Painel', '#/'], ['diario', 'Diário de bordo', '#/diario'], ['clientes', 'Clientes', '#/clientes'], ['equipe', 'Equipe', '#/equipe'], ['criativos', 'Criativos', '#/criativos']];
+  const rail = (active) => {
+    const n = pendingList().length;
+    const me = Store.settings.userName || 'Você';
+    return `<div class="logo">${e(((Store.settings.workspaceName || 'U').trim()[0] || 'U').toUpperCase())}</div>
+      ${RAIL.map(([k, label, href]) => `<a class="rail ${active === k ? 'on' : ''}" href="${href}" title="${label}" aria-label="${label}">${I(k, 20)}${k === 'diario' && n ? `<span class="badge liveA">${n}</span>` : ''}</a>`).join('')}
+      <span class="spacer" style="flex:1"></span>
+      <a class="rail ${active === 'ajustes' ? 'on' : ''}" href="#/ajustes" title="Ajustes" aria-label="Ajustes">${I('ajustes', 20)}</a>
+      <span class="me" style="background:${U.hashColor(me)}" title="${e(me)}">${e(U.initials(me))}</span>`;
+  };
+  const topbar = ({ title, back = '', period = true }) => {
+    const n = pendingList().length;
+    const P = [['hoje', 'Hoje'], ['ontem', 'Ontem'], ['7d', '7 dias'], ['14d', '14 dias'], ['30d', '30 dias']];
+    return `<header class="top">
+      ${back}<h1>${e(title)}</h1>
+      ${Ads.data ? '<span class="metapill hide-sm"><i class="live"></i>Meta Ads</span>' : ''}
+      <span style="flex:1"></span>
+      ${period && Ads.data ? `<div class="per">${P.map(([k, l]) => `<button class="${VS.per === k ? 'on' : ''}" data-action="per" data-k="${k}">${l}</button>`).join('')}</div>` : ''}
+      <button class="btn-ai" data-action="ai">${I('spark', 16, 2)}<span>Copiloto</span></button>
+      <button class="btn-gold" data-action="go-diario">${I('diario', 16, 2.2)}<span class="t">Diário ·</span> ${n}</button>
     </header>`;
-  const tab = (active, href, icon, label, count) => `<a class="vtab ${active ? 'active' : ''}" ${href.startsWith('#') ? `href="${href}"` : href}>${I(icon, 15)}${label}${count != null ? `<span class="cnt">${count}</span>` : ''}</a>`;
-  const newTaskBtn = (defaults = {}) => `<button class="btn btn-primary" data-action="new-task" data-defaults='${e(JSON.stringify(defaults))}'>${I('plus', 15)}<span class="hide-sm">Tarefa</span></button>`;
+  };
 
-  const taskToolbar = (scope, { list = true } = {}) => `
-    <div class="toolbar">
-      <label class="search">${I('search', 14)}<input id="q-${scope}" placeholder="Buscar tarefas" value="${e(VS.q)}" data-input="q"></label>
-      <select class="chipsel" data-change="vs" data-field="assignee" aria-label="Responsável">
-        <option value="">Todos os responsáveis</option>${team().map((n) => `<option ${n === VS.assignee ? 'selected' : ''}>${e(n)}</option>`).join('')}<option value="__none" ${VS.assignee === '__none' ? 'selected' : ''}>Sem responsável</option>
-      </select>
-      ${list ? `<select class="chipsel" data-change="group-by" data-scope="${scope}" aria-label="Agrupar">
-        ${[['status', 'Agrupar: Status'], ['assignee', 'Agrupar: Responsável'], ['due', 'Agrupar: Vencimento'], ['priority', 'Agrupar: Prioridade'], ...(scope === 'client' ? [] : [['client', 'Agrupar: Cliente']])].map(([k, l]) => `<option value="${k}" ${VS.groupBy[scope] === k ? 'selected' : ''}>${l}</option>`).join('')}
-      </select>` : ''}
-      <button class="chipsel ${VS.showDone ? 'on' : ''}" data-action="toggle-done-visible">${I('check', 14)} Concluídas</button>
+  /* ============================== Painel ============================== */
+  const kpiCard = (label, value, sub, tag, color, series, delay) => `
+    <div class="glass up lift kpi" style="animation-delay:${delay}s">
+      <div class="lbl"><span>${label}</span>${tag}</div>
+      <div class="val">${value}</div><div class="sub">${sub}</div>
+      ${series ? C.spark(series, color) : '<div style="height:56px"></div>'}
     </div>`;
 
-  const applyFilters = (list) => {
-    if (VS.q) list = list.filter((t) => U.match([t.title, t.description, (t.tags || []).join(' '), Store.client(t.clientId)?.name].join(' '), VS.q));
-    if (VS.assignee) list = list.filter((t) => (VS.assignee === '__none' ? !t.assignee : t.assignee === VS.assignee));
-    if (!VS.showDone) list = list.filter((t) => t.status !== 'done');
-    return list;
+  const alertsList = () => {
+    const out = [];
+    const A = (c, text, icon, red) => out.push({ c, text, icon, red });
+    if (!Ads.data) return out;
+    Store.clients().filter((c) => c.status !== 'encerrado').forEach((c) => {
+      if (!Ads.has(c.id)) return;
+      const s30 = Ads.stats(c.id, '30d');
+      if (s30.s > 200 && s30.l === 0) A(c, `${kk(s30.s)} investidos em 30 dias e nenhum lead.`, 'zero', true);
+      const last3 = Ads.range(c.id, U.addDays(Ads.today, -3), Ads.today);
+      if (isActive(c) && last3.s < 1 && s30.s > 50) {
+        let d = U.addDays(Ads.today, -3);
+        while (d > Ads.data.from && Ads.day(c.id, d)[0] < 1) d = U.addDays(d, -1);
+        A(c, `Sem veiculação desde ${U.fmtDate(U.addDays(d, 1))}. Conferir saldo e campanhas.`, 'stop', true);
+      }
+      if (s30.dCpl != null && s30.dCpl > 40 && s30.l >= 3) A(c, `CPL de ${brl(s30.prev.cpl)} para ${brl(s30.cpl)} (+${s30.dCpl}%).`, 'up', true);
+      const le = lastEntry(c.id);
+      if (isActive(c) && s30.l >= 10 && (!le || U.diffDays(T(), le.date) > 7)) A(c, `${s30.l} leads em 30 dias e ${le ? 'diário parado desde ' + U.fmtDate(le.date) : 'nenhum registro no diário'}.`, 'book', false);
+    });
+    return out.sort((a, b) => (b.red ? 1 : 0) - (a.red ? 1 : 0));
   };
 
-  /* ============================== Início ============================== */
-  const home = () => {
-    const T = U.today();
-    const me = Store.settings.userName;
-    const all = workTasks(Store.state.tasks);
-    const mine = all.filter((t) => t.assignee === me);
-    const late = all.filter((t) => Store.isOverdue(t));
-    const today = all.filter((t) => t.due === T);
-    const stale = Store.clients({ includeClosed: false }).filter((c) => c.status !== 'pausado').map((c) => ({ c, l: lastDiary(c.id) }))
-      .filter(({ l }) => !l || U.diffDays(T, l.date) > (Store.settings.staleDays || 3))
-      .sort((a, b) => (a.l?.date || '').localeCompare(b.l?.date || ''));
-    const list = VS.homeMine ? mine : all;
-    const recent = manualLogs({}).slice(0, 8);
-    const h = new Date().getHours();
-    return {
-      head: head({ title: `${h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite'}, ${e(me)}`, crumbs: `<span>${e(U.fmtLong(T))}</span>`, actions: newTaskBtn({ assignee: me, due: T }) }),
-      body: `<div class="pad">
-        <div class="stats">
-          <div class="stat" data-action="home-mine" data-v="1"><div class="v">${mine.length}</div><div class="l">Minhas demandas abertas</div></div>
-          <div class="stat" data-action="goto" data-href="#/equipe"><div class="v ${late.length ? 'red' : ''}">${late.length}</div><div class="l">Atrasadas na equipe</div></div>
-          <div class="stat" data-action="goto" data-href="#/demandas"><div class="v">${today.length}</div><div class="l">Vencem hoje</div></div>
-          <div class="stat" data-action="goto" data-href="#/diario"><div class="v ${stale.length ? 'red' : ''}">${stale.length}</div><div class="l">Clientes sem diário há +${Store.settings.staleDays || 3} dias</div></div>
+  const painel = () => {
+    const per = VS.per;
+    const st = Ads.data ? Ads.stats('*', per) : null;
+    const days = Ads.data ? Ads.chartDays(per) : [];
+    const dl = days.map((d) => Ads.day('*', d)[1]), ds = days.map((d) => Ads.day('*', d)[0]);
+    const open = work(Store.state.tasks), late = open.filter(isLate);
+    const tag = (d, inv) => (d == null ? `<span class="pill">${st ? st.w.short : ''}</span>` : `<span class="pill ${(d > 0) !== inv ? 'good' : 'bad'}">${d > 0 ? '+' : ''}${d}%</span>`);
+    const kpis = st ? [
+      kpiCard('Investimento', kk(st.s), st.w.label, `<span class="pill">${st.w.short}</span>`, '#22D3EE', ds, 0),
+      kpiCard('Leads', st.l.toLocaleString('pt-BR'), st.prev ? `${st.w.prev}: ${st.prev.l.toLocaleString('pt-BR')}` : st.w.label, tag(st.dLeads, false), '#A78BFA', dl, 0.06),
+      kpiCard('CPL médio', st.cpl ? brl(st.cpl) : '—', st.prev && st.prev.cpl ? `${st.w.prev}: ${brl(st.prev.cpl)}` : st.w.label, tag(st.dCpl, true), '#3DD68C', ds.map((v, i) => (dl[i] ? v / dl[i] : 0)), 0.12),
+    ] : [kpiCard('Meta Ads', '—', 'Sem dados de anúncios nesta versão', '', '', null, 0)];
+    kpis.push(kpiCard('Demandas atrasadas', String(late.length), `de ${open.length} abertas`, `<span class="pill ${late.length ? 'bad' : 'good'}">${open.length ? Math.round((late.length / open.length) * 100) : 0}%</span>`, '#FF6B5E', null, 0.18));
+
+    const all = diaryClients(), pend = pendingList();
+    const done = all.length - pend.length;
+    const band = pend.slice(0, 12).map((c) => { const l = lastEntry(c.id), r = resOf(l); return `<button class="dcard pop" style="--c:${RC[r]}" data-action="open-client" data-id="${c.id}" data-tab="diario"><span class="n"><b>${e(c.name)}</b><i style="${l ? '' : 'color:var(--amber)'}">${lastLabel(l)}</i></span><p>${e(entryText(l))}</p></button>`; }).join('');
+
+    const maxL = Math.max(...dl, 1), maxS = Math.max(...ds, 1), nn = days.length;
+    const hi = per === 'hoje' || per === 'ontem' ? nn - 1 : -1;
+    const spendLine = nn ? 'M' + ds.map((v, i) => `${(((i + 0.5) / nn) * 100).toFixed(2)} ${(100 - (v / maxS) * 78).toFixed(2)}`).join(' L') : '';
+    const chart = Ads.data ? `
+      <section class="glass up panel panel-pad" style="animation-delay:.25s">
+        <div class="sec-h"><h2>Leads por dia</h2>
+          <span class="small muted row"><span style="width:10px;height:10px;border-radius:3px;background:linear-gradient(#A78BFA,#7C5CFF)"></span>Leads</span>
+          <span class="small muted row"><span style="width:14px;height:2px;background:#22D3EE"></span>Investimento</span>
+          <span style="flex:1"></span><span class="mono small muted">${U.fmtDate(days[0])} – ${U.fmtDate(days[nn - 1])}</span></div>
+        <div class="chart">
+          <div class="grid"><span></span><span></span><span></span><span style="background:rgba(255,255,255,.1)"></span></div>
+          <div class="bars" style="grid-template-columns:repeat(${nn},1fr)">${dl.map((v, i) => `<div class="b" title="${dm(days[i])} · ${v} leads · ${brl(ds[i])}" style="opacity:${hi < 0 || hi === i ? 1 : 0.35}"><em style="color:${hi === i ? '#fff' : '#7D8095'}">${v}</em><span class="bar-a" style="height:${Math.round((v / maxL) * 82)}%;animation-delay:${(0.2 + i * 0.04).toFixed(2)}s;background:${hi === i ? 'linear-gradient(180deg,#F4C04E,rgba(244,192,78,.35))' : 'linear-gradient(180deg,#A78BFA,rgba(124,92,255,.35))'}"></span></div>`).join('')}</div>
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none"><path class="line-a" d="${spendLine}" fill="none" stroke="#22D3EE" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg>
         </div>
-        <div class="home">
-          <div style="min-width:0">
-            <div class="h2">${VS.homeMine ? 'Minhas demandas' : 'Demandas de todos'}
-              <span style="margin-left:auto" class="row"><button class="chipsel ${VS.homeMine ? 'on' : ''}" data-action="home-mine" data-v="1">Minhas</button><button class="chipsel ${VS.homeMine ? '' : 'on'}" data-action="home-mine" data-v="0">Equipe</button></span></div>
-            <div style="overflow-x:auto">${list.length ? C.taskList(list, { groupBy: 'due', open: VS.open, defaults: { assignee: me } }) : C.empty('Nenhuma demanda aberta', VS.homeMine ? 'Nada atribuído a você agora.' : '')}</div>
-          </div>
-          <div style="min-width:0">
-            <div class="sec"><div class="sec-h">${I('book', 15)} Diário parado <span class="right muted small">sem atualização há +${Store.settings.staleDays || 3} dias</span></div>
-              ${stale.length ? stale.slice(0, 12).map(({ c, l }) => `<div class="mini" data-action="goto" data-href="#/c/${c.id}/diario">${C.folder(c)}<span class="grow ellipsis">${e(c.name)}</span><span class="small ${l ? 'muted' : ''}" style="${l ? '' : 'color:var(--red)'}">${l ? U.daysAgoLabel(l.date) : 'nunca'}</span></div>`).join('') + (stale.length > 12 ? `<div class="mini muted small" data-action="goto" data-href="#/diario">e mais ${stale.length - 12}…</div>` : '') : C.empty('Todos os diários em dia')}
-            </div>
-            <div class="sec"><div class="sec-h">${I('clock', 15)} Últimas atualizações do diário</div>
-              ${recent.length ? recent.map((l) => { const c = Store.client(l.clientId); return `<div class="mini" data-action="goto" data-href="#/c/${l.clientId}/diario"><div class="grow"><div class="ellipsis" style="font-weight:500">${e(l.analysis || l.actionsDone || l.title || l.planned)}</div><div class="small muted">${c ? e(c.name) : ''} · ${U.fmtDate(l.date)}</div></div></div>`; }).join('') : C.empty('Sem atualizações ainda')}
-            </div>
-          </div>
+        <div class="xlab" style="grid-template-columns:repeat(${nn},1fr)">${days.map((d) => `<span>${U.parse(d).getDate()}</span>`).join('')}</div>
+      </section>` : '';
+
+    const rows = Store.clients().filter((c) => Ads.has(c.id)).map((c) => ({ c, s: Ads.stats(c.id, per), d14: Ads.chartDays('14d').map((d) => Ads.day(c.id, d)[1]) })).filter((x) => x.s.s > 0 || x.s.l > 0);
+    const sorters = { spend: (a, b) => b.s.s - a.s.s, leads: (a, b) => b.s.l - a.s.l, cpl: (a, b) => (a.s.cpl || 1e9) - (b.s.cpl || 1e9), delta: (a, b) => (b.s.dCpl ?? -999) - (a.s.dCpl ?? -999) };
+    rows.sort(sorters[VS.sort] || sorters.spend);
+    const table = Ads.data ? `
+      <section class="glass up panel" style="animation-delay:.35s">
+        <div class="sec-h" style="padding:20px 22px 12px"><h2>Clientes</h2><span class="small dim">${Ads.win(per).label}</span><span style="flex:1"></span>
+          <div class="seg">${[['spend', 'Investido'], ['leads', 'Leads'], ['cpl', 'CPL'], ['delta', 'Piora']].map(([k, l]) => `<button class="${VS.sort === k ? 'on' : ''}" data-action="sort" data-k="${k}">${l}</button>`).join('')}</div></div>
+        <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Cliente</th><th>Investido</th><th>Leads</th><th>CPL</th><th class="hide-sm">Δ CPL</th><th style="text-align:center">Diário</th><th class="hide-sm">14 dias</th></tr></thead><tbody>
+          ${rows.slice(0, 10).map(({ c, s, d14 }) => { const mx = Math.max(...d14, 1); return `<tr data-action="open-client" data-id="${c.id}">
+            <td class="name">${e(c.name)}</td><td>${kk(s.s)}</td><td>${s.l}</td><td><b>${s.cpl ? brl(s.cpl) : '—'}</b></td>
+            <td class="hide-sm">${C.deltaPill(s.dCpl)}</td><td style="text-align:center">${C.resPill(resOf(lastEntry(c.id)))}</td>
+            <td class="hide-sm"><span class="minib">${d14.map((v) => `<span style="height:${Math.round((v / mx) * 100)}%"></span>`).join('')}</span></td></tr>`; }).join('') || `<tr><td colspan="7">${C.empty('Sem investimento no período')}</td></tr>`}
+        </tbody></table></div>
+        <a href="#/clientes" style="padding:14px;text-align:center;border-top:1px solid var(--line-2)">Ver todos →</a>
+      </section>` : '';
+
+    const alerts = alertsList();
+    const queue = work(Store.state.tasks).filter((t) => t.due && t.due <= T()).sort((a, b) => a.due.localeCompare(b.due));
+    return {
+      rail: 'painel',
+      top: topbar({ title: 'Painel' }),
+      body: `
+      <div class="kpis">${kpis.join('')}</div>
+      <section class="glass up dband" style="animation-delay:.15s">
+        <div class="dband-l"><h2>Diário de bordo</h2>
+          <div class="row" style="gap:18px">${C.ring(done, all.length)}<div><div style="font-size:30px;font-weight:700;letter-spacing:-.04em;color:var(--amber)">${pend.length}</div><div class="small muted">clientes sem registro hoje</div></div></div>
+          ${pend.length ? '<button class="btn-gold" style="justify-content:center;height:46px" data-action="go-diario">Começar pelo primeiro</button>' : '<div class="pill good" style="align-self:flex-start">Tudo registrado hoje</div>'}</div>
+        <div class="dband-grid">${band || C.empty('Todos os diários de hoje estão feitos')}</div>
+      </section>
+      <div class="main2">
+        <div class="col">${chart}${table}</div>
+        <div class="col">
+          <section class="glass up panel" style="animation-delay:.3s">
+            <div class="sec-h" style="padding:20px 20px 10px"><h2>Alertas</h2><span class="pill bad">${alerts.length}</span></div>
+            ${alerts.slice(0, 7).map((a) => `<button class="alert rowc" data-action="open-client" data-id="${a.c.id}"><span class="ico" style="background:${a.red ? 'var(--bad-bg)' : 'var(--warn-bg)'};color:${a.red ? 'var(--red-text)' : 'var(--amber)'}">${I(a.icon, 16, 2)}</span><span><b>${e(a.c.name)}</b><span class="t">${e(a.text)}</span></span></button>`).join('') || `<div style="padding:0 20px 18px">${C.empty('Nenhum alerta agora')}</div>`}
+          </section>
+          <section class="glass up panel panel-pad" style="animation-delay:.4s;gap:14px">
+            <div class="sec-h"><h2>Fila de hoje</h2><span style="flex:1"></span><span class="mono small" style="color:var(--red-text)">${queue.filter(isLate).length} atrasadas</span></div>
+            ${queue.slice(0, 8).map((t) => `<div class="q" data-action="open-task" data-id="${t.id}"><button class="chk" data-action="done-task" data-id="${t.id}" aria-label="Concluir">${I('check', 12, 3)}</button><span style="min-width:0"><b>${e(t.title)}</b><small>${e(Store.client(t.clientId)?.name || 'Interno')} · ${e(t.assignee || 'sem responsável')}</small></span>${C.duePill(t)}</div>`).join('') || C.empty('Nada vencendo hoje')}
+            ${queue.length > 8 ? `<a href="#/equipe" class="small">+ ${queue.length - 8} demandas</a>` : ''}
+          </section>
         </div>
       </div>`,
     };
   };
 
-  /* ============================== Demandas (lista / quadro) ============================== */
-  const SCOPES = {
-    all: { title: 'Demandas', icon: 'tasks', filter: () => true, href: '#/demandas', defaults: {} },
-    criativos: { title: 'Produção de criativos', icon: 'image', filter: (t) => (t.tags || []).includes('Produção de criativos'), href: '#/criativos', defaults: { tags: ['Produção de criativos'] } },
-    interno: { title: 'Interno', icon: 'inbox', filter: (t) => !t.clientId && !(t.tags || []).includes('Produção de criativos'), href: '#/interno', defaults: { clientId: '' } },
-  };
-  const tasksPage = (scope) => {
-    const S = SCOPES[scope];
-    const base = Store.state.tasks.filter(S.filter);
-    const list = applyFilters(base);
-    const view = VS.view[scope];
+  /* ============================== Clientes ============================== */
+  const clientesPage = () => {
+    const per = VS.per;
+    const enc = VS.cf === 'encerrados';
+    const list = Store.clients().filter((c) => (enc ? !isActive(c) : isActive(c)));
+    const data = list.map((c) => ({ c, s: Ads.has(c.id) ? Ads.stats(c.id, per) : null, l: lastEntry(c.id) }));
+    const F = { todos: () => true, piora: (x) => x.s && x.s.dCpl > 0, ruim: (x) => resOf(x.l) === 'r', sem: (x) => !x.l, encerrados: () => true };
+    const actData = enc ? Store.clients().filter(isActive).map((c) => ({ c, s: Ads.has(c.id) ? Ads.stats(c.id, per) : null, l: lastEntry(c.id) })) : data;
+    const cards = data.filter(F[VS.cf] || F.todos).sort((a, b) => (b.s ? b.s.s : -1) - (a.s ? a.s.s : -1) || a.c.name.localeCompare(b.c.name));
+    const chip = (k, l, n) => `<button class="fchip ${VS.cf === k ? 'on' : ''}" data-action="cf" data-k="${k}">${l}${n != null ? ` · ${n}` : ''}</button>`;
+    const nEnc = Store.state.clients.filter((c) => !isActive(c)).length;
     return {
-      head: head({
-        crumbs: `<span>Espaço de trabalho</span>`, icon: `<span class="space-ic" style="background:var(--accent)">${I(S.icon, 12)}</span>`, title: S.title,
-        actions: newTaskBtn(S.defaults),
-        tabs: tab(view === 'list', `data-action="set-view" data-scope="${scope}" data-view="list" href="javascript:void 0"`, 'list', 'Lista', openTasks(base).length) + tab(view === 'board', `data-action="set-view" data-scope="${scope}" data-view="board" href="javascript:void 0"`, 'board', 'Quadro'),
-      }),
-      toolbar: taskToolbar(scope, { list: view === 'list' }),
-      body: view === 'board' ? C.board(list, { showClient: scope !== 'interno', defaults: S.defaults }) : `<div class="pad">${C.taskList(list, { groupBy: VS.groupBy[scope], showClient: scope !== 'interno', defaults: S.defaults, open: VS.open })}</div>`,
-      flush: view === 'board',
+      rail: 'clientes',
+      top: topbar({ title: 'Clientes' }),
+      body: `
+      <div class="filters">${chip('todos', 'Todos', actData.length)}${chip('piora', 'CPL subindo', actData.filter(F.piora).length)}${chip('ruim', 'Diário ruim', actData.filter(F.ruim).length)}${chip('sem', 'Sem diário', actData.filter(F.sem).length)}${nEnc ? chip('encerrados', 'Pausados e encerrados', nEnc) : ''}
+        <span style="flex:1"></span><span class="small dim hide-sm">${Ads.data ? Ads.win(per).label : ''}</span><button class="btn btn-sm" data-action="new-client">${I('plus', 15)}Novo cliente</button></div>
+      <div class="cgrid">${cards.map(({ c, s, l }, i) => {
+        const r = resOf(l); const d14 = Ads.has(c.id) ? Ads.chartDays('14d').map((d) => Ads.day(c.id, d)[1]) : [];
+        return `<div class="glass up lift ccard" style="animation-delay:${(Math.min(i, 20) * 0.03).toFixed(2)}s" data-action="open-client" data-id="${c.id}">
+          <div class="hd"><b class="ell">${e(c.name)}</b>${s ? C.deltaPill(s.dCpl) : '<span class="pill">sem Meta</span>'}</div>
+          <div class="trio"><div><small>CPL</small><b>${s && s.cpl ? brl(s.cpl) : '—'}</b></div><div><small>Leads</small><b>${s ? s.l : '—'}</b></div><div><small>Investido</small><b class="s">${s ? kk(s.s) : '—'}</b></div></div>
+          <div class="lastd" style="--c:${RC[r]}"><small>Diário · ${l ? dm(l.date) : '—'}</small><p>${e(entryText(l))}</p></div>
+          ${d14.length ? C.spark(d14, '#A78BFA', 30) : '<div style="height:14px"></div>'}
+        </div>`;
+      }).join('') || C.empty('Nenhum cliente neste filtro')}</div>`,
     };
   };
 
-  /* ============================== Demandas da equipe ============================== */
-  const teamPage = () => {
-    const T = U.today();
-    const open = workTasks(Store.state.tasks);
-    const names = [...new Set([...team(), ...open.map((t) => t.assignee || '')])];
-    const p = VS.teamPerson;
-    const filtered = applyFilters(open);
-    const people = names.map((n) => {
-      const ts = open.filter((t) => (t.assignee || '') === n);
-      const late = ts.filter((t) => t.due && t.due < T).length;
-      return `<div class="person ${p === (n || '__none') ? 'on' : ''}" data-action="team-person" data-name="${e(n || '__none')}">${C.avatar(n, 'lg')}<div><div style="font-weight:600">${e(n || 'Sem responsável')}</div><div class="nums"><b>${ts.length}</b> abertas${late ? ` · <b style="color:var(--red)">${late}</b> atrasadas` : ''}</div></div></div>`;
-    }).join('');
-    const sel = p ? filtered.filter((t) => (p === '__none' ? !t.assignee : t.assignee === p)) : null;
-    return {
-      head: head({ crumbs: '<span>Espaço de trabalho</span>', icon: `<span class="space-ic" style="background:#0ea5e9">${I('team', 12)}</span>`, title: 'Demandas da equipe', actions: newTaskBtn(p && p !== '__none' ? { assignee: p } : {}) }),
-      toolbar: `<div class="toolbar"><label class="search">${I('search', 14)}<input id="q-team" placeholder="Buscar tarefas" value="${e(VS.q)}" data-input="q"></label>
-        <span class="small muted">O que falta fazer, por pessoa (sem as rotinas de acompanhamento diário). Clique em alguém para ver só as demandas dele; arraste um cartão para passar a demanda.</span></div>`,
-      body: `<div class="people">${people}${p ? `<button class="chipsel" data-action="team-person" data-name="">${I('x', 14)} Ver todos</button>` : ''}</div>
-        ${sel ? `<div class="pad">${C.taskList(sel, { groupBy: 'due', open: VS.open, defaults: { assignee: p === '__none' ? '' : p } })}</div>` : C.board(filtered, { by: 'assignee' })}`,
-      flush: !sel,
-    };
+  /* ============================== Cliente ============================== */
+  const heat12 = (cid) => {
+    const days = []; let d = T();
+    while (days.length < 12) { const wd = U.parse(d).getDay(); if (wd !== 0 && wd !== 6) days.unshift(d); d = U.addDays(d, -1); }
+    const byDay = {}; entries(cid).forEach((l) => { if (!byDay[l.date]) byDay[l.date] = resOf(l); });
+    const HC = { b: '#3DD68C', n: '#5D6072', r: '#FF6B5E', x: 'rgba(255,255,255,.05)' };
+    const cells = days.map((x) => byDay[x] || 'x');
+    return { days, cells: cells.map((c, i) => `<span style="background:${HC[c]};${c === 'x' ? 'box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)' : ''}" title="${U.fmtDate(days[i])} · ${RL[c]}"></span>`).join(''), nb: cells.filter((c) => c === 'b').length, nn: cells.filter((c) => c === 'n').length, nr: cells.filter((c) => c === 'r').length };
   };
 
-  /* ============================== Clientes (CRM em funil) ============================== */
-  const clientStats = (c) => {
-    const open = workTasks(Store.tasks({ clientId: c.id }));
-    return { open: open.length, late: open.filter((t) => Store.isOverdue(t)).length, last: lastDiary(c.id) };
+  const clientList = (cid) => {
+    const q = VS.q;
+    const match = (c) => !q || U.match(c.name, q);
+    const pend = pendingList().filter(match);
+    const doneL = diaryClients().filter((c) => doneToday(c.id)).filter(match);
+    const others = Store.clients().filter((c) => !isActive(c)).filter(match);
+    const it = (c) => { const l = lastEntry(c.id); return `<button class="it ${c.id === cid ? 'on' : ''}" data-action="open-client" data-id="${c.id}"><span class="dot" style="background:${RC[resOf(l)]}"></span><span class="ell">${e(c.name)}</span><i>${l ? dm(l.date) : '–'}</i></button>`; };
+    const g = (label, color, arr) => (arr.length ? `<div class="g" style="color:${color}"><span>${label}</span><span>${arr.length}</span></div>${arr.map(it).join('')}` : '');
+    return `<label class="search">${I('search', 14)}<input id="cl-q" placeholder="Buscar cliente" value="${e(q)}" data-input="cl-q"></label>
+      ${g('Sem registro hoje', '#F4C04E', pend)}${g('Registrado hoje', '#7FE3B4', doneL)}${g('Pausados e encerrados', '#7D8095', others)}`;
   };
-  const isStale = (last) => !last || U.diffDays(U.today(), last.date) > (Store.settings.staleDays || 3);
-  const filteredClients = () => {
-    let list = Store.clients();
-    const f = VS.clientsPre || 'all';
-    if (VS.clientsQ) list = list.filter((c) => U.match([c.name, c.niche, c.owner].join(' '), VS.clientsQ));
-    if (VS.clientsOwner) list = list.filter((c) => c.owner === VS.clientsOwner);
-    if (VS.clientsNiche) list = list.filter((c) => U.match(c.niche, VS.clientsNiche));
-    if (f === 'mine') list = list.filter((c) => c.owner === Store.settings.userName);
-    if (f === 'stale') list = list.filter((c) => c.status !== 'encerrado' && c.status !== 'pausado' && isStale(clientStats(c).last));
-    if (f === 'late') list = list.filter((c) => clientStats(c).late > 0);
-    return list.sort((a, b) => a.name.localeCompare(b.name));
-  };
-  const clientCard = (c) => {
-    const st = clientStats(c);
-    const stale = c.status !== 'encerrado' && c.status !== 'pausado' && isStale(st.last);
-    return `<div class="card lead" draggable="true" data-drag-client="${c.id}" data-action="open-client" data-id="${c.id}">
-      <div class="lead-top">${C.folder(c)}<span class="lead-name">${e(c.name)}</span>${c.metaPage ? `<a class="ibtn sm" href="${e(url(c.metaPage))}" target="_blank" rel="noopener" title="Abrir no Meta">${I('ads', 14)}</a>` : ''}</div>
-      <div class="lead-niche">${e(c.niche) || '<span class="muted">O que ele mexe: —</span>'}</div>
-      <div class="lead-foot">
-        <span class="pillx ${st.late ? 'red' : ''}" title="Demandas abertas">${I('tasks', 12)}${st.open}${st.late ? ` · ${st.late} atrasada${st.late > 1 ? 's' : ''}` : ''}</span>
-        <span class="pillx ${stale ? 'red' : st.last && c.status !== 'encerrado' && c.status !== 'pausado' ? 'ok' : ''}" title="Última atualização do diário">${I('book', 12)}${st.last ? U.daysAgoLabel(st.last.date) : 'sem diário'}</span>
-        ${c.owner ? `<span style="margin-left:auto">${C.avatar(c.owner)}</span>` : ''}
-      </div>
-    </div>`;
-  };
-  const clientsPage = () => {
-    const list = filteredClients();
-    const view = VS.clientsView || 'board';
-    const pre = VS.clientsPre || 'all';
-    const niches = [...new Set(Store.state.clients.flatMap((c) => String(c.niche || '').split('·').map((x) => x.trim())).filter(Boolean))].sort();
-    const owners = [...new Set(Store.state.clients.map((c) => c.owner).filter(Boolean))].sort();
-    const chip = (k, label, n) => `<button class="chipsel ${pre === k ? 'on' : ''}" data-action="clients-pre" data-k="${k}">${label}${n != null ? ` <b>${n}</b>` : ''}</button>`;
-    const all = Store.state.clients.filter((c) => c.status !== 'encerrado');
-    const nStale = all.filter((c) => c.status !== 'pausado' && isStale(clientStats(c).last)).length;
-    const nLate = all.filter((c) => clientStats(c).late > 0).length;
-    let body;
-    if (!list.length) body = C.empty('Nenhum cliente neste filtro', '', '<button class="btn" data-action="clients-pre" data-k="all">Limpar filtro</button>');
-    else if (view === 'board') {
-      body = `<div class="board">${M.CLIENT_STATUSES.map((s) => {
-        const items = list.filter((c) => c.status === s.id);
-        return `<div class="col" data-drop-cstatus="${s.id}"><div class="col-h"><span class="st" style="--c:${s.color}">${e(s.label)}</span><span class="n">${items.length}</span></div>
-          <div class="cards">${items.map(clientCard).join('')}</div>
-          ${s.id === 'onboarding' ? `<button class="col-add" data-action="new-client">${I('plus', 14)} Novo cliente</button>` : ''}</div>`;
-      }).join('')}</div>`;
+
+  const clientePage = (cid, tab) => {
+    const c = Store.client(cid);
+    if (!c) return { rail: 'clientes', top: topbar({ title: 'Cliente' }), body: C.empty('Cliente não encontrado', 'Ele pode ter sido excluído.') };
+    tab = tab || 'diario';
+    const per = VS.per;
+    const s = Ads.has(c.id) ? Ads.stats(c.id, per) : null;
+    const l = lastEntry(c.id), r = resOf(l);
+    const tasks = Store.tasks({ clientId: c.id });
+    const openT = Store.sortTasks(tasks.filter((t) => t.status !== 'done'));
+    const links = [[c.metaPage, 'Gerenciador'], [c.diarySheetUrl, 'Planilha'], [c.clickupUrl, 'ClickUp'], [c.contact && c.contact.phone ? U.waLink(c.contact.phone) : '', 'WhatsApp']].filter(([u]) => u);
+    const tabs = [['diario', 'Diário de bordo', '#F4C04E'], ['perf', 'Desempenho', '#A78BFA'], ['dem', `Demandas · ${openT.length}`, '#A78BFA'], ['info', 'Informações', '#A78BFA']];
+    const lbl = s ? s.w.short : '';
+    let body = '';
+    if (tab === 'perf') {
+      const days = [];
+      if (s) { const stop = per === 'hoje' || per === 'ontem' ? U.addDays(Ads.today, -13) : s.w.from; for (let d = Ads.today; d >= stop; d = U.addDays(d, -1)) days.push(d); }
+      const mx = Math.max(...days.map((d) => Ads.day(c.id, d)[1]), 1);
+      body = s ? `<section class="glass up panel"><div style="overflow-x:auto"><table class="tbl perf"><thead><tr><th>Dia</th><th>Investido</th><th>Leads</th><th>CPL</th><th style="text-align:left">Leads</th></tr></thead><tbody>
+        ${days.map((d) => { const [sp, ld] = Ads.day(c.id, d); return `<tr style="cursor:default"><td style="${d === Ads.today ? 'color:var(--amber)' : ''}">${dm(d)}${d === Ads.today ? ' <span class="small dim">parcial</span>' : ''}</td><td>${brl(sp)}</td><td>${ld}</td><td><b>${ld ? brl(sp / ld) : '—'}</b></td><td style="text-align:left;width:40%"><div class="pbar"><span style="width:${Math.round((ld / mx) * 100)}%"></span></div></td></tr>`; }).join('')}
+        </tbody></table></div></section>` : `<section class="glass panel">${C.empty('Sem conta de anúncio ligada', 'Coloque o link do Gerenciador em Informações para ver o desempenho.')}</section>`;
+    } else if (tab === 'dem') {
+      const doneT = tasks.filter((t) => t.status === 'done').length;
+      body = `<section class="glass up panel">
+        ${openT.map((t) => `<div class="dem" data-action="open-task" data-id="${t.id}"><button class="chk" data-action="done-task" data-id="${t.id}" aria-label="Concluir">${I('check', 12, 3)}</button><span style="min-width:0"><b class="ell">${e(t.title)}</b><small>${e(t.assignee || 'Sem responsável')} · ${e((M.status[t.status] || {}).label || '')}</small></span><span></span>${C.duePill(t)}</div>`).join('') || C.empty('Nenhuma demanda aberta')}
+        <div class="addrow">${I('plus', 16)}<input id="add-dem" data-quickadd='${e(JSON.stringify({ clientId: c.id }))}' placeholder="Nova demanda para ${e(c.name)} — escreva e aperte Enter"></div>
+        ${doneT ? `<div class="addrow small">${doneT} demanda(s) concluída(s)</div>` : ''}
+      </section>`;
+    } else if (tab === 'info') {
+      const f = (label, path, type = 'text', ph = '') => { const v = path.split('.').reduce((o, k) => (o || {})[k], c) ?? ''; return `<label for="p-${path}">${label}</label><div><input class="field" id="p-${path}" type="${type}" value="${e(v)}" placeholder="${e(ph)}" data-change="client-field" data-id="${c.id}" data-field="${path}"></div>`; };
+      body = `<section class="glass up panel"><div class="props">
+        ${f('Cliente', 'name')}${f('O que ele mexe', 'niche', 'text', 'Ex.: Gestão de passivos, Golpe Pix')}${f('Página do Meta (Gerenciador)', 'metaPage', 'url', 'Link da conta no Gerenciador de Anúncios')}
+        <label for="p-owner">Responsável</label><div><select class="field" id="p-owner" data-change="client-field" data-id="${c.id}" data-field="owner"><option value="">—</option>${[...new Set([...team(), c.owner].filter(Boolean))].map((n) => `<option ${n === c.owner ? 'selected' : ''}>${e(n)}</option>`).join('')}</select></div>
+        <label for="p-status">Status</label><div><select class="field" id="p-status" data-change="client-field" data-id="${c.id}" data-field="status">${M.CLIENT_STATUSES.map((x) => `<option value="${x.id}" ${x.id === c.status ? 'selected' : ''}>${x.label}</option>`).join('')}</select></div>
+        ${f('Teto de investimento (R$)', 'investmentCap', 'number')}${f('Meta de CPL (R$)', 'goals.cpl', 'number')}
+        <label for="p-notes">Observações</label><div><textarea class="field" id="p-notes" rows="4" data-change="client-field" data-id="${c.id}" data-field="notes" placeholder="Combinados, restrições, como o cliente gosta de receber relatório…">${e(c.notes || '')}</textarea></div>
+        ${f('Planilha antiga do diário', 'diarySheetUrl', 'url')}${f('Pasta no ClickUp', 'clickupUrl', 'url')}
+        <label>Excluir cliente</label><div><button class="btn btn-sm btn-danger" data-action="delete-client" data-id="${c.id}">${I('trash', 14)}Excluir ${e(c.name)}</button></div>
+      </div></section>`;
     } else {
-      body = `<div style="overflow-x:auto;padding:0 12px"><table class="dt"><thead><tr><th>Cliente</th><th>O que ele mexe</th><th>Meta</th><th>Responsável</th><th>Status</th><th style="text-align:right">Demandas</th><th>Último diário</th></tr></thead><tbody>
-        ${list.map((c) => { const st = clientStats(c); const s = M.clientStatus[c.status] || M.clientStatus.ativo; return `<tr data-action="open-client" data-id="${c.id}">
-          <td><span class="cname">${C.folder(c)}${e(c.name)}</span></td><td class="muted">${e(c.niche) || '—'}</td>
-          <td>${c.metaPage ? `<a class="lnk" href="${e(url(c.metaPage))}" target="_blank" rel="noopener">${I('ads', 12)} Abrir</a>` : '—'}</td>
-          <td>${c.owner ? `<span class="row">${C.avatar(c.owner)}<span class="small">${e(c.owner.split(' ')[0])}</span></span>` : '—'}</td>
-          <td><span class="st soft" style="--c:${s.color}">${e(s.label)}</span></td><td class="num">${st.open}${st.late ? ` <span style="color:var(--red)">(${st.late})</span>` : ''}</td>
-          <td class="small ${isStale(st.last) ? 'muted' : ''}">${st.last ? U.daysAgoLabel(st.last.date) : 'nunca'}</td></tr>`; }).join('')}</tbody></table></div>`;
+      const h = heat12(c.id);
+      const d14days = Ads.chartDays('14d');
+      const d14 = Ads.has(c.id) ? d14days.map((d) => Ads.day(c.id, d)[1]) : [];
+      const mx = Math.max(...d14, 1);
+      const ents = entries(c.id);
+      body = `<div class="cdiary">
+        <div class="col">
+          <section class="glass reg" id="composer" data-client="${c.id}">
+            <div class="row" style="flex-wrap:wrap"><h2>Registro de hoje</h2><span class="small dim">${wdName(T())}, ${U.fmtDate(T())} · ontem + 7 dias</span>${doneToday(c.id) ? '<span class="pill good" style="margin-left:auto">registrado hoje</span>' : ''}</div>
+            <input type="hidden" name="impact" value="">
+            <div class="results">${[['positivo', 'Bom', '#3DD68C', 'rgba(61,214,140,.22)'], ['neutro', 'Neutro', '#8A8DA0', 'rgba(138,141,160,.22)'], ['negativo', 'Ruim', '#FF6B5E', 'rgba(255,107,94,.22)']].map(([k, label, col, bg]) => `<button type="button" data-action="pick-res" data-k="${k}" style="--c:${col};--bgc:${bg}"><span class="dot" style="background:${col}"></span>${label}</button>`).join('')}</div>
+            <textarea class="field" name="analysis" id="cp-a" rows="3" placeholder="Análise"></textarea>
+            <div class="two"><textarea class="field" name="planned" id="cp-p" rows="1" placeholder="Ações programadas"></textarea><textarea class="field" name="actionsDone" id="cp-d" rows="1" placeholder="Ações realizadas"></textarea></div>
+            <div class="row" style="flex-wrap:wrap"><label class="row small" style="color:var(--text-2)"><input type="checkbox" name="plannedTask" id="cp-t" style="width:18px;height:18px;accent-color:#7C5CFF"> Virar tarefa</label><span style="flex:1"></span>
+              <button class="btn" data-action="skip-client" data-id="${c.id}">Pular</button><button class="btn-gold" data-action="save-entry" data-id="${c.id}">Salvar e ir pro próximo</button></div>
+          </section>
+          <section class="glass tl">${ents.slice(0, 40).map((x) => { const rr = resOf(x); const d = U.parse(x.date); return `<div class="e" data-action="edit-log" data-id="${x.id}">
+            <span class="d">${d.getDate()} ${U.MONTHS[d.getMonth()]}</span><span class="k" style="--c:${RC[rr]};--bgc:${RB[rr]}"><i></i></span>
+            <div><div class="row">${C.resPill(rr)}<span class="small dim">${wdName(x.date)}</span>${x.author ? `<span class="small dim">· ${e(x.author)}</span>` : ''}</div>
+              <div class="tx">${e(x.analysis || [x.title, x.body].filter(Boolean).join(' — ') || '—')}</div>
+              ${x.planned ? `<div class="pl">Programado: ${e(x.planned)}</div>` : ''}${x.actionsDone ? `<div class="ac">Feito: ${e(x.actionsDone)}</div>` : ''}</div></div>`; }).join('') || C.empty('Nenhum registro ainda', 'Faça o primeiro registro acima.')}
+            ${ents.length > 40 ? `<div class="small dim" style="padding:10px 0">+ ${ents.length - 40} registros mais antigos</div>` : ''}</section>
+        </div>
+        <div class="col">
+          <section class="glass panel panel-pad" style="gap:12px"><b>Últimos 12 dias úteis</b><div class="heat">${h.cells}</div>
+            <div class="row mono small dim" style="justify-content:space-between"><span>${U.fmtDate(h.days[0])}</span><span>${U.fmtDate(h.days[11])}</span></div>
+            <div class="cnt3"><div style="background:rgba(61,214,140,.1)"><b style="color:#3DD68C">${h.nb}</b><small>bom</small></div><div style="background:rgba(255,255,255,.05)"><b>${h.nn}</b><small>neutro</small></div><div style="background:rgba(255,107,94,.1)"><b style="color:#FF6B5E">${h.nr}</b><small>ruim</small></div></div></section>
+          ${d14.length ? `<section class="glass panel panel-pad" style="gap:12px"><b>Leads · 14 dias</b><div class="mbars">${d14.map((v, i) => `<span title="${dm(d14days[i])} · ${v} leads" style="height:${Math.round((v / mx) * 100)}%"></span>`).join('')}</div>
+            <div class="row mono small dim" style="justify-content:space-between"><span>${U.fmtDate(d14days[0])}</span><span>${U.fmtDate(d14days[13])}</span></div></section>` : ''}
+          <section class="glass panel panel-pad" style="gap:10px"><div class="row"><b>Demandas</b><span style="flex:1"></span><a href="#/c/${c.id}/dem" class="small">ver →</a></div>
+            ${openT.slice(0, 4).map((t) => `<div class="task-mini" data-action="open-task" data-id="${t.id}"><b>${e(t.title)}</b><span class="small" style="color:${isLate(t) ? 'var(--red-text)' : t.due ? 'var(--amber)' : 'var(--dim)'}">${e(t.assignee || 'Sem responsável')} · ${t.due ? e(U.fmtDue(t.due)) : 'sem prazo'}</span></div>`).join('') || '<span class="small dim">Nada pendente.</span>'}</section>
+        </div>
+      </div>`;
     }
     return {
-      head: head({ crumbs: '<span>Espaços</span>', icon: '<span class="space-ic" style="background:#16a34a">C</span>', title: 'Clientes', actions: `<button class="btn btn-primary" data-action="new-client">${I('plus', 15)}Novo cliente</button>`,
-        tabs: tab(view === 'board', 'data-action="clients-view" data-view="board" href="javascript:void 0"', 'board', 'Funil') + tab(view === 'list', 'data-action="clients-view" data-view="list" href="javascript:void 0"', 'list', 'Lista', list.length) }),
-      toolbar: `<div class="toolbar">
-        <label class="search">${I('search', 14)}<input id="q-clients" placeholder="Buscar cliente" value="${e(VS.clientsQ)}" data-input="clients-q"></label>
-        ${chip('all', 'Todos')}${chip('mine', 'Meus clientes')}${chip('stale', 'Diário atrasado', nStale)}${chip('late', 'Com demandas atrasadas', nLate)}
-        <select class="chipsel" data-change="vs" data-field="clientsOwner" aria-label="Responsável"><option value="">Responsável: todos</option>${owners.map((o) => `<option ${o === VS.clientsOwner ? 'selected' : ''}>${e(o)}</option>`).join('')}</select>
-        <select class="chipsel" data-change="vs" data-field="clientsNiche" aria-label="O que mexe"><option value="">O que mexe: todos</option>${niches.map((o) => `<option ${o === VS.clientsNiche ? 'selected' : ''}>${e(o)}</option>`).join('')}</select>
-      </div>`,
-      body, flush: true,
+      rail: tab === 'diario' ? 'diario' : 'clientes',
+      top: topbar({ title: c.name, back: `<a class="back" href="#/clientes">${I('back', 15)}Clientes</a>` }),
+      body: `<div class="cpage">
+        <aside class="glass clist">${clientList(c.id)}</aside>
+        <div class="col">
+          <section class="glass up chero">
+            <div class="top-r"><span class="pill" style="background:${RB[r]};color:${RC[r]}"><span class="dot" style="background:${RC[r]}"></span>Diário: ${RL[r]}${l ? ' · ' + U.fmtDate(l.date) : ''}</span>
+              <span class="pill">${e((M.clientStatus[c.status] || {}).label || '')}</span>${c.niche ? `<span class="pill">${e(c.niche)}</span>` : ''}
+              <div class="links">${links.map(([u, t]) => `<a href="${e(url(u))}" target="_blank" rel="noopener">${t}↗</a>`).join('')}</div></div>
+            <h1>${e(c.name)}</h1>
+            <div class="ckpi">
+              <div><small>Investido · ${lbl || '—'}</small><b>${s ? brl(s.s) : '—'}</b><em>${s ? s.w.label : 'sem conta ligada'}</em></div>
+              <div><small>Leads · ${lbl || '—'}</small><b>${s ? s.l : '—'}</b><em>${s && s.prev ? `${s.w.prev}: ${s.prev.l}` : ''}</em></div>
+              <div><small>CPL · ${lbl || '—'}</small><b>${s && s.cpl ? brl(s.cpl) : '—'}</b><em style="color:${s && s.dCpl > 0 ? 'var(--red-text)' : 'var(--green-text)'}">${s && s.dCpl != null ? `${s.dCpl > 0 ? '+' : ''}${s.dCpl}% vs ${s.w.prev}` : ''}</em></div>
+              <div><small>Demandas</small><b>${openT.length}</b><em>${openT.filter(isLate).length ? `<span style="color:var(--red-text)">${openT.filter(isLate).length} atrasadas</span>` : 'abertas'}</em></div>
+            </div>
+            <div class="ctabs">${tabs.map(([k, t, col]) => `<button class="${tab === k ? 'on' : ''}" style="--c:${col}" data-action="ctab" data-id="${c.id}" data-k="${k}">${t}</button>`).join('')}</div>
+          </section>
+          ${body}
+        </div></div>`,
     };
   };
 
-  /* ============================== Ficha do cliente (informações + diário) ============================== */
-  const prop = (c, icon, label, path, type = 'text', ph = '', extra = '') => {
-    const val = path.split('.').reduce((o, k) => (o || {})[k], c) ?? '';
-    return `<div class="pl">${I(icon, 15)}${label}</div><div class="pv"><input type="${type}" id="p-${path.replace('.', '-')}" value="${e(val)}" placeholder="${e(ph)}" data-change="client-field" data-id="${c.id}" data-field="${path}">${extra}</div>`;
-  };
-  const openBtn = (href, label = 'Abrir') => href ? `<a class="lnk" href="${e(href)}" target="_blank" rel="noopener">${I('ext', 12)}${label}</a>` : '';
-
-  const clientInfo = (c) => `
-    <div class="sec"><div class="sec-h">${I('user', 15)} Informações<span class="right small muted">salva sozinho</span></div>
-      <div class="props">
-        ${prop(c, 'folder', 'Cliente', 'name')}
-        ${prop(c, 'target', 'O que ele mexe', 'niche', 'text', 'Ex.: Gestão de passivos')}
-        ${prop(c, 'ads', 'Página do Meta', 'metaPage', 'url', 'Link da conta no Meta', openBtn(url(c.metaPage)))}
-        <div class="pl">${I('team', 15)}Responsável</div><div class="pv"><select id="p-owner" data-change="client-field" data-id="${c.id}" data-field="owner"><option value="">—</option>${[...new Set([...team(), c.owner].filter(Boolean))].map((n) => `<option ${n === c.owner ? 'selected' : ''}>${e(n)}</option>`).join('')}</select></div>
-        <div class="pl">${I('status', 15)}Status</div><div class="pv"><select id="p-status" data-change="client-field" data-id="${c.id}" data-field="status">${M.CLIENT_STATUSES.map((s) => `<option value="${s.id}" ${s.id === c.status ? 'selected' : ''}>${s.label}</option>`).join('')}</select></div>
-        ${prop(c, 'money', 'Teto de investimento', 'investmentCap', 'number', 'R$')}
-        ${prop(c, 'target', 'Meta de CPL', 'goals.cpl', 'number', 'R$')}
-        <div class="pl">${I('note', 15)}Observações</div><div class="pv"><textarea id="p-notes" data-change="client-field" data-id="${c.id}" data-field="notes" placeholder="Combinados, restrições, como o cliente gosta de receber relatório…">${e(c.notes || '')}</textarea></div>
-      </div>
-    </div>`;
-
-  const clientDemands = (c) => {
-    const open = Store.sortTasks(openTasks(Store.tasks({ clientId: c.id })));
-    return `<div class="sec"><div class="sec-h">${I('tasks', 15)} Demandas abertas <span class="muted">${open.length}</span>
-        <button class="btn btn-sm right" data-action="new-task" data-defaults='${e(JSON.stringify({ clientId: c.id }))}'>${I('plus', 13)}Tarefa</button></div>
-      ${open.slice(0, 8).map((t) => `<div class="mini" data-action="open-task" data-id="${t.id}">${C.sdot(t.status)}<span class="grow ellipsis">${e(t.title)}</span>${C.due(t)}${C.avatar(t.assignee)}</div>`).join('') || '<div class="empty" style="padding:18px">Nada pendente</div>'}
-      ${open.length > 8 ? `<a class="mini small" href="#/c/${c.id}/demandas">Ver todas as ${open.length}</a>` : ''}
-    </div>`;
+  /* ============================== Equipe ============================== */
+  const equipePage = () => {
+    const open = work(Store.state.tasks);
+    const names = [...new Set([...team(), ...open.map((t) => t.assignee || '')])];
+    const max = Math.max(...names.map((n) => open.filter((t) => (t.assignee || '') === n).length), 1);
+    const cards = names.map((n, i) => {
+      const ts = Store.sortTasks(open.filter((t) => (t.assignee || '') === n));
+      const late = ts.filter(isLate).length;
+      return `<div class="glass up lift tcard ${VS.person === (n || '__none') ? 'on' : ''}" style="animation-delay:${i * 0.05}s" data-action="person" data-k="${e(n || '__none')}">
+        <div class="hd">${C.avatar(n, 'lg')}<div><b>${e(n || 'Sem responsável')}</b><span class="small" style="color:${late ? 'var(--red-text)' : ts.length ? 'var(--muted)' : 'var(--green-text)'}">${late ? late + ' atrasadas' : ts.length ? 'em dia' : 'livre'}</span></div><strong>${ts.length}</strong></div>
+        <div class="load"><span style="width:${(late / max) * 100}%"></span><span style="width:${((ts.length - late) / max) * 100}%"></span></div>
+        ${ts.slice(0, 2).map((t) => `<div class="tk"><small>${e(Store.client(t.clientId)?.name || 'Interno')}</small><b>${e(t.title)}</b></div>`).join('')}
+      </div>`;
+    }).join('');
+    const p = VS.person;
+    const sel = p ? Store.sortTasks(open.filter((t) => (p === '__none' ? !t.assignee : t.assignee === p))) : null;
+    return {
+      rail: 'equipe',
+      top: topbar({ title: 'Equipe', period: false }),
+      body: `<div class="row" style="flex-wrap:wrap"><span class="small dim">Demandas abertas por pessoa (sem as rotinas de acompanhamento diário). Clique em alguém para ver tudo o que está com ele.</span><span style="flex:1"></span><button class="btn btn-sm" data-action="new-task">${I('plus', 15)}Nova demanda</button></div>
+        <div class="tgrid">${cards}</div>
+        ${sel ? `<section class="glass up panel"><div class="sec-h" style="padding:18px 22px"><h2>${e(p === '__none' ? 'Sem responsável' : p)}</h2><span class="pill">${sel.length}</span><span style="flex:1"></span><button class="ibtn" data-action="person" data-k="${e(p)}" title="Fechar">${I('x', 16)}</button></div>
+          ${sel.map((t) => `<div class="dem" data-action="open-task" data-id="${t.id}"><button class="chk" data-action="done-task" data-id="${t.id}" aria-label="Concluir">${I('check', 12, 3)}</button><span style="min-width:0"><b class="ell">${e(t.title)}</b><small>${e(Store.client(t.clientId)?.name || 'Interno')} · ${e((M.status[t.status] || {}).label || '')}</small></span><span></span>${C.duePill(t)}</div>`).join('') || C.empty('Nada pendente')}</section>` : ''}`,
+    };
   };
 
-  /** Ficha completa: informações e demandas à esquerda, diário de bordo à direita — tudo na mesma tela. */
-  const clientSheet = (c) => `
-    <div class="sheet">
-      <div class="sheet-side">${clientInfo(c)}${clientDemands(c)}</div>
-      <div class="sheet-main">
-        <div class="h2">${I('book', 16)} Diário de bordo <span class="muted small" style="font-weight:500">${manualLogs({ clientId: c.id }).length} atualizações</span></div>
-        ${C.diaryComposer({ clientId: c.id })}${diaryFilters('client')}
-        <div style="overflow-x:auto">${C.diaryTable(diaryLogs(c.id))}</div>
-      </div>
-    </div>`;
-
-  const clientPanel = (id) => {
-    const c = Store.client(id); if (!c) return '';
-    const s = M.clientStatus[c.status] || M.clientStatus.ativo;
-    return `<div class="task-wrap"><div class="overlay" data-action="close-client"></div>
-      <div class="task client-panel" role="dialog" aria-label="${e(c.name)}">
-        <div class="task-top">${C.folder(c, 18)}<b style="font-size:16px">${e(c.name)}</b>
-          <button class="cell-btn" data-action="pick-client-status" data-id="${c.id}"><span class="st soft" style="--c:${s.color}">${e(s.label)}</span></button>
-          <span class="grow"></span>
-          ${c.metaPage ? `<a class="btn btn-sm" href="${e(url(c.metaPage))}" target="_blank" rel="noopener">${I('ads', 14)}Meta</a>` : ''}
-          ${c.clickupUrl ? `<a class="btn btn-sm hide-sm" href="${e(url(c.clickupUrl))}" target="_blank" rel="noopener">${I('ext', 14)}ClickUp</a>` : ''}
-          <a class="btn btn-sm" href="#/c/${c.id}" data-action="close-client-nav">${I('folder', 14)}Abrir pasta</a>
-          <button class="ibtn" data-action="close-client" title="Fechar (Esc)">${I('x')}</button>
-        </div>
-        <div class="panel-body">${clientSheet(c)}</div>
-      </div></div>`;
+  /* ============================== Criativos ============================== */
+  const KINDS = [
+    { k: 'roteiro', name: 'Roteiro', color: '#F4C04E', cover: 'linear-gradient(135deg,#3A2A12,#F4C04E)', badge: 'roteiro' },
+    { k: 'video', name: 'Edição de vídeo', color: '#7C5CFF', cover: 'linear-gradient(135deg,#3B2A8C,#7C5CFF 60%,#F472B6)', badge: 'vídeo' },
+    { k: 'estatico', name: 'Estático', color: '#22D3EE', cover: 'linear-gradient(135deg,#0E4D5C,#22D3EE)', badge: 'estático' },
+  ];
+  const kindOf = (t) => {
+    if (t.lane) return t.lane;
+    const s = U.norm(t.title);
+    if (/roteiro/.test(s)) return 'roteiro';
+    if (/estatic/.test(s)) return 'estatico';
+    const tags = (t.tags || []).map(U.norm);
+    if (tags.includes('estatico')) return 'estatico';
+    if (tags.includes('roteiro')) return 'roteiro';
+    return 'video';
   };
-
-  const clientPage = (id, tabId = 'visao') => {
-    const c = Store.client(id);
-    if (!c) return { head: head({ title: 'Cliente não encontrado' }), body: C.empty('Cliente não encontrado', 'Ele pode ter sido excluído.', '<a class="btn" href="#/clientes">Ver clientes</a>') };
-    const tasks = Store.tasks({ clientId: id });
-    const s = M.clientStatus[c.status] || M.clientStatus.ativo;
-    const base = `#/c/${id}`;
-    if (tabId === 'diario') tabId = 'visao';
-    const H = head({
-      crumbs: `<a href="#/clientes">Clientes</a>${I('chevR', 12)}<span>${e(c.name)}</span>`,
-      icon: C.folder(c, 20), title: e(c.name) + ` <button class="cell-btn" style="margin-left:6px;vertical-align:3px" data-action="pick-client-status" data-id="${c.id}"><span class="st soft" style="--c:${s.color}">${e(s.label)}</span></button>`,
-      actions: `${c.metaPage ? `<a class="btn" href="${e(url(c.metaPage))}" target="_blank" rel="noopener">${I('ads', 15)}<span class="hide-sm">Meta</span></a>` : ''}${newTaskBtn({ clientId: id })}`,
-      tabs: tab(tabId === 'visao', base, 'book', 'Ficha e diário') + tab(tabId === 'demandas', `${base}/demandas`, 'list', 'Demandas', openTasks(tasks).length) + tab(tabId === 'quadro', `${base}/quadro`, 'board', 'Quadro'),
-    });
-    if (tabId === 'demandas') return { head: H, toolbar: taskToolbar('client'), body: `<div class="pad">${C.taskList(applyFilters(tasks), { groupBy: VS.groupBy.client, showClient: false, defaults: { clientId: id }, open: VS.open })}</div>` };
-    if (tabId === 'quadro') return { head: H, toolbar: taskToolbar('client', { list: false }), body: C.board(applyFilters(tasks), { showClient: false, defaults: { clientId: id } }), flush: true };
-    return { head: H, body: `<div class="pad">${clientSheet(c)}</div>` };
+  const criativosPage = () => {
+    const ts = Store.sortTasks(Store.state.tasks.filter((t) => t.status !== 'done' && (t.tags || []).includes('Produção de criativos')));
+    return {
+      rail: 'criativos',
+      top: topbar({ title: 'Criativos', period: false }),
+      body: `<div class="lanes">${KINDS.map((K, li) => { const items = ts.filter((t) => kindOf(t) === K.k); return `
+        <section class="glass up lane" style="animation-delay:${li * 0.08}s" data-drop-kind="${K.k}">
+          <div class="lane-h"><i style="background:${K.color}"></i><b>${K.name}</b><span>${items.length}</span></div>
+          ${items.map((t) => `<div class="kcard" draggable="true" data-drag-task="${t.id}" data-action="open-task" data-id="${t.id}">
+            <div class="cover" style="background:${K.cover}"><span>${K.badge}</span></div>
+            <small>${e(Store.client(t.clientId)?.name || 'Interno')}</small><b>${e(t.title)}</b>
+            <div class="ft">${C.avatar(t.assignee)}${C.duePill(t)}</div></div>`).join('') || '<div class="small dim" style="padding:6px">Nada nesta etapa.</div>'}
+          <button class="btn btn-sm" style="justify-content:flex-start" data-action="new-task" data-defaults='${e(JSON.stringify({ tags: ['Produção de criativos', K.badge] }))}'>${I('plus', 14)}Novo ${K.name.toLowerCase()}</button>
+        </section>`; }).join('')}</div>`,
+    };
   };
-
-  const diaryFilters = (scope) => {
-    const f = VS.diary;
-    return `<div class="row" style="flex-wrap:wrap;margin-bottom:10px">
-      <label class="search chipsel" style="padding:0 9px">${I('search', 14)}<input id="q-diary-${scope}" style="border:0;outline:0;background:transparent;padding:5px 0;width:170px" placeholder="Buscar no diário" value="${e(f.q)}" data-input="diary-q"></label>
-      ${scope === 'all' ? `<select class="chipsel" data-change="diary" data-field="clientId" aria-label="Cliente"><option value="">Todos os clientes</option>${Store.clients().map((c) => `<option value="${c.id}" ${f.clientId === c.id ? 'selected' : ''}>${e(c.name)}</option>`).join('')}</select>` : ''}
-      <select class="chipsel" data-change="diary" data-field="period" aria-label="Período">${[['7', 'Últimos 7 dias'], ['30', 'Últimos 30 dias'], ['90', 'Últimos 90 dias'], ['', 'Tudo']].map(([k, l]) => `<option value="${k}" ${f.period === k ? 'selected' : ''}>${l}</option>`).join('')}</select>
-      <button class="chipsel ${f.showTasks ? 'on' : ''}" data-action="diary-tasks">${I('tasks', 14)} Mostrar tarefas concluídas</button>
-      <span style="flex:1"></span>
-      <button class="chipsel" data-action="copy-diary" data-scope="${scope}">${I('copy', 14)} Copiar</button>
-      ${scope === 'client' ? `<label class="chipsel" style="cursor:pointer" title="Importar planilha .xlsx (Data, Análise, Ações programadas, Ações realizadas)">${I('upload', 14)} Importar planilha<input type="file" accept=".xlsx,.xls,.csv" hidden data-change="import-diary-xlsx"></label>` : ''}
-    </div>`;
-  };
-  const diaryLogs = (clientId) => {
-    const f = VS.diary;
-    const filter = { q: f.q, clientId: clientId || f.clientId };
-    if (f.period) filter.from = U.addDays(U.today(), -Number(f.period));
-    return Store.logs(filter).filter((l) => (f.showTasks ? true : l.type !== 'tarefa') && !(l.auto && l.type === 'nota'));
-  };
-
-  const diaryPage = () => ({
-    head: head({ crumbs: '<span>Espaço de trabalho</span>', icon: `<span class="space-ic" style="background:#f59e0b">${I('book', 12)}</span>`, title: 'Diário de bordo' }),
-    body: `<div class="pad">${C.diaryComposer({ clientId: VS.diary.clientId, withClient: true })}${diaryFilters('all')}<div style="overflow-x:auto">${C.diaryTable(diaryLogs(), { showClient: true })}</div></div>`,
-  });
 
   /* ============================== Ajustes ============================== */
-  const settingsPage = () => {
+  const ajustesPage = () => {
     const s = Store.settings;
-    const f = (label, field, val, type = 'text') => `<div class="field"><label for="s-${field}">${label}</label><input class="input" id="s-${field}" type="${type}" value="${e(val)}" data-change="setting" data-field="${field}"></div>`;
+    const f = (label, field, val) => `<label for="s-${field}">${label}</label><div><input class="field" id="s-${field}" value="${e(val || '')}" data-change="setting" data-field="${field}"></div>`;
     return {
-      head: head({ crumbs: '<span>Espaço de trabalho</span>', title: 'Ajustes' }),
-      body: `<div class="pad" style="max-width:760px">
-        <div class="sec"><div class="sec-h">${I('settings', 15)} Geral</div><div class="modal-b">
-          <div class="g2">${f('Nome do espaço (agência)', 'workspaceName', s.workspaceName || '')}${f('Seu nome', 'userName', s.userName)}</div>
-          <div class="field"><label for="s-team">Equipe (um nome por linha)</label><textarea class="textarea" id="s-team" data-change="setting-team">${e(team().join('\n'))}</textarea></div>
-          <div class="g2">${f('Avisar diário parado após (dias)', 'staleDays', s.staleDays || 3, 'number')}
-            <div class="field"><label>Tema</label><div class="row">${[['auto', 'Automático'], ['light', 'Claro'], ['dark', 'Escuro']].map(([k, l]) => `<button class="chipsel ${s.theme === k ? 'on' : ''}" data-action="set-theme" data-theme="${k}">${l}</button>`).join('')}</div></div></div>
-        </div></div>
-        <div class="sec"><div class="sec-h">${I('download', 15)} Backup</div><div class="modal-b">
-          <div class="small muted">Os dados ficam salvos neste navegador. Exporte um backup de vez em quando.</div>
-          <div class="row" style="flex-wrap:wrap"><button class="btn" data-action="export-json">${I('download', 15)}Exportar backup</button>
-            <label class="btn" style="cursor:pointer">${I('upload', 15)}Importar backup<input type="file" accept=".json" hidden data-change="import-json"></label>
-            <button class="btn" data-action="export-csv">${I('sheet', 15)}Tarefas em CSV</button></div>
-        </div></div>
-        <div class="sec"><div class="sec-h">${I('trash', 15)} Dados</div><div class="modal-b">
-          <div class="small muted">${Store.state.clients.length} clientes · ${Store.state.tasks.length} tarefas · ${Store.state.logs.length} registros no diário</div>
-          <div class="row"><button class="btn btn-danger" data-action="reset-all">Apagar tudo</button></div>
-        </div></div>
-      </div>`,
+      rail: 'ajustes',
+      top: topbar({ title: 'Ajustes', period: false }),
+      body: `<section class="glass up panel" style="max-width:820px"><div class="props">
+        ${f('Nome da agência', 'workspaceName', s.workspaceName)}${f('Seu nome', 'userName', s.userName)}
+        <label for="s-team">Equipe (um nome por linha)</label><div><textarea class="field" id="s-team" rows="6" data-change="setting-team">${e(team().join('\n'))}</textarea></div>
+        <label>Backup</label><div class="row" style="flex-wrap:wrap"><button class="btn btn-sm" data-action="export-json">Exportar backup</button><label class="btn btn-sm" style="cursor:pointer">Importar backup<input type="file" accept=".json" hidden data-change="import-json"></label></div>
+        <label>Dados de anúncios</label><div class="small muted">${Ads.data ? `Meta Ads atualizado em ${U.fmtLong(Ads.today)} (${Ads.ids().length} contas). Os números são atualizados a cada nova publicação.` : 'Sem dados de anúncios nesta versão.'}</div>
+        <label>Dados deste navegador</label><div class="row" style="flex-wrap:wrap"><span class="small dim">${Store.state.clients.length} clientes · ${Store.state.tasks.length} tarefas · ${Store.state.logs.length} registros</span><button class="btn btn-sm btn-danger" data-action="reset-all">Apagar tudo</button></div>
+      </div></section>`,
     };
   };
 
-  /* ============================== Janela da tarefa ============================== */
-  const taskView = (id) => {
-    const t = Store.task(id);
-    if (!t) return '';
-    const c = Store.client(t.clientId);
-    const done = t.checklist.filter((i) => i.done).length;
-    const feed = [
-      ...t.activity.map((a) => ({ at: a.at, html: `<div class="ev">${I('clock', 13)}<span>${e(a.text)} · ${U.timeAgo(a.at)}</span></div>` })),
-      ...t.comments.map((cm) => ({ at: cm.at, html: `<div class="cm"><div class="who"><b style="color:var(--text)">${e(cm.author || '')}</b> · ${U.timeAgo(cm.at)}</div>${U.rich(cm.text)}</div>` })),
-    ].sort((a, b) => a.at - b.at);
-    return `
-    <div class="task-wrap"><div class="overlay" data-action="close-task"></div>
-    <div class="task" role="dialog" aria-label="Tarefa">
-      <div class="task-top">
-        <div class="crumbs grow">${c ? `${C.folder(c, 14)}<a href="#/c/${c.id}" data-action="close-task-nav">${e(c.name)}</a>${I('chevR', 12)}<span>Demandas</span>` : '<span>Interno</span>'}
-          ${t.clickupUrl ? `<a class="lnk" style="margin-left:8px" href="${e(t.clickupUrl)}" target="_blank" rel="noopener">${I('ext', 12)}ClickUp</a>` : ''}</div>
-        <button class="ibtn" data-action="duplicate-task" data-id="${t.id}" title="Duplicar">${I('copy')}</button>
-        <button class="ibtn" data-action="delete-task" data-id="${t.id}" title="Excluir">${I('trash')}</button>
-        <button class="ibtn" data-action="close-task" title="Fechar (Esc)">${I('x')}</button>
-      </div>
-      <div class="task-body">
-        <div class="task-main">
-          <textarea class="task-title" id="t-title" rows="2" data-change="task-field" data-id="${t.id}" data-field="title" aria-label="Título">${e(t.title)}</textarea>
-          <div class="tprops">
-            <div class="tp"><span class="k">${I('status', 15)}Status</span><div class="row"><button class="cell-btn" data-action="pick-status" data-id="${t.id}">${C.status(t.status)}</button>
-              ${t.status === 'done' ? '' : `<button class="btn btn-sm" data-action="complete-task" data-id="${t.id}">${I('check', 13)}Concluir</button>`}</div></div>
-            <div class="tp"><span class="k">${I('user', 15)}Responsável</span><div><button class="cell-btn" data-action="pick-assignee" data-id="${t.id}">${C.avatar(t.assignee)}<span>${e(t.assignee || 'Ninguém')}</span></button></div></div>
-            <div class="tp"><span class="k">${I('calendar', 15)}Vencimento</span><div><input type="date" id="t-due" value="${e(t.due || '')}" data-change="task-field" data-id="${t.id}" data-field="due"></div></div>
-            <div class="tp"><span class="k">${I('flag', 15)}Prioridade</span><div><button class="cell-btn" data-action="pick-prio" data-id="${t.id}">${C.prio(t.priority)}</button></div></div>
-            <div class="tp"><span class="k">${I('folder', 15)}Cliente</span><div><button class="cell-btn" data-action="pick-client" data-id="${t.id}">${C.clientTag(t.clientId)}</button></div></div>
-            <div class="tp"><span class="k">${I('tag', 15)}Etiquetas</span><div><input type="text" id="t-tags" value="${e(t.tags.join(', '))}" placeholder="separe por vírgula" data-change="task-tags" data-id="${t.id}"></div></div>
-          </div>
-          <textarea class="desc" id="t-desc" data-change="task-field" data-id="${t.id}" data-field="description" placeholder="Adicione uma descrição…">${e(t.description || '')}</textarea>
-          <div class="sub-h">${I('tasks', 16)} Checklist <span class="muted small">${done}/${t.checklist.length}</span></div>
-          ${t.checklist.length ? `<div class="progress"><span style="width:${(done / t.checklist.length) * 100}%"></span></div>` : ''}
-          ${t.checklist.map((i) => `<div class="ck ${i.done ? 'done' : ''}"><input type="checkbox" class="check" data-action="toggle-check" data-id="${t.id}" data-item="${i.id}" ${i.done ? 'checked' : ''}><span class="txt grow">${e(i.text)}</span><button class="ibtn" data-action="remove-check" data-id="${t.id}" data-item="${i.id}" title="Remover">${I('x', 14)}</button></div>`).join('')}
-          <div class="qadd" style="padding-left:8px">${I('plus', 14)}<input id="t-check" placeholder="Adicionar item" data-enter="add-check" data-id="${t.id}"></div>
-        </div>
-        <aside class="task-side">
-          <div class="act-h">Atividade</div>
-          <div class="act">${feed.map((f) => f.html).join('') || '<div class="muted small">Sem atividade.</div>'}</div>
-          <div class="act-in"><textarea id="comment-input" placeholder="Escreva um comentário… (Ctrl+Enter envia)" data-enter-ctrl="add-comment" data-id="${t.id}"></textarea>
-            <div class="row" style="justify-content:flex-end;margin-top:6px"><button class="btn btn-primary btn-sm" data-action="add-comment" data-id="${t.id}">Comentar</button></div></div>
-        </aside>
-      </div>
-    </div></div>`;
+  /* ============================== Copiloto ============================== */
+  const aiAnswer = (q) => {
+    const n = U.norm(q);
+    const row = (c, mid, right) => `<div class="ai-row" data-action="open-client" data-id="${c.id}"><span class="ell">${e(c.name)}</span><span class="mono">${mid}</span>${right || ''}</div>`;
+    if (/diario|registro/.test(n)) {
+      const p = pendingList();
+      return `<div class="ai-a">${p.length} cliente(s) ainda sem registro no diário hoje:${p.slice(0, 12).map((c) => row(c, lastLabel(lastEntry(c.id)))).join('')}</div>`;
+    }
+    if (/atras|demanda|tarefa/.test(n)) {
+      const late = work(Store.state.tasks).filter(isLate).sort((a, b) => a.due.localeCompare(b.due));
+      return `<div class="ai-a">${late.length} demanda(s) atrasada(s):${late.slice(0, 10).map((t) => `<div class="ai-row" data-action="open-task" data-id="${t.id}"><span class="ell">${e(t.title)}</span><span class="mono">${e(U.fmtDate(t.due))}</span></div>`).join('')}</div>`;
+    }
+    if (!Ads.data) return '<div class="ai-a">Esta versão não tem dados de anúncios para responder isso.</div>';
+    const all30 = Store.clients().filter((c) => Ads.has(c.id)).map((c) => ({ c, s: Ads.stats(c.id, '30d') }));
+    if (/sem lead|zero|gast/.test(n)) {
+      const z = all30.filter((x) => x.s.s > 100 && x.s.l === 0);
+      return `<div class="ai-a">${z.length ? `${z.length} cliente(s) investiram nos últimos 30 dias sem gerar lead:` : 'Nenhum cliente investiu sem gerar lead nos últimos 30 dias.'}${z.map((x) => row(x.c, kk(x.s.s))).join('')}</div>`;
+    }
+    if (/melhor|barat/.test(n)) {
+      const b = all30.filter((x) => x.s.l >= 5).sort((a, b2) => a.s.cpl - b2.s.cpl).slice(0, 6);
+      return `<div class="ai-a">Menores CPLs nos últimos 30 dias:${b.map((x) => row(x.c, brl(x.s.cpl))).join('')}</div>`;
+    }
+    const up = all30.filter((x) => x.s.dCpl != null && x.s.dCpl > 40 && x.s.l >= 3).sort((a, b) => b.s.dCpl - a.s.dCpl);
+    return `<div class="ai-a">${up.length ? `CPL subiu mais de 40% em ${up.length} cliente(s), últimos 30 dias contra os 30 anteriores:` : 'Nenhum cliente com CPL subindo mais de 40% nos últimos 30 dias.'}${up.map((x) => row(x.c, `${brl(x.s.prev.cpl).replace('R$ ', '')} → ${brl(x.s.cpl).replace('R$ ', '')}`, `<b style="color:var(--red-text);font-family:var(--mono);font-size:12.5px">+${x.s.dCpl}%</b>`)).join('')}</div>`;
+  };
+  const aiPanel = () => {
+    const q = VS.aiQ || 'Quem piorou o CPL esse mês?';
+    return `<div class="ai-panel" role="dialog" aria-label="Copiloto">
+      <div class="ai-h"><i></i><b>Copiloto</b><span style="flex:1"></span><button class="ibtn" data-action="ai" title="Fechar">${I('x', 16)}</button></div>
+      <div class="ai-q">${e(q)}</div>${aiAnswer(q)}
+      <div class="ai-sug">${['Quem piorou o CPL esse mês?', 'Quem está sem diário hoje?', 'Demandas atrasadas', 'Quem gastou sem lead?', 'Melhores CPLs'].map((x) => `<button data-action="ai-ask" data-q="${e(x)}">${e(x)}</button>`).join('')}</div>
+      <div class="ai-in"><input id="ai-input" placeholder="Pergunte sobre clientes, campanhas, equipe" data-enter="ai-ask"><button data-action="ai-ask-input" aria-label="Perguntar">${I('send', 16, 2.2)}</button></div>
+      <div class="small dim">Respostas montadas a partir dos dados do app (Meta Ads, diário e demandas).</div>
+    </div>`;
   };
 
-  /* ============================== Formulários ============================== */
+  /* ============================== Janelas ============================== */
+  const sel = (name, opts, cur) => `<select class="field" name="${name}" id="f-${name}">${opts.map(([v, l]) => `<option value="${e(v)}" ${v === cur ? 'selected' : ''}>${e(l)}</option>`).join('')}</select>`;
+  const clientOpts = () => [['', 'Interno'], ...Store.clients({ includeClosed: false }).map((c) => [c.id, c.name])];
   const Forms = {};
-  const sel = (name, opts, cur) => `<select class="select" name="${name}" id="f-${name}">${opts.map(([v, l]) => `<option value="${e(v)}" ${v === cur ? 'selected' : ''}>${e(l)}</option>`).join('')}</select>`;
-  const clientOpts = (withInternal = true) => [...(withInternal ? [['', 'Interno (sem cliente)']] : [['', 'Escolha o cliente…']]), ...Store.clients({ includeClosed: false }).map((c) => [c.id, c.name])];
-
-  Forms.task = (d = {}) => `
-    <div class="modal-h"><h2>Nova tarefa</h2><button class="ibtn" style="margin-left:auto" data-modal-close>${I('x')}</button></div>
+  Forms.task = (d = {}) => `<div class="modal-h"><h2>Nova demanda</h2><span style="flex:1"></span><button class="ibtn" data-modal-close>${I('x', 16)}</button></div>
     <div class="modal-b" id="task-form" data-tags='${e(JSON.stringify(d.tags || []))}'>
-      <input class="input" name="title" id="f-title" placeholder="Nome da tarefa" style="font-size:16px;font-weight:600;padding:10px 12px" autofocus>
-      <div class="g2">
-        <div class="field"><label for="f-clientId">Cliente</label>${sel('clientId', clientOpts(), d.clientId || '')}</div>
-        <div class="field"><label for="f-assignee">Responsável</label>${sel('assignee', [['', 'Ninguém'], ...team().map((n) => [n, n])], d.assignee ?? Store.settings.userName)}</div>
-      </div>
-      <div class="g3">
-        <div class="field"><label for="f-status">Status</label>${sel('status', M.STATUSES.map((s) => [s.id, s.label]), d.status || M.STATUSES[0].id)}</div>
-        <div class="field"><label for="f-due">Vencimento</label><input class="input" type="date" name="due" id="f-due" value="${e(d.due || '')}"></div>
-        <div class="field"><label for="f-priority">Prioridade</label>${sel('priority', M.PRIORITIES.map((p) => [p.id, p.label]), d.priority || 'normal')}</div>
-      </div>
-      <div class="field"><label for="f-description">Descrição</label><textarea class="textarea" name="description" id="f-description" placeholder="Detalhes da demanda"></textarea></div>
-    </div>
-    <div class="modal-f"><button class="btn" data-modal-close>Cancelar</button><button class="btn btn-primary" data-action="save-task-form">Criar tarefa</button></div>`;
-
-  Forms.client = () => `
-    <div class="modal-h"><h2>Novo cliente</h2><button class="ibtn" style="margin-left:auto" data-modal-close>${I('x')}</button></div>
+      <input class="field" name="title" id="f-title" placeholder="O que precisa ser feito?" style="font-size:16px" autofocus>
+      <div class="tprops"><label>Cliente${sel('clientId', clientOpts(), d.clientId || '')}</label><label>Responsável${sel('assignee', [['', 'Ninguém'], ...team().map((n) => [n, n])], d.assignee ?? Store.settings.userName)}</label>
+        <label>Vencimento<input class="field" type="date" name="due" id="f-due" value="${e(d.due || '')}"></label><label>Prioridade${sel('priority', M.PRIORITIES.map((p) => [p.id, p.label]), d.priority || 'normal')}</label></div>
+      <textarea class="field" name="description" id="f-desc" rows="3" placeholder="Detalhes (opcional)"></textarea>
+    </div><div class="modal-f"><button class="btn" data-modal-close>Cancelar</button><button class="btn btn-violet" data-action="save-task-form">Criar demanda</button></div>`;
+  Forms.client = () => `<div class="modal-h"><h2>Novo cliente</h2><span style="flex:1"></span><button class="ibtn" data-modal-close>${I('x', 16)}</button></div>
     <div class="modal-b" id="client-form">
-      <div class="g2"><div class="field"><label for="n-name">Nome do cliente</label><input class="input" id="n-name" name="name" placeholder="Ex.: Dra. Ana Souza" autofocus></div>
-        <div class="field"><label for="n-niche">O que ele mexe</label><input class="input" id="n-niche" name="niche" placeholder="Ex.: Gestão de passivos"></div></div>
-      <div class="g2"><div class="field"><label for="n-meta">Página do Meta</label><input class="input" id="n-meta" name="metaPage" placeholder="https://facebook.com/…"></div>
-        <div class="field"><label for="n-ads">Conta de anúncio</label><input class="input" id="n-ads" name="adAccount" placeholder="act_123456789"></div></div>
-      <div class="g2"><div class="field"><label for="f-owner">Responsável na agência</label>${sel('owner', [['', '—'], ...team().map((n) => [n, n])], '')}</div>
-        <div class="field"><label for="f-status">Status</label>${sel('status', M.CLIENT_STATUSES.map((s) => [s.id, s.label]), 'onboarding')}</div></div>
-      <label class="row small"><input type="checkbox" class="check" name="withOnboarding" id="n-onb" checked> Criar tarefa de onboarding com o checklist padrão</label>
-    </div>
-    <div class="modal-f"><button class="btn" data-modal-close>Cancelar</button><button class="btn btn-primary" data-action="save-client-form">Criar pasta do cliente</button></div>`;
-
-  Forms.log = (l) => `
-    <div class="modal-h"><h2>Atualização do diário</h2><button class="ibtn" style="margin-left:auto" data-modal-close>${I('x')}</button></div>
+      <input class="field" name="name" id="n-name" placeholder="Nome do cliente" autofocus>
+      <input class="field" name="niche" id="n-niche" placeholder="O que ele mexe (ex.: Gestão de passivos)">
+      <input class="field" name="metaPage" id="n-meta" placeholder="Link da conta no Gerenciador de Anúncios">
+      <div class="tprops"><label>Responsável${sel('owner', [['', '—'], ...team().map((n) => [n, n])], '')}</label><label>Status${sel('status', M.CLIENT_STATUSES.map((s) => [s.id, s.label]), 'onboarding')}</label></div>
+    </div><div class="modal-f"><button class="btn" data-modal-close>Cancelar</button><button class="btn btn-violet" data-action="save-client-form">Criar cliente</button></div>`;
+  Forms.log = (l) => `<div class="modal-h"><h2>Registro do diário</h2><span style="flex:1"></span><button class="ibtn" data-modal-close>${I('x', 16)}</button></div>
     <div class="modal-b" id="log-form" data-id="${l.id}">
-      <div class="g3">
-        <div class="field"><label for="l-date">Data</label><input class="input" type="date" id="l-date" name="date" value="${e(l.date)}"></div>
-        <div class="field"><label for="f-clientId">Cliente</label>${sel('clientId', clientOpts(false), l.clientId)}</div>
-        <div class="field"><label for="f-impact">Resultado</label>${sel('impact', [['neutro', 'Neutro'], ['positivo', 'Bom'], ['negativo', 'Ruim']], l.impact || 'neutro')}</div>
+      <div class="tprops"><label>Data<input class="field" type="date" name="date" id="l-date" value="${e(l.date)}"></label><label>Resultado${sel('impact', [['positivo', 'Bom'], ['neutro', 'Neutro'], ['negativo', 'Ruim']], l.impact || 'neutro')}</label></div>
+      <label class="lbl" for="l-a">Análise</label><textarea class="field" name="analysis" id="l-a" rows="3">${e(l.analysis || [l.title, l.body].filter(Boolean).join('\n'))}</textarea>
+      <div class="two"><div><label class="lbl" for="l-p">Ações programadas</label><textarea class="field" name="planned" id="l-p" rows="3" style="margin-top:10px">${e(l.planned || '')}</textarea></div><div><label class="lbl" for="l-d">Ações realizadas</label><textarea class="field" name="actionsDone" id="l-d" rows="3" style="margin-top:10px">${e(l.actionsDone || '')}</textarea></div></div>
+    </div><div class="modal-f"><button class="btn btn-danger" style="margin-right:auto" data-action="delete-log" data-id="${l.id}">${I('trash', 15)}Excluir</button><button class="btn" data-modal-close>Cancelar</button><button class="btn btn-violet" data-action="save-log-form">Salvar</button></div>`;
+  Forms.taskView = (t) => {
+    const done = t.checklist.filter((i) => i.done).length;
+    const feed = [...t.activity.map((a) => ({ at: a.at, h: `<div class="ev">${e(a.text)} · ${U.timeAgo(a.at)}</div>` })), ...t.comments.map((cm) => ({ at: cm.at, h: `<div class="cm"><div class="small dim">${e(cm.author || '')} · ${U.timeAgo(cm.at)}</div>${U.rich(cm.text)}</div>` }))].sort((a, b) => b.at - a.at);
+    return `<div class="modal-h"><span class="small dim ell">${e(Store.client(t.clientId)?.name || 'Interno')}</span>${t.clickupUrl ? `<a class="small" href="${e(t.clickupUrl)}" target="_blank" rel="noopener">ClickUp↗</a>` : ''}<span style="flex:1"></span>
+        <button class="ibtn" data-action="duplicate-task" data-id="${t.id}" title="Duplicar">${I('copy', 16)}</button><button class="ibtn" data-action="delete-task" data-id="${t.id}" title="Excluir">${I('trash', 16)}</button><button class="ibtn" data-modal-close title="Fechar">${I('x', 16)}</button></div>
+      <div class="modal-b" id="task-view" data-id="${t.id}">
+        <textarea class="field" id="t-title" rows="2" style="font-size:19px;font-weight:600;border:0;background:transparent;padding:0;resize:none" data-change="task-field" data-id="${t.id}" data-field="title">${e(t.title)}</textarea>
+        <div class="tprops">
+          <label>Status<select class="field" id="t-status" data-change="task-field" data-id="${t.id}" data-field="status">${M.STATUSES.map((s) => `<option value="${s.id}" ${s.id === t.status ? 'selected' : ''}>${e(s.label)}</option>`).join('')}</select></label>
+          <label>Responsável<select class="field" id="t-assignee" data-change="task-field" data-id="${t.id}" data-field="assignee"><option value="">Ninguém</option>${[...new Set([...team(), t.assignee].filter(Boolean))].map((n) => `<option ${n === t.assignee ? 'selected' : ''}>${e(n)}</option>`).join('')}</select></label>
+          <label>Vencimento<input class="field" type="date" id="t-due" value="${e(t.due || '')}" data-change="task-field" data-id="${t.id}" data-field="due"></label>
+          <label>Prioridade<select class="field" id="t-prio" data-change="task-field" data-id="${t.id}" data-field="priority">${M.PRIORITIES.map((p) => `<option value="${p.id}" ${p.id === t.priority ? 'selected' : ''}>${e(p.label)}</option>`).join('')}</select></label>
+          <label>Cliente<select class="field" id="t-client" data-change="task-field" data-id="${t.id}" data-field="clientId">${clientOpts().map(([v, l]) => `<option value="${e(v)}" ${v === (t.clientId || '') ? 'selected' : ''}>${e(l)}</option>`).join('')}</select></label>
+          <label>Etiquetas<input class="field" id="t-tags" value="${e((t.tags || []).join(', '))}" data-change="task-tags" data-id="${t.id}"></label>
+        </div>
+        <textarea class="field" id="t-desc" rows="4" placeholder="Descrição" data-change="task-field" data-id="${t.id}" data-field="description">${e(t.description || '')}</textarea>
+        <div class="lbl" style="margin:4px 0 0">Checklist ${done}/${t.checklist.length}</div>
+        ${t.checklist.map((i) => `<div class="ck ${i.done ? 'done' : ''}"><input type="checkbox" style="width:17px;height:17px;accent-color:#7C5CFF" data-action="toggle-check" data-id="${t.id}" data-item="${i.id}" ${i.done ? 'checked' : ''}><span class="grow">${e(i.text)}</span><button class="ibtn" data-action="remove-check" data-id="${t.id}" data-item="${i.id}" title="Remover">${I('x', 14)}</button></div>`).join('')}
+        <input class="field" id="t-check" placeholder="+ Adicionar item e Enter" data-enter="add-check" data-id="${t.id}">
+        <div class="lbl" style="margin:4px 0 0">Comentários e atividade</div>
+        <input class="field" id="t-comment" placeholder="Escreva um comentário e Enter" data-enter="add-comment" data-id="${t.id}">
+        <div class="feed">${feed.map((f) => f.h).join('')}</div>
       </div>
-      <div class="field"><label for="l-a">Análise</label><textarea class="textarea" id="l-a" name="analysis">${e(l.analysis || [l.title, l.body].filter(Boolean).join('\n'))}</textarea></div>
-      <div class="g2">
-        <div class="field"><label for="l-p">Ações programadas p/ melhoria</label><textarea class="textarea" id="l-p" name="planned">${e(l.planned || '')}</textarea></div>
-        <div class="field"><label for="l-d">Ações realizadas</label><textarea class="textarea" id="l-d" name="actionsDone">${e(l.actionsDone || '')}</textarea></div>
-      </div>
-    </div>
-    <div class="modal-f">
-      <button class="btn btn-danger" style="margin-right:auto" data-action="delete-log" data-id="${l.id}">${I('trash', 14)}Excluir</button>
-      ${l.planned && !l.plannedTaskId ? `<button class="btn" data-action="planned-to-task" data-id="${l.id}">${I('plus', 14)}Virar tarefa</button>` : ''}
-      <button class="btn" data-modal-close>Cancelar</button><button class="btn btn-primary" data-action="save-log-form">Salvar</button>
-    </div>`;
+      <div class="modal-f">${t.status === 'done' ? `<button class="btn" data-action="reopen-task" data-id="${t.id}">Reabrir</button>` : `<button class="btn btn-violet" data-action="done-task" data-id="${t.id}">${I('check', 15, 2.4)}Concluir</button>`}</div>`;
+  };
 
   window.VS = VS;
-  window.Views = { clientPanel, home, tasks: tasksPage, team: teamPage, clients: clientsPage, client: clientPage, diary: diaryPage, settings: settingsPage, taskView, diaryLogs, manualLogs, adsLink };
+  window.Views = { painel, clientes: clientesPage, cliente: clientePage, equipe: equipePage, criativos: criativosPage, ajustes: ajustesPage, rail, aiPanel, pendingList, entries, kindOf, KINDS };
   window.Forms = Forms;
 })();
