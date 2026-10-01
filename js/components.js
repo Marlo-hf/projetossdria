@@ -101,7 +101,8 @@
     data: null,
     init(seed) { this.data = (seed && seed.ads) || null; this.today = (this.data && this.data.to) || U.today(); },
     has(id) { return !!(this.data && this.data.clients && this.data.clients[id]); },
-    ids() { return this.data ? Object.keys(this.data.clients) : []; },
+    /** Contas somadas nos totais da agência: ignora clientes encerrados (o investimento não é mais da agência). */
+    ids() { return this.data ? Object.keys(this.data.clients).filter((k) => { const c = Store.client(k); return !c || c.status !== 'encerrado'; }) : []; },
     day(id, iso) {
       if (!this.data) return [0, 0];
       if (id === '*') return this.ids().reduce((a, k) => { const v = this.data.clients[k].days[iso] || [0, 0]; return [a[0] + v[0], a[1] + v[1]]; }, [0, 0]);

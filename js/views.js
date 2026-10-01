@@ -115,7 +115,7 @@
         <div class="xlab" style="grid-template-columns:repeat(${nn},1fr)">${days.map((d) => `<span>${U.parse(d).getDate()}</span>`).join('')}</div>
       </section>` : '';
 
-    const rows = Store.clients().filter((c) => Ads.has(c.id)).map((c) => ({ c, s: Ads.stats(c.id, per), d14: Ads.chartDays('14d').map((d) => Ads.day(c.id, d)[1]) })).filter((x) => x.s.s > 0 || x.s.l > 0);
+    const rows = Store.clients().filter((c) => Ads.has(c.id) && c.status !== 'encerrado').map((c) => ({ c, s: Ads.stats(c.id, per), d14: Ads.chartDays('14d').map((d) => Ads.day(c.id, d)[1]) })).filter((x) => x.s.s > 0 || x.s.l > 0);
     const sorters = { spend: (a, b) => b.s.s - a.s.s, leads: (a, b) => b.s.l - a.s.l, cpl: (a, b) => (a.s.cpl || 1e9) - (b.s.cpl || 1e9), delta: (a, b) => (b.s.dCpl ?? -999) - (a.s.dCpl ?? -999) };
     rows.sort(sorters[VS.sort] || sorters.spend);
     const table = Ads.data ? `
