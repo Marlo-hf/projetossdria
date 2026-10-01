@@ -49,3 +49,10 @@ body {
 .disclaimer {
   font-size: 15px; font-weight: 500; color: var(--muted); line-height: 1.4;
 }
+
+.logo-badge {
+  background: #0b2546; border-radius: 16px; padding: 12px 18px;
+  display: grid; place-items: center;
+}
+.logo-badge img { height: 78px; display: block; }
+.brand .sub { max-width: 200px; line-height: 1.5; }
