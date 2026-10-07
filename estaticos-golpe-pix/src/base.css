@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@500;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1350px;overflow:hidden}
+body{font-family:'Montserrat',sans-serif;position:relative;color:#fff}
+.anton{font-family:'Anton',sans-serif;text-transform:uppercase;letter-spacing:.5px}
+.footer{position:absolute;left:0;right:0;bottom:0;height:120px;display:flex;align-items:center;justify-content:space-between;padding:0 60px;background:#0b1424;border-top:6px solid #f5c400}
+.footer .nome{font-weight:900;font-size:34px;color:#fff}
+.footer .nome small{display:block;font-weight:600;font-size:20px;color:#9fb0c8;margin-top:2px;letter-spacing:1px}
+.footer .oab{font-weight:700;font-size:22px;color:#f5c400;text-align:right}
+.cta{display:inline-flex;align-items:center;gap:18px;background:#22c55e;color:#06200f;font-weight:900;font-size:40px;padding:28px 48px;border-radius:999px;box-shadow:0 10px 0 #15803d,0 18px 40px rgba(0,0,0,.4);text-transform:uppercase}
+.cta .seta{font-size:46px}
+.hl{background:#f5c400;color:#0b1424;padding:0 14px}
