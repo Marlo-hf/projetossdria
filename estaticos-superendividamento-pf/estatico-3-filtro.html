@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Estático 3 – Não é para todos</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1080px; height: 1350px; font-family: "Inter", sans-serif; background: #111; color: #fff; overflow: hidden; }
+  .card { width: 1080px; height: 1350px; display: flex; flex-direction: column; }
+  .faixa { background: #f5c518; color: #111; font-weight: 900; font-size: 34px; letter-spacing: 3px; text-transform: uppercase; text-align: center; padding: 26px; }
+  .conteudo { flex: 1; padding: 70px 80px 64px; display: flex; flex-direction: column; }
+  h1 { font-family: "Inter Display", "Inter", sans-serif; font-weight: 900; font-size: 92px; line-height: 1.02; letter-spacing: -2px; }
+  h1 span { color: #f5c518; } .nw { white-space: nowrap; }
+  .colunas { margin-top: 56px; display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+  .col { border-radius: 22px; padding: 34px 32px; }
+  .col h2 { font-size: 30px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+  .col li { list-style: none; font-size: 31px; line-height: 1.3; padding: 10px 0; font-weight: 600; }
+  .nao { background: #1e1e1e; border: 2px solid #3a3a3a; color: #9a9a9a; }
+  .nao h2 { color: #ff6b6b; }
+  .nao li::before { content: "✕  "; color: #ff6b6b; font-weight: 900; }
+  .sim { background: #f5c518; color: #111; }
+  .sim li::before { content: "✓  "; font-weight: 900; }
+  .sub { margin-top: 50px; font-size: 37px; line-height: 1.35; color: #d6d6d6; }
+  .sub b { color: #fff; }
+  .cta { margin-top: 36px; border: 3px solid #f5c518; color: #f5c518; text-align: center; font-weight: 900; font-size: 38px; padding: 30px; border-radius: 18px; }
+  .rodape { margin-top: 22px; text-align: center; font-size: 22px; color: #777; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="faixa">⚠ Este anúncio não é para todo mundo</div>
+  <div class="conteudo">
+    <h1>Só continue se você deve <span>mais de <b class="nw">R$ 40 mil</b></span> no seu CPF.</h1>
+    <div class="colunas">
+      <div class="col nao">
+        <h2>Não é para você</h2>
+        <ul>
+          <li>Dívida abaixo de R$ 40 mil</li>
+          <li>Dívida só da empresa (CNPJ)</li>
+          <li>Quem só quer "limpar o nome"</li>
+        </ul>
+      </div>
+      <div class="col sim">
+        <h2>É para você</h2>
+        <ul>
+          <li>Pessoa física endividada</li>
+          <li>Mais de R$ 40 mil em dívidas</li>
+          <li>Parcelas maiores que a renda</li>
+        </ul>
+      </div>
+    </div>
+    <p class="sub">Para esses casos, a <b>Lei 14.181/2021</b> prevê um caminho legal: a <b>repactuação das dívidas</b> com os credores, preservando o mínimo existencial.</p>
+    <div class="cta">Se você se encaixa, toque em "Saiba mais"</div>
+    <p class="rodape">Nome do Escritório · Advocacia · OAB/UF 00.000</p>
+  </div>
+</div>
+</body>
+</html>

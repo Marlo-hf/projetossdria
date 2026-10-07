@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Estático 2 – Soma das dívidas</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1080px; height: 1350px; font-family: "Inter", sans-serif; background: #f3efe6; color: #13202e; overflow: hidden; }
+  .card { width: 1080px; height: 1350px; padding: 66px 80px 54px; display: flex; flex-direction: column; }
+  h1 { font-family: "Inter Display", "Inter", sans-serif; font-weight: 900; font-size: 72px; line-height: 1.04; letter-spacing: -1.5px; }
+  h1 em { font-style: normal; color: #b3261e; white-space: nowrap; }
+  .extrato { margin-top: 36px; background: #fff; border-radius: 26px; padding: 30px 44px; box-shadow: 0 24px 60px rgba(19,32,46,.14); }
+  .extrato .topo { font-size: 24px; font-weight: 700; color: #6b7a89; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 18px; }
+  .linha { display: flex; justify-content: space-between; align-items: center; font-size: 34px; padding: 15px 0; border-bottom: 2px dashed #e1e5ea; }
+  .linha span:first-child { color: #3c4b5a; font-weight: 500; }
+  .linha span:last-child { font-weight: 800; color: #13202e; font-variant-numeric: tabular-nums; }
+  .total { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; background: #b3261e; color: #fff; border-radius: 16px; padding: 20px 32px; }
+  .total span:first-child { font-size: 32px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .total span:last-child { font-size: 58px; font-weight: 900; font-variant-numeric: tabular-nums; }
+  .sub { margin-top: 34px; font-size: 34px; line-height: 1.35; color: #2a3a4a; }
+  .sub b { color: #13202e; }
+  .cta { margin-top: auto; background: #13202e; color: #fff; text-align: center; font-weight: 800; font-size: 34px; padding: 28px; border-radius: 18px; }
+  .cta b { color: #f2c94c; }
+  .rodape { margin-top: 22px; text-align: center; font-size: 22px; color: #6b7a89; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Se a soma das suas dívidas passa de <em>R$ 40 mil</em>, leia isto.</h1>
+  <div class="extrato">
+    <p class="topo">Exemplo de situação comum</p>
+    <div class="linha"><span>Cartão de crédito</span><span>R$ 17.890</span></div>
+    <div class="linha"><span>Empréstimo pessoal</span><span>R$ 14.320</span></div>
+    <div class="linha"><span>Cheque especial</span><span>R$ 6.450</span></div>
+    <div class="linha"><span>Consignado</span><span>R$ 8.100</span></div>
+    <div class="total"><span>Total</span><span>R$ 46.760</span></div>
+  </div>
+  <p class="sub">Quando as parcelas comem quase todo o salário, a <b>Lei do Superendividamento</b> prevê a <b>repactuação das dívidas</b> da pessoa física em um plano de pagamento possível.</p>
+  <div class="cta">Pessoa física com mais de R$ 40 mil em dívidas? <b>Toque em "Saiba mais"</b></div>
+  <p class="rodape">Nome do Escritório · Advocacia · OAB/UF 00.000 · Valores meramente ilustrativos</p>
+</div>
+</body>
+</html>

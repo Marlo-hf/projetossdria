@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Estático 1 – Pergunta direta</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1080px; height: 1350px; font-family: "Inter", "Inter Display", sans-serif; background: #0b1b2b; color: #fff; overflow: hidden; }
+  .card { position: relative; width: 1080px; height: 1350px; padding: 70px 80px 56px; display: flex; flex-direction: column;
+    background: radial-gradient(circle at 85% 10%, rgba(212,175,55,.22), transparent 45%), linear-gradient(160deg, #0f2740 0%, #0b1b2b 60%, #07121d 100%); }
+  .tag { align-self: flex-start; background: #d4af37; color: #0b1b2b; font-weight: 800; font-size: 26px; letter-spacing: 2px; text-transform: uppercase; padding: 14px 26px; border-radius: 8px; }
+  h1 { font-family: "Inter Display", "Inter", sans-serif; font-weight: 900; font-size: 92px; line-height: 1.0; letter-spacing: -2px; margin-top: 44px; }
+  h1 .valor { color: #d4af37; display: block; font-size: 136px; letter-spacing: -4px; margin: 4px 0; white-space: nowrap; }
+  .sub { font-size: 34px; line-height: 1.35; color: #c9d6e3; margin-top: 30px; max-width: 900px; }
+  .sub b { color: #fff; }
+  .filtro { margin-top: 36px; background: rgba(255,255,255,.06); border: 2px solid rgba(212,175,55,.5); border-radius: 22px; padding: 28px 40px; }
+  .filtro p { font-size: 26px; font-weight: 700; color: #d4af37; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 20px; }
+  .filtro li { list-style: none; font-size: 33px; font-weight: 600; padding: 7px 0; display: flex; align-items: center; gap: 20px; }
+  .filtro li::before { content: "✓"; flex: none; width: 46px; height: 46px; border-radius: 50%; background: #d4af37; color: #0b1b2b; font-weight: 900; font-size: 28px; display: grid; place-items: center; }
+  .cta { margin-top: auto; background: #25d366; color: #062b14; text-align: center; font-weight: 900; font-size: 36px; padding: 28px; border-radius: 18px; box-shadow: 0 12px 30px rgba(37,211,102,.3); }
+  .rodape { margin-top: 26px; text-align: center; font-size: 22px; color: #7f93a8; }
+</style>
+</head>
+<body>
+<div class="card">
+  <span class="tag">Lei do Superendividamento</span>
+  <h1>Sua dívida já<br>passou de <span class="valor">R$ 40 mil?</span></h1>
+  <p class="sub">A <b>Lei 14.181/2021</b> permite que a <b>pessoa física</b> reorganize dívidas com bancos e financeiras em um plano que caiba no orçamento, <b>preservando o mínimo para viver</b>.</p>
+  <div class="filtro">
+    <p>Este conteúdo é para você se:</p>
+    <ul>
+      <li>É pessoa física (CPF)</li>
+      <li>Deve mais de R$ 40 mil somando tudo</li>
+      <li>Deve a bancos: cartão, empréstimo, cheque especial</li>
+    </ul>
+  </div>
+  <div class="cta">Toque em "Saiba mais" e veja se seu caso se enquadra</div>
+  <p class="rodape">Nome do Escritório · Advocacia · OAB/UF 00.000</p>
+</div>
+</body>
+</html>
