@@ -107,3 +107,4 @@ body {
 .tag .n { font-size: 28px; font-weight: 800; }
 .tag .r { font-size: 18px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin-top: 4px; font-weight: 600; }
 .col { position: relative; z-index: 2; width: 560px; }
+.cta { font-size: 32px; padding: 26px 38px; white-space: nowrap; }
