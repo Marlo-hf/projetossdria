@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Estático 04 · Tempo</title>
+<link rel="stylesheet" href="base.css">
+<style>
+  body { background: linear-gradient(180deg, #0b1b2b 0%, #081421 100%); }
+
+  .top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .clock {
+    width: 190px; height: 190px; border-radius: 50%;
+    border: 6px solid var(--gold); position: relative; flex: none; margin-top: 10px;
+  }
+  .clock::before, .clock::after {
+    content: ""; position: absolute; left: 50%; bottom: 50%;
+    width: 8px; border-radius: 4px; background: var(--gold); transform-origin: 50% 100%;
+  }
+  .clock::before { height: 62px; margin-left: -4px; transform: rotate(0deg); }
+  .clock::after  { height: 46px; margin-left: -4px; transform: rotate(120deg); background: var(--gold-soft); }
+  .clock i { position: absolute; width: 20px; height: 20px; border-radius: 50%; background: var(--gold); left: 50%; top: 50%; transform: translate(-50%,-50%); }
+
+  .headline { font-size: 92px; line-height: 1; font-weight: 900; margin-top: 26px; letter-spacing: -.02em; }
+  .headline em { font-style: normal; color: var(--gold); }
+
+  .lead { font-size: 32px; line-height: 1.38; color: #c4d0dc; margin-top: 30px; max-width: 900px; }
+
+  .steps { margin-top: 48px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .track { position: relative; display: flex; flex-direction: column; gap: 30px; }
+  .track::before { content: ""; position: absolute; left: 44px; top: 72px; bottom: 72px; width: 3px; background: linear-gradient(var(--gold), rgba(201,164,92,.15)); }
+  .step { position: relative; display: flex; gap: 34px; align-items: center; }
+  .step .card { flex: 1; background: var(--navy-2); border: 1px solid rgba(255,255,255,.08); border-radius: 22px; padding: 30px 36px; }
+  .dot {
+    flex: none; width: 90px; height: 90px; border-radius: 50%;
+    background: var(--navy); border: 3px solid var(--gold);
+    display: grid; place-items: center; font-weight: 900; font-size: 36px; color: var(--gold); z-index: 1;
+  }
+  .step h3 { font-size: 36px; font-weight: 800; }
+  .step p { font-size: 25px; color: var(--muted); margin-top: 6px; line-height: 1.35; }
+
+  .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="top">
+    <div>
+      <div class="eyebrow">Golpe do PIX acima de R$ 10 mil</div>
+      <h1 class="headline">Caiu no golpe?<br><em>Cada dia conta.</em></h1>
+    </div>
+    <div class="clock"><i></i></div>
+  </div>
+  <p class="lead">Agir rápido aumenta as chances de rastrear<br>o dinheiro. O que fazer agora:</p>
+
+  <div class="steps"><div class="track">
+    <div class="step"><div class="dot">1</div><div class="card"><h3>Avise o seu banco</h3><p>Peça a contestação pelo MED e anote o protocolo.</p></div></div>
+    <div class="step"><div class="dot">2</div><div class="card"><h3>Registre o boletim de ocorrência</h3><p>Guarde prints, comprovantes e conversas.</p></div></div>
+    <div class="step"><div class="dot">3</div><div class="card"><h3>Busque orientação jurídica</h3><p>Um advogado avalia se o banco tem responsabilidade.</p></div></div>
+  </div></div>
+
+  <div class="foot">
+    <div class="signature">
+      <div class="mark">AM</div>
+      <div><div class="name">Artur Moura</div><div class="role">Advocacia · Direito Bancário</div></div>
+    </div>
+    <div class="cta">Falar agora</div>
+  </div>
+</div>
+</body>
+</html>
