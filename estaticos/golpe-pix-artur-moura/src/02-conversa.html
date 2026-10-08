@@ -6,69 +6,51 @@
 <link rel="stylesheet" href="base.css">
 <style>
   body { background: var(--paper); color: var(--ink); }
-  .canvas { padding-bottom: 0; }
 
-  .eyebrow { color: #9a7631; }
-  .headline {
-    font-size: 80px; line-height: 1.04; font-weight: 800; margin-top: 22px; letter-spacing: -.01em;
-  }
+  .eyebrow { color: #9a7631; position: relative; z-index: 2; }
+  .headline { font-size: 88px; line-height: 1.02; font-weight: 900; margin-top: 22px; letter-spacing: -.02em; position: relative; z-index: 2; }
   .headline span { background: linear-gradient(transparent 62%, rgba(201,164,92,.55) 62%); }
+  .sub { font-size: 31px; line-height: 1.34; color: #33465a; margin-top: 26px; width: 640px; position: relative; z-index: 2; }
+  .sub b { color: var(--ink); font-weight: 800; }
+
+  .halo { width: 640px; height: 640px; right: -40px; bottom: 120px; background: radial-gradient(circle at 50% 35%, #245f51 0%, #14403a 70%); }
+  .halo::after { inset: -18px; border-color: rgba(154,118,49,.55); }
 
   .phone {
-    position: relative;
-    margin: 48px auto 0;
-    width: 700px; flex: 1;
+    position: absolute; left: 80px; bottom: 196px; z-index: 2;
+    width: 500px;
     background: #e9e2d6;
-    border: 14px solid #10202f;
-    border-bottom: none;
-    border-radius: 64px 64px 0 0;
-    padding: 0 0 0;
+    border: 12px solid #10202f;
+    border-radius: 56px;
     overflow: hidden;
-    box-shadow: 0 -10px 60px rgba(11,27,43,.18);
+    box-shadow: 0 30px 70px rgba(11,27,43,.35);
   }
-  .bar {
-    display: flex; align-items: center; gap: 18px;
-    background: #10202f; color: #fff; padding: 30px 32px 24px;
-  }
-  .avatar { width: 62px; height: 62px; border-radius: 50%; background: #5e7186; display: grid; place-items: center; font-weight: 800; font-size: 26px; }
-  .bar .who { font-size: 27px; font-weight: 700; }
-  .bar .st { font-size: 19px; color: #9fb0c2; margin-top: 2px; }
+  .bar { display: flex; align-items: center; gap: 14px; background: #10202f; color: #fff; padding: 24px 24px 18px; }
+  .avatar { width: 50px; height: 50px; border-radius: 50%; background: #5e7186; display: grid; place-items: center; font-weight: 800; font-size: 22px; }
+  .bar .who { font-size: 22px; font-weight: 700; }
+  .bar .st { font-size: 16px; color: #9fb0c2; margin-top: 2px; }
 
-  .chat { padding: 30px 28px; display: flex; flex-direction: column; gap: 18px; }
-  .msg {
-    max-width: 84%; font-size: 28px; line-height: 1.32;
-    padding: 18px 22px 14px; border-radius: 22px;
-    box-shadow: 0 2px 0 rgba(0,0,0,.06);
-  }
-  .msg small { display: block; text-align: right; font-size: 16px; color: #7c8a96; margin-top: 6px; }
+  .chat { padding: 22px 20px; display: flex; flex-direction: column; gap: 12px; }
+  .msg { max-width: 88%; font-size: 22px; line-height: 1.32; padding: 14px 18px 10px; border-radius: 18px; box-shadow: 0 2px 0 rgba(0,0,0,.06); }
+  .msg small { display: block; text-align: right; font-size: 14px; color: #7c8a96; margin-top: 4px; }
   .in { background: #fff; border-top-left-radius: 6px; align-self: flex-start; }
   .out { background: #d6f5e3; border-top-right-radius: 6px; align-self: flex-end; }
-  .pix {
-    align-self: flex-end; background: #d6f5e3; border-top-right-radius: 6px;
-    font-weight: 800; font-size: 34px; display: flex; align-items: center; gap: 14px;
-  }
-  .pix i { width: 40px; height: 40px; border-radius: 10px; background: var(--teal); display: inline-block; transform: rotate(45deg) scale(.75); }
+  .pix { align-self: flex-end; background: #d6f5e3; border-top-right-radius: 6px; font-weight: 800; font-size: 28px; display: flex; align-items: center; gap: 12px; padding: 16px 18px; }
+  .pix i { width: 32px; height: 32px; border-radius: 8px; background: var(--teal); display: inline-block; transform: rotate(45deg) scale(.75); }
+  .sys { align-self: center; background: #fbe3e3; color: #b42318; font-size: 19px; font-weight: 700; padding: 10px 18px; border-radius: 10px; margin-top: 4px; }
 
-  .sys { align-self: center; background: #fbe3e3; color: #b42318; font-size: 23px; font-weight: 700; padding: 12px 24px; border-radius: 12px; margin-top: 8px; }
-  .cta { white-space: nowrap; }
-  .overlay {
-    position: absolute; left: 0; right: 0; bottom: 0;
-    background: var(--navy); color: #fff;
-    padding: 40px 50px 46px;
-  }
-  .overlay p { font-size: 31px; line-height: 1.3; font-weight: 500; color: #dbe4ee; }
-  .overlay p b { color: #fff; font-weight: 800; }
-  .overlay .row { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; }
-  .overlay .cta { font-size: 28px; padding: 22px 32px; }
-  .overlay .signature .mark { width: 62px; height: 62px; font-size: 24px; }
-  .overlay .signature .name { font-size: 26px; }
-  .overlay .signature .role { font-size: 17px; }
+  .cta { position: absolute; left: 80px; bottom: 72px; z-index: 4; white-space: nowrap; }
+  .fade { position: absolute; left: 80px; bottom: 0; width: 500px; height: 220px; z-index: 3; background: linear-gradient(transparent, var(--paper) 70%); }
 </style>
 </head>
 <body>
 <div class="canvas">
+  <div class="halo"></div>
+  <img class="artur" src="artur-recorte.png" alt="">
+
   <div class="eyebrow">Golpe do PIX acima de R$ 10 mil</div>
   <h1 class="headline">Parecia o banco.<br><span>Era golpe.</span></h1>
+  <p class="sub">Falso atendente, falsa central, falso parente. <b>Se você perdeu mais de R$&nbsp;10&nbsp;mil</b>, o banco pode ter falhado em te proteger.</p>
 
   <div class="phone">
     <div class="bar">
@@ -81,18 +63,10 @@
       <div class="msg out">Pronto, transferi. E agora?<small>14:31 ✓✓</small></div>
       <div class="sys">Este contato bloqueou você</div>
     </div>
-
-    <div class="overlay">
-      <p>Falso atendente, falso parente, falsa central. <b>Se você perdeu mais de R$&nbsp;10&nbsp;mil</b>, um advogado pode avaliar se o banco falhou em te proteger.</p>
-      <div class="row">
-        <div class="signature">
-          <div class="mark">AM</div>
-          <div><div class="name">Artur Moura</div><div class="role">Direito Bancário</div></div>
-        </div>
-        <div class="cta">Fale conosco</div>
-      </div>
-    </div>
   </div>
+
+  <div class="cta">Fale com um advogado</div>
+  <div class="tag"><div class="n">Artur Moura</div><div class="r">Advogado · Direito Bancário</div></div>
 </div>
 </body>
 </html>

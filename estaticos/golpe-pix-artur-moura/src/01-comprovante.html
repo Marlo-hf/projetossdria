@@ -7,58 +7,49 @@
 <style>
   body { background: radial-gradient(120% 80% at 50% 0%, #17324c 0%, var(--navy) 60%); }
 
-  .headline {
-    font-size: 84px; line-height: 1.02; font-weight: 900; letter-spacing: -.01em;
-    margin-top: 26px;
-  }
+  .headline { font-size: 84px; line-height: 1.02; font-weight: 900; letter-spacing: -.015em; margin-top: 24px; position: relative; z-index: 2; }
   .headline em { font-style: normal; color: var(--gold); }
 
-  .stage::before { content:""; position:absolute; width:720px; height:720px; border-radius:50%; background: radial-gradient(circle, rgba(201,164,92,.18), transparent 65%); }
-  .stage { position: relative; flex: 1; display: grid; place-items: center; margin: 30px 0 10px; }
+  .sub { font-size: 32px; line-height: 1.32; color: #dbe4ee; font-weight: 500; margin-top: 26px; width: 620px; position: relative; z-index: 2; }
+  .sub b { color: #fff; font-weight: 800; }
 
   .receipt {
-    position: relative;
-    width: 560px;
-    background: var(--white);
-    color: var(--ink);
-    border-radius: 28px;
-    padding: 40px 44px 34px;
+    position: relative; width: 470px; margin: 64px 0 0 6px;
+    background: #fff; color: var(--ink);
+    border-radius: 26px; padding: 34px 36px 24px;
     transform: rotate(-4deg);
-    box-shadow: 0 40px 80px rgba(0,0,0,.45);
+    box-shadow: 0 40px 80px rgba(0,0,0,.5);
   }
-  .receipt .ok {
-    width: 70px; height: 70px; border-radius: 50%;
-    background: var(--teal); display: grid; place-items: center; margin-bottom: 18px;
-  }
-  .receipt .ok svg { width: 38px; height: 38px; }
-  .receipt .t1 { font-size: 24px; color: #5b6b7a; font-weight: 600; }
-  .receipt .val { font-size: 64px; font-weight: 900; letter-spacing: -.02em; margin: 6px 0 22px; }
-  .receipt .row { display: flex; justify-content: space-between; font-size: 21px; padding: 13px 0; border-top: 1px dashed #d5dbe1; }
+  .receipt .ok { width: 60px; height: 60px; border-radius: 50%; background: var(--teal); display: grid; place-items: center; margin-bottom: 14px; }
+  .receipt .ok svg { width: 32px; height: 32px; }
+  .receipt .t1 { font-size: 21px; color: #5b6b7a; font-weight: 600; }
+  .receipt .val { font-size: 54px; font-weight: 900; letter-spacing: -.02em; margin: 4px 0 16px; }
+  .receipt .row { display: flex; justify-content: space-between; font-size: 19px; padding: 11px 0; border-top: 1px dashed #d5dbe1; }
   .receipt .row span:first-child { color: #6b7a88; }
   .receipt .row span:last-child { font-weight: 700; }
-
   .stamp {
-    position: absolute; top: 9%; left: 70%;
-    transform: translate(-50%, -50%) rotate(-12deg);
-    border: 8px solid var(--red); color: var(--red);
-    font-size: 60px; font-weight: 900; letter-spacing: .1em;
-    padding: 0 30px; border-radius: 16px;
-    background: rgba(255,255,255,.9);
-    box-shadow: 0 10px 30px rgba(229,72,77,.25);
+    position: absolute; top: -7%; right: -40px;
+    transform: rotate(-12deg);
+    border: 7px solid var(--red); color: var(--red);
+    font-size: 54px; font-weight: 900; letter-spacing: .1em;
+    padding: 0 24px; border-radius: 14px;
+    background: rgba(255,255,255,.94);
+    box-shadow: 0 10px 30px rgba(229,72,77,.3);
   }
 
-  .sub { font-size: 36px; line-height: 1.32; color: #dbe4ee; font-weight: 500; max-width: 900px; }
-  .sub b { color: var(--white); font-weight: 800; }
-
-  .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; }
+  .cta { position: absolute; left: 80px; bottom: 72px; z-index: 3; }
 </style>
 </head>
 <body>
 <div class="canvas">
-  <div class="eyebrow">Golpe do PIX acima de R$ 10 mil</div>
-  <h1 class="headline">Fez um PIX e<br>descobriu que era <em>golpe</em>?</h1>
+  <div class="halo"></div>
+  <img class="artur" src="artur-recorte.png" alt="">
 
-  <div class="stage">
+  <div class="eyebrow" style="position:relative;z-index:2">Golpe do PIX acima de R$ 10 mil</div>
+  <h1 class="headline">Fez um PIX e<br>descobriu que era <em>golpe</em>?</h1>
+  <p class="sub">Dependendo do caso, <b>o banco pode responder</b> por falhas de segurança na transação.</p>
+
+  <div class="col">
     <div class="receipt">
       <div class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
       <div class="t1">Transferência enviada</div>
@@ -70,17 +61,10 @@
     </div>
   </div>
 
-  <p class="sub">Dependendo do caso, <b>o banco pode responder</b> por falhas de segurança na transação. Entenda seus direitos com orientação jurídica.</p>
-
-  <div class="foot">
-    <div class="signature">
-      <div class="mark">AM</div>
-      <div><div class="name">Artur Moura</div><div class="role">Advocacia · Direito Bancário</div></div>
-    </div>
-    <div class="cta">Saiba mais
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-    </div>
+  <div class="cta">Entenda seus direitos
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
   </div>
+  <div class="tag"><div class="n">Artur Moura</div><div class="r">Advogado · Direito Bancário</div></div>
 </div>
 </body>
 </html>

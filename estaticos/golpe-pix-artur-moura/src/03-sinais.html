@@ -6,62 +6,58 @@
 <link rel="stylesheet" href="base.css">
 <style>
   body { background: var(--navy); }
-  .canvas::before {
-    content: ""; position: absolute; right: -330px; top: -330px;
-    width: 640px; height: 640px; border-radius: 50%;
-    border: 2px solid rgba(201,164,92,.25);
-    box-shadow: 0 0 0 70px rgba(201,164,92,.05), 0 0 0 140px rgba(201,164,92,.03);
-  }
 
-  .headline { font-size: 76px; line-height: 1.06; font-weight: 800; margin-top: 26px; letter-spacing: -.01em; }
+  .eyebrow { position: relative; z-index: 2; }
+  .headline { font-size: 80px; line-height: 1.04; font-weight: 900; margin-top: 24px; letter-spacing: -.015em; position: relative; z-index: 2; }
   .headline em { font-style: normal; color: var(--gold); }
 
-  .lead { font-size: 32px; color: var(--muted); margin-top: 26px; line-height: 1.35; max-width: 860px; }
-
-  .list { margin-top: 44px; display: flex; flex-direction: column; gap: 22px; flex: 1; justify-content: center; }
+  .list { margin-top: 0; display: flex; flex-direction: column; gap: 20px; }
   .item {
-    display: flex; gap: 30px; align-items: center;
-    background: var(--navy-2);
+    display: flex; gap: 22px; align-items: center;
+    background: rgba(18,40,61,.94);
     border: 1px solid rgba(255,255,255,.08);
-    border-left: 6px solid var(--gold);
-    border-radius: 20px;
-    padding: 28px 34px;
+    border-left: 5px solid var(--gold);
+    border-radius: 18px;
+    padding: 30px 28px;
+    box-shadow: 0 18px 40px rgba(0,0,0,.3);
   }
-  .num { flex: none; width: 76px; height: 76px; border-radius: 50%; background: var(--gold); color: var(--navy); display: grid; place-items: center; font-size: 36px; font-weight: 900; }
-  .item h3 { font-size: 33px; font-weight: 800; }
-  .item p { font-size: 25px; color: #b9c6d3; margin-top: 6px; line-height: 1.35; }
+  .num { flex: none; width: 60px; height: 60px; border-radius: 50%; background: var(--gold); color: var(--navy); display: grid; place-items: center; font-size: 30px; font-weight: 900; }
+  .item h3 { font-size: 32px; font-weight: 800; }
+  .item p { font-size: 23px; color: #b9c6d3; margin-top: 4px; line-height: 1.32; }
 
-  .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 44px; }
+  .cta { position: absolute; left: 80px; bottom: 72px; z-index: 3; }
+  .col { position: absolute; left: 80px; bottom: 240px; width: 580px; }
+  .lead { font-size: 31px; line-height: 1.36; color: #c4d0dc; margin-top: 26px; position: relative; z-index: 2; }
 </style>
 </head>
 <body>
 <div class="canvas">
+  <div class="halo"></div>
+  <img class="artur" src="artur-recorte.png" alt="">
+
   <div class="eyebrow">Golpe do PIX acima de R$ 10 mil</div>
-  <h1 class="headline">3 sinais de que<br>o banco pode ter<br><em>falhado com você</em></h1>
+  <h1 class="headline">3 sinais de que o banco<br>pode ter <em>falhado</em><br><em>com você</em></h1>
   <p class="lead">Se algum deles aconteceu no seu caso,<br>vale buscar uma análise jurídica.</p>
 
-  <div class="list">
-    <div class="item">
-      <div class="num">1</div>
-      <div><h3>Valor fora do seu perfil</h3><p>Transferência alta, muito acima do que você costuma movimentar.</p></div>
-    </div>
-    <div class="item">
-      <div class="num">2</div>
-      <div><h3>Nenhum alerta ou bloqueio</h3><p>O banco não questionou nem travou uma operação atípica.</p></div>
-    </div>
-    <div class="item">
-      <div class="num">3</div>
-      <div><h3>Contestação sem resposta</h3><p>Você avisou o banco e o pedido de devolução foi negado ou ignorado.</p></div>
+  <div class="col">
+    <div class="list">
+      <div class="item">
+        <div class="num">1</div>
+        <div><h3>Valor fora do seu perfil</h3><p>Transferência muito acima do que você costuma movimentar.</p></div>
+      </div>
+      <div class="item">
+        <div class="num">2</div>
+        <div><h3>Nenhum alerta ou bloqueio</h3><p>O banco não questionou uma operação atípica.</p></div>
+      </div>
+      <div class="item">
+        <div class="num">3</div>
+        <div><h3>Contestação negada</h3><p>Você avisou o banco e não teve o valor devolvido.</p></div>
+      </div>
     </div>
   </div>
 
-  <div class="foot">
-    <div class="signature">
-      <div class="mark">AM</div>
-      <div><div class="name">Artur Moura</div><div class="role">Advocacia · Direito Bancário</div></div>
-    </div>
-    <div class="cta">Analisar meu caso</div>
-  </div>
+  <div class="cta">Analisar meu caso</div>
+  <div class="tag"><div class="n">Artur Moura</div><div class="r">Advogado · Direito Bancário</div></div>
 </div>
 </body>
 </html>
