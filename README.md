@@ -1,5 +1,7 @@
 # Ouvidoria Unlockify
 
+**No ar:** https://ouvidoria-unlockify.netlify.app (Netlify, projeto `ouvidoria-unlockify`)
+
 Site onde os clientes da Unlockify mandam **elogios** e **reclamações**. Cada envio cai na hora no grupo de WhatsApp **Unlockify Geral**, com o nome do cliente.
 
 ## Como funciona
@@ -24,7 +26,7 @@ Um único arquivo, `index.html`, sem build. Intro com a logo animada (o "U" se d
 **Link personalizado** (já preenche o nome e o tipo):
 
 ```
-https://SEU-DOMINIO/?nome=Maria%20Souza&empresa=Souza%20Advocacia&tipo=elogio
+https://ouvidoria-unlockify.netlify.app/?nome=Maria%20Souza&empresa=Souza%20Advocacia&tipo=elogio
 ```
 
 `tipo` aceita `elogio` ou `reclamacao`.
