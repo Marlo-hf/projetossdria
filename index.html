@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ouvidoria Unlockify</title>
+<meta name="description" content="Conte pra Unlockify como foi sua experiência: elogios e reclamações chegam direto no nosso time.">
+<meta name="theme-color" content="#161826">
+<meta property="og:title" content="Ouvidoria Unlockify">
+<meta property="og:description" content="Sua opinião destrava a gente. Mande seu elogio ou reclamação.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='15 21 39 45'%3E%3Cg transform='translate(2,10)'%3E%3Cpath d='M18 16 V37 A14 14 0 0 0 46 37 V26' fill='none' stroke='%239184D9' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='46' cy='20' r='3.4' fill='%239184D9'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ground:#12131F;
+    --ground-2:#161826;
+    --surface:#1D1F2E;
+    --surface-2:#232532;
+    --ink:#E9E9ED;
+    --ink-2:#CFD3E5;
+    --muted:#9397AB;
+    --line:#2E3140;
+    --line-2:#3F424D;
+    --accent:#9184D9;
+    --accent-deep:#5D5294;
+    --accent-ink:#D2CEFD;
+    --warm:#FF8F7A;
+    --warm-deep:#C2483A;
+    --ok:#6FD3A8;
+    --tone:var(--accent);
+    --tone-deep:var(--accent-deep);
+    --r:16px;
+    --r-lg:24px;
+    --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --serif:"Instrument Serif",Georgia,serif;
+    --ease:cubic-bezier(.22,1,.36,1);
+    --spring:cubic-bezier(.34,1.56,.64,1);
+  }
+  body.tone-rec{--tone:var(--warm);--tone-deep:var(--warm-deep)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{
+    font-family:var(--sans);background:var(--ground);color:var(--ink);
+    min-height:100vh;overflow-x:hidden;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  body.locked{overflow:hidden}
+  ::selection{background:var(--accent);color:#12131F}
+
+  /* ---------- Logo ---------- */
+  .logo .mk{stroke:var(--accent);fill:none;stroke-width:6;stroke-linecap:round}
+  .logo .mkd{fill:var(--accent)}
+  .logo .wm{fill:var(--ink)}
+  .logo .sub{fill:var(--muted)}
+
+  /* ---------- Intro splash ---------- */
+  .intro{
+    position:fixed;inset:0;z-index:100;display:grid;place-items:center;
+    background:radial-gradient(ellipse at center,#1d1f33 0%,var(--ground) 70%);
+    transition:opacity .8s var(--ease),visibility .8s;
+  }
+  .intro.done{opacity:0;visibility:hidden}
+  .intro .logo{width:min(440px,78vw);overflow:visible}
+  .intro .mk{stroke-dasharray:100;stroke-dashoffset:100;animation:draw 1.1s var(--ease) .25s forwards}
+  .intro .mkd{transform-box:fill-box;transform-origin:center;transform:translateY(-40px) scale(0);opacity:0;
+    animation:drop .7s var(--spring) 1.2s forwards}
+  .intro .ring{fill:none;stroke:var(--accent);stroke-width:1.2;transform-box:fill-box;transform-origin:center;opacity:0;
+    animation:ring 1s var(--ease) 1.6s forwards}
+  .intro .wm tspan{opacity:0;animation:letter .5s var(--ease) forwards}
+  .intro .sub{opacity:0;letter-spacing:1px;animation:track 1s var(--ease) 2.25s forwards}
+  .intro .glow{position:absolute;width:420px;height:420px;border-radius:50%;
+    background:radial-gradient(circle,rgba(145,132,217,.35),transparent 65%);filter:blur(20px);
+    opacity:0;animation:glow 2.6s var(--ease) 1.2s forwards}
+  .intro .skip{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+    background:none;border:0;color:var(--muted);font:500 13px var(--sans);cursor:pointer;letter-spacing:.04em}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  @keyframes drop{to{transform:translateY(0) scale(1);opacity:1}}
+  @keyframes ring{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(5)}}
+  @keyframes letter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @keyframes track{to{opacity:1;letter-spacing:5.5px}}
+  @keyframes glow{0%{opacity:0;transform:scale(.6)}40%{opacity:1}100%{opacity:.5;transform:scale(1.1)}}
+
+  /* ---------- Background ---------- */
+  .bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+  .blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.45;will-change:transform}
+  .blob.a{width:520px;height:520px;background:var(--accent-deep);top:-160px;left:-120px;animation:float1 22s ease-in-out infinite}
+  .blob.b{width:460px;height:460px;background:var(--tone);bottom:-180px;right:-120px;opacity:.22;animation:float2 26s ease-in-out infinite;transition:background 1s}
+  .blob.c{width:300px;height:300px;background:#3b3570;top:40%;left:55%;animation:float3 30s ease-in-out infinite}
+  @keyframes float1{50%{transform:translate(120px,80px) scale(1.1)}}
+  @keyframes float2{50%{transform:translate(-100px,-120px) scale(1.15)}}
+  @keyframes float3{50%{transform:translate(-160px,60px) scale(.85)}}
+  #particles{position:absolute;inset:0;width:100%;height:100%}
+  .grain{position:absolute;inset:-50%;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  /* ---------- Layout ---------- */
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+  header{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    background:rgba(18,19,31,.6);border-bottom:1px solid rgba(63,66,77,.5)}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+  header .logo{height:40px;width:auto}
+  header .logo .mkd{animation:pulse 2.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+  header .logo:hover .mk{animation:wiggle .6s var(--spring)}
+  @keyframes pulse{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
+  @keyframes wiggle{30%{transform:rotate(-6deg)}60%{transform:rotate(4deg)}}
+  header .logo .mk{transform-box:fill-box;transform-origin:50% 100%}
+  .badge{font-size:12px;font-weight:600;color:var(--accent-ink);padding:6px 12px;border-radius:999px;
+    border:1px solid rgba(145,132,217,.35);background:rgba(145,132,217,.08);letter-spacing:.04em;display:flex;align-items:center;gap:8px}
+  .badge i{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(111,211,168,.6);animation:live 2s infinite}
+  @keyframes live{70%{box-shadow:0 0 0 8px rgba(111,211,168,0)}100%{box-shadow:0 0 0 0 rgba(111,211,168,0)}}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:88px 0 40px;text-align:center}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  h1{font-size:clamp(40px,7.4vw,80px);line-height:1.02;letter-spacing:-.035em;font-weight:700;margin:18px auto 22px;max-width:14ch}
+  h1 em{font-family:var(--serif);font-weight:400;font-style:italic;letter-spacing:-.01em;
+    background:linear-gradient(100deg,var(--accent) 0%,var(--accent-ink) 40%,var(--accent) 80%);background-size:200% auto;
+    -webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 5s linear infinite;padding-right:.08em}
+  @keyframes shine{to{background-position:-200% center}}
+  .lede{color:var(--ink-2);font-size:clamp(16px,2.2vw,19px);max-width:560px;margin:0 auto}
+  .word{display:inline-block;opacity:0;transform:translateY(.5em) rotate(2deg);filter:blur(6px);
+    transition:opacity .8s var(--ease),transform .8s var(--ease),filter .8s var(--ease)}
+  .in .word{opacity:1;transform:none;filter:none}
+
+  /* ---------- Reveal ---------- */
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ---------- Choice cards ---------- */
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:48px auto 0;max-width:780px}
+  .choice{position:relative;text-align:left;border:1px solid var(--line);background:linear-gradient(180deg,var(--surface-2),var(--surface));
+    border-radius:var(--r-lg);padding:26px 24px 24px;cursor:pointer;color:inherit;font:inherit;overflow:hidden;
+    transition:transform .5s var(--ease),border-color .4s,box-shadow .5s var(--ease);transform-style:preserve-3d}
+  .choice::before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .4s;
+    background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),var(--c),transparent 45%)}
+  .choice:hover::before,.choice.on::before{opacity:.18}
+  .choice[data-tipo=elogio]{--c:var(--accent)}
+  .choice[data-tipo=reclamacao]{--c:var(--warm)}
+  .choice:hover{border-color:color-mix(in srgb,var(--c) 55%,transparent);box-shadow:0 30px 60px -30px color-mix(in srgb,var(--c) 60%,transparent)}
+  .choice.on{border-color:var(--c);box-shadow:0 0 0 1px var(--c),0 30px 60px -28px color-mix(in srgb,var(--c) 70%,transparent)}
+  .choice .ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;margin-bottom:18px;
+    background:color-mix(in srgb,var(--c) 16%,transparent);color:var(--c);transition:transform .6s var(--spring)}
+  .choice:hover .ic{transform:scale(1.1) rotate(-8deg)}
+  .choice.on .ic{animation:bop .7s var(--spring)}
+  @keyframes bop{40%{transform:scale(1.25) rotate(8deg)}}
+  .choice h3{font-size:22px;letter-spacing:-.02em;margin-bottom:6px}
+  .choice p{color:var(--muted);font-size:14.5px}
+  .choice .check{position:absolute;top:18px;right:18px;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line-2);
+    display:grid;place-items:center;transition:all .4s var(--spring)}
+  .choice.on .check{background:var(--c);border-color:var(--c);transform:scale(1.08)}
+  .choice .check svg{opacity:0;transform:scale(.4);transition:all .35s var(--spring)}
+  .choice.on .check svg{opacity:1;transform:none}
+
+  /* ---------- Form ---------- */
+  .panel{scroll-margin-top:88px;max-width:780px;margin:28px auto 0;border:1px solid var(--line);border-radius:28px;
+    background:linear-gradient(180deg,rgba(35,37,50,.85),rgba(29,31,46,.85));backdrop-filter:blur(10px);
+    padding:clamp(22px,4vw,40px);position:relative;overflow:hidden;
+    transition:border-color .6s,box-shadow .6s}
+  .panel::after{content:"";position:absolute;left:0;right:0;top:0;height:3px;
+    background:linear-gradient(90deg,transparent,var(--tone),transparent);background-size:200% 100%;animation:sweep 3s linear infinite;transition:background .6s}
+  @keyframes sweep{from{background-position:200% 0}to{background-position:-200% 0}}
+  .panel h2{font-size:clamp(24px,3.4vw,30px);letter-spacing:-.025em;margin-bottom:4px}
+  .panel h2 em{font-family:var(--serif);font-weight:400;color:var(--tone);transition:color .6s}
+  .panel .hint{color:var(--muted);font-size:14.5px;margin-bottom:28px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .full{grid-column:1/-1}
+  .field{position:relative}
+  .field input,.field select,.field textarea{
+    width:100%;font:500 16px var(--sans);color:var(--ink);background:rgba(18,19,31,.55);
+    border:1.5px solid var(--line);border-radius:var(--r);padding:24px 16px 10px;outline:none;
+    transition:border-color .3s,box-shadow .3s,background .3s;appearance:none;-webkit-appearance:none}
+  .field textarea{min-height:150px;resize:vertical;padding-top:28px}
+  .field select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%239397AB' stroke-width='1.8' stroke-linecap='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 16px center}
+  .field select option{background:var(--surface);color:var(--ink)}
+  .field label{position:absolute;left:17px;top:17px;font-size:15.5px;color:var(--muted);pointer-events:none;
+    transform-origin:left top;transition:transform .3s var(--ease),color .3s}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--tone);background:rgba(18,19,31,.8);
+    box-shadow:0 0 0 4px color-mix(in srgb,var(--tone) 18%,transparent)}
+  .field input:focus+label,.field input:not(:placeholder-shown)+label,
+  .field textarea:focus+label,.field textarea:not(:placeholder-shown)+label,
+  .field select+label{transform:translateY(-10px) scale(.76);color:var(--tone)}
+  .field .req{color:var(--tone)}
+  .field.err input,.field.err textarea{border-color:var(--warm);animation:shake .45s}
+  @keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+  .counter{position:absolute;right:14px;bottom:10px;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;opacity:0}
+
+  .rating{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:6px 2px}
+  .rating .lbl{font-size:15px;color:var(--ink-2);font-weight:500}
+  .stars{display:flex;gap:6px}
+  .star{background:none;border:0;cursor:pointer;padding:4px;color:var(--line-2);transition:transform .35s var(--spring),color .2s}
+  .star svg{width:34px;height:34px;display:block}
+  .star:hover{transform:scale(1.18) rotate(-6deg)}
+  .star.lit{color:#FFC75F}
+  .star.pop{animation:starpop .5s var(--spring)}
+  @keyframes starpop{40%{transform:scale(1.45) rotate(14deg)}}
+  .rating .say{font-size:14px;color:var(--muted);min-width:120px;transition:opacity .3s}
+
+  .actions{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:26px;flex-wrap:wrap}
+  .privacy{font-size:13px;color:var(--muted);max-width:340px;display:flex;gap:8px;align-items:flex-start}
+  .privacy svg{flex:none;margin-top:2px}
+  .btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-width:220px;height:56px;padding:0 28px;
+    border:0;border-radius:999px;cursor:pointer;font:600 16px var(--sans);color:#12131F;overflow:hidden;
+    background:linear-gradient(135deg,var(--tone),color-mix(in srgb,var(--tone) 70%,#fff));
+    box-shadow:0 14px 34px -14px var(--tone);transition:transform .35s var(--spring),box-shadow .35s,background .6s,min-width .5s var(--ease),width .5s}
+  .btn:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 20px 40px -14px var(--tone)}
+  .btn:active{transform:scale(.97)}
+  .btn::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:gleam 3.6s ease-in-out infinite}
+  @keyframes gleam{0%,60%{left:-60%}100%{left:130%}}
+  .btn .arrow{transition:transform .35s var(--spring)}
+  .btn:hover .arrow{transform:translateX(4px)}
+  .btn .spin{display:none;width:22px;height:22px;border:2.5px solid rgba(18,19,31,.25);border-top-color:#12131F;border-radius:50%;animation:spin .8s linear infinite}
+  .btn.loading{pointer-events:none}
+  .btn.loading .txt,.btn.loading .arrow{display:none}
+  .btn.loading .spin{display:block}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .form-error{margin-top:16px;font-size:14px;color:var(--warm);min-height:20px}
+
+  /* ---------- Steps ---------- */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:90px auto 0;max-width:900px}
+  .step{padding:22px;border-radius:var(--r-lg);border:1px solid var(--line);background:rgba(29,31,46,.5)}
+  .step b{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:10px;background:rgba(145,132,217,.14);color:var(--accent);font-size:14px;margin-bottom:12px}
+  .step h4{font-size:16px;margin-bottom:4px;letter-spacing:-.01em}
+  .step p{font-size:14px;color:var(--muted)}
+
+  footer{padding:70px 0 40px;text-align:center;color:var(--muted);font-size:13px}
+  footer .logo{height:34px;opacity:.8;margin-bottom:10px}
+
+  /* ---------- Success ---------- */
+  .success{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:20px;
+    background:rgba(12,13,22,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    opacity:0;visibility:hidden;transition:opacity .5s var(--ease),visibility .5s}
+  .success.show{opacity:1;visibility:visible}
+  .success .card{max-width:480px;width:100%;text-align:center;padding:40px 28px 32px;border-radius:28px;
+    background:linear-gradient(180deg,var(--surface-2),var(--surface));border:1px solid var(--line);
+    transform:translateY(30px) scale(.94);transition:transform .7s var(--spring)}
+  .success.show .card{transform:none}
+  .success .logo{width:96px;height:auto;overflow:visible;margin-bottom:12px}
+  .success .mk{stroke:var(--tone);stroke-dasharray:100;stroke-dashoffset:100}
+  .success .mkd{fill:var(--tone);transform-box:fill-box;transform-origin:center;opacity:0}
+  .success.show .mk{animation:draw .9s var(--ease) .2s forwards}
+  .success.show .mkd{animation:drop .6s var(--spring) .9s forwards}
+  .success h3{font-size:28px;letter-spacing:-.025em;margin-bottom:8px}
+  .success h3 em{font-family:var(--serif);font-weight:400;color:var(--tone)}
+  .success p{color:var(--ink-2);font-size:15.5px;margin-bottom:24px}
+  .success .ghost{background:none;border:1.5px solid var(--line-2);color:var(--ink);height:48px;padding:0 24px;border-radius:999px;
+    font:600 15px var(--sans);cursor:pointer;transition:border-color .3s,transform .3s var(--spring)}
+  .success .ghost:hover{border-color:var(--tone);transform:translateY(-2px)}
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:95}
+
+  @media (max-width:720px){
+    .hero{padding:56px 0 24px}
+    .choices,.grid,.steps{grid-template-columns:1fr}
+    .choices{gap:12px;margin-top:36px}
+    .choice{padding:20px 18px;display:grid;grid-template-columns:auto 1fr;column-gap:16px;align-items:center}
+    .choice .ic{margin:0;grid-row:span 2}
+    .choice h3{font-size:19px;margin:0}
+    .actions{flex-direction:column-reverse;align-items:stretch}
+    .btn{width:100%}
+    .badge span{display:none}
+    .star svg{width:30px;height:30px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+    .word,.reveal{opacity:1;transform:none;filter:none}
+  }
+</style>
+</head>
+<body class="locked">
+
+<!-- Intro com a logo animada -->
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="glow"></div>
+  <svg class="logo" viewBox="0 0 360 96" role="img" aria-label="Unlockify Digital">
+    <g transform="translate(6,16)">
+      <path class="mk" pathLength="100" d="M18 16 V37 A14 14 0 0 0 46 37 V26"/>
+      <circle class="ring" cx="46" cy="20" r="3.4"/>
+      <circle class="mkd" cx="46" cy="20" r="3.4"/>
+    </g>
+    <text class="wm" x="86" y="52" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="40" letter-spacing="-0.8"></text>
+    <text class="sub" x="88" y="76" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="13">DIGITAL</text>
+  </svg>
+  <button class="skip" id="skip" type="button">pular ›</button>
+</div>
+
+<div class="bg" aria-hidden="true">
+  <div class="blob a"></div><div class="blob b"></div><div class="blob c"></div>
+  <canvas id="particles"></canvas>
+  <div class="grain"></div>
+</div>
+
+<header>
+  <div class="wrap">
+    <a href="#" aria-label="Unlockify">
+      <svg class="logo" viewBox="0 0 360 96" role="img" aria-label="Unlockify Digital">
+        <g transform="translate(6,16)">
+          <path class="mk" d="M18 16 V37 A14 14 0 0 0 46 37 V26"/>
+          <circle class="mkd" cx="46" cy="20" r="3.4"/>
+        </g>
+        <text class="wm" x="86" y="52" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="40" letter-spacing="-0.8">Unlockify</text>
+        <text class="sub" x="88" y="76" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="13" letter-spacing="5.5">DIGITAL</text>
+      </svg>
+    </a>
+    <div class="badge"><i></i><span>Ouvidoria</span> online</div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="eyebrow reveal">Ouvidoria Unlockify</span>
+    <h1 id="headline" data-split>Sua opinião <em>destrava</em> a gente.</h1>
+    <p class="lede reveal">Deu certo? Conta pra gente. Algo te incomodou? Conta também. Cada mensagem chega direto no nosso time, com o seu nome, na hora.</p>
+
+    <div class="choices reveal" role="radiogroup" aria-label="Tipo de mensagem">
+      <button class="choice" type="button" role="radio" aria-checked="false" data-tipo="elogio">
+        <span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#12131F" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>
+        <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg></span>
+        <h3>Quero elogiar</h3>
+        <p>Algo que fizemos bem e que você quer que o time saiba.</p>
+      </button>
+      <button class="choice" type="button" role="radio" aria-checked="false" data-tipo="reclamacao">
+        <span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#12131F" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>
+        <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M12 7v4M12 14h.01"/></svg></span>
+        <h3>Quero reclamar</h3>
+        <p>Algo que não saiu como deveria. A gente quer resolver.</p>
+      </button>
+    </div>
+  </section>
+
+  <section class="panel reveal" id="form-panel" aria-labelledby="form-title">
+    <h2 id="form-title">Conta pra gente, <em id="form-tone">sem filtro</em>.</h2>
+    <p class="hint" id="form-hint">Escolha acima se é um elogio ou uma reclamação e preencha os campos abaixo.</p>
+
+    <form id="form" novalidate>
+      <input type="hidden" name="tipo" id="tipo" value="">
+      <div class="hp" aria-hidden="true"><label>Não preencha <input type="text" name="site_url" tabindex="-1" autocomplete="off"></label></div>
+
+      <div class="grid">
+        <div class="field">
+          <input id="nome" name="nome" type="text" placeholder=" " autocomplete="name" maxlength="120" required>
+          <label for="nome">Seu nome <span class="req">*</span></label>
+        </div>
+        <div class="field">
+          <input id="empresa" name="empresa" type="text" placeholder=" " autocomplete="organization" maxlength="120">
+          <label for="empresa">Empresa ou escritório</label>
+        </div>
+        <div class="field">
+          <input id="whatsapp" name="whatsapp" type="tel" placeholder=" " autocomplete="tel" inputmode="tel" maxlength="20">
+          <label for="whatsapp">WhatsApp (pra gente te responder)</label>
+        </div>
+        <div class="field">
+          <select id="assunto" name="assunto">
+            <option value="">Escolha um assunto</option>
+            <option>Atendimento</option>
+            <option>Campanhas e tráfego</option>
+            <option>Leads e resultados</option>
+            <option>Site ou landing page</option>
+            <option>Prazos e entregas</option>
+            <option>Financeiro</option>
+            <option>Outro</option>
+          </select>
+          <label for="assunto">Sobre o quê?</label>
+        </div>
+
+        <div class="full rating">
+          <span class="lbl">Sua nota pra Unlockify</span>
+          <div class="stars" id="stars" role="radiogroup" aria-label="Nota de 1 a 5"></div>
+          <span class="say" id="say" aria-live="polite"></span>
+        </div>
+
+        <div class="field full">
+          <textarea id="mensagem" name="mensagem" placeholder=" " maxlength="3000" required></textarea>
+          <label for="mensagem">Sua mensagem <span class="req">*</span></label>
+          <span class="counter" id="counter">0/3000</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <p class="privacy">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0"/></svg>
+          Sua mensagem vai só para o time interno da Unlockify.
+        </p>
+        <button class="btn" type="submit" id="send">
+          <span class="txt">Enviar mensagem</span>
+          <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          <span class="spin"></span>
+        </button>
+      </div>
+      <p class="form-error" id="form-error" role="alert"></p>
+    </form>
+  </section>
+
+  <section class="steps">
+    <div class="step reveal"><b>1</b><h4>Você escreve</h4><p>Leva menos de um minuto. Só o nome e a mensagem são obrigatórios.</p></div>
+    <div class="step reveal"><b>2</b><h4>O time recebe na hora</h4><p>Sua mensagem cai direto no grupo interno da Unlockify, com o seu nome.</p></div>
+    <div class="step reveal"><b>3</b><h4>A gente age</h4><p>Elogio vira combustível. Reclamação vira prioridade, e a gente te procura.</p></div>
+  </section>
+</main>
+
+<footer>
+  <svg class="logo" viewBox="15 21 39 45" role="img" aria-label="Unlockify"><g transform="translate(2,10)"><path class="mk" d="M18 16 V37 A14 14 0 0 0 46 37 V26"/><circle class="mkd" cx="46" cy="20" r="3.4"/></g></svg>
+  <div>© <span id="ano"></span> Unlockify Digital</div>
+</footer>
+
+<div class="success" id="success" role="dialog" aria-modal="true" aria-labelledby="ok-title">
+  <div class="card">
+    <svg class="logo" viewBox="15 21 39 45" aria-hidden="true"><g transform="translate(2,10)"><path class="mk" pathLength="100" d="M18 16 V37 A14 14 0 0 0 46 37 V26"/><circle class="mkd" cx="46" cy="20" r="3.4"/></g></svg>
+    <h3 id="ok-title"></h3>
+    <p id="ok-text"></p>
+    <button class="ghost" type="button" id="again">Enviar outra mensagem</button>
+  </div>
+</div>
+<canvas id="confetti"></canvas>
+
+<script>
+(() => {
+  // Endpoint do n8n: workflow "{UNLOCKIFY} - Ouvidoria (reclamações e elogios)"
+  const WEBHOOK = "https://n8n-n8n.aalmzr.easypanel.host/webhook/ouvidoria-unlockify";
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $ = (s) => document.querySelector(s);
+  $("#ano").textContent = new Date().getFullYear();
+
+  /* ---------- Intro ---------- */
+  const intro = $("#intro");
+  const wm = intro.querySelector(".wm");
+  "Unlockify".split("").forEach((ch, i) => {
+    const t = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+    t.textContent = ch;
+    t.style.animationDelay = (1.45 + i * 0.06) + "s";
+    wm.appendChild(t);
+  });
+  let introOver = false;
+  const endIntro = () => {
+    if (introOver) return;
+    introOver = true;
+    intro.classList.add("done");
+    document.body.classList.remove("locked");
+    setTimeout(startReveals, 150);
+  };
+  let seen = false;
+  try { seen = sessionStorage.getItem("unl-intro") === "1"; sessionStorage.setItem("unl-intro", "1"); } catch (e) {}
+  if (reduce || seen) endIntro(); else setTimeout(endIntro, 3300);
+  $("#skip").addEventListener("click", endIntro);
+
+  /* ---------- Headline split + reveals ---------- */
+  const h1 = $("#headline");
+  const splitNode = (node) => {
+    [...node.childNodes].forEach((n) => {
+      if (n.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach((w) => {
+          if (!w) return;
+          if (/^\s+$/.test(w)) { frag.appendChild(document.createTextNode(w)); return; }
+          const s = document.createElement("span"); s.className = "word"; s.textContent = w; frag.appendChild(s);
+        });
+        n.replaceWith(frag);
+      } else if (n.nodeType === 1) {
+        n.classList.add("word");
+      }
+    });
+  };
+  splitNode(h1);
+  h1.querySelectorAll(".word").forEach((w, i) => (w.style.transitionDelay = (i * 0.09) + "s"));
+
+  function startReveals() {
+    h1.classList.add("in");
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach((el, i) => {
+      el.style.transitionDelay = (el.closest(".hero") ? 0.35 + i * 0.12 : 0) + "s";
+      io.observe(el);
+    });
+  }
+
+  /* ---------- Partículas ---------- */
+  const cv = $("#particles"), cx = cv.getContext("2d");
+  let W, H, dots = [];
+  const resize = () => {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr;
+    const n = Math.round(Math.min(70, innerWidth / 18));
+    dots = Array.from({ length: n }, () => ({
+      x: Math.random() * W, y: Math.random() * H, r: (Math.random() * 1.6 + .4) * dpr,
+      vx: (Math.random() - .5) * .25 * dpr, vy: (-Math.random() * .35 - .05) * dpr, a: Math.random() * .5 + .15
+    }));
+  };
+  resize(); addEventListener("resize", resize);
+  const tick = () => {
+    cx.clearRect(0, 0, W, H);
+    for (const d of dots) {
+      d.x += d.vx; d.y += d.vy;
+      if (d.y < -10) { d.y = H + 10; d.x = Math.random() * W; }
+      if (d.x < -10) d.x = W + 10; else if (d.x > W + 10) d.x = -10;
+      cx.beginPath(); cx.arc(d.x, d.y, d.r, 0, 6.283);
+      cx.fillStyle = "rgba(180,170,240," + d.a + ")"; cx.fill();
+    }
+    requestAnimationFrame(tick);
+  };
+  if (!reduce) tick();
+
+  /* ---------- Cards de escolha ---------- */
+  const tipoInput = $("#tipo");
+  const choices = document.querySelectorAll(".choice");
+  const copy = {
+    elogio: { tone: "o que te fez feliz", hint: "Que bom! Conta o que deu certo. A equipe vai adorar ler isso.", btn: "Enviar elogio" },
+    reclamacao: { tone: "o que deu errado", hint: "Sinto muito por isso. Conta com detalhes que a gente resolve o quanto antes.", btn: "Enviar reclamação" }
+  };
+  const setTipo = (tipo, scroll) => {
+    tipoInput.value = tipo;
+    choices.forEach((c) => {
+      const on = c.dataset.tipo === tipo;
+      c.classList.toggle("on", on); c.setAttribute("aria-checked", on);
+    });
+    document.body.classList.toggle("tone-rec", tipo === "reclamacao");
+    $("#form-tone").textContent = copy[tipo].tone;
+    $("#form-hint").textContent = copy[tipo].hint;
+    $("#send .txt").textContent = copy[tipo].btn;
+    $("#form-error").textContent = "";
+    if (scroll) setTimeout(() => $("#form-panel").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }), 250);
+  };
+  choices.forEach((c) => {
+    c.addEventListener("click", () => setTipo(c.dataset.tipo, true));
+    c.addEventListener("pointermove", (e) => {
+      const r = c.getBoundingClientRect();
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      c.style.setProperty("--mx", x + "px"); c.style.setProperty("--my", y + "px");
+      if (!reduce && e.pointerType === "mouse") {
+        c.style.transform = `perspective(800px) rotateX(${(y / r.height - .5) * -7}deg) rotateY(${(x / r.width - .5) * 7}deg) translateY(-3px)`;
+      }
+    });
+    c.addEventListener("pointerleave", () => (c.style.transform = ""));
+  });
+
+  /* ---------- Estrelas ---------- */
+  const starsEl = $("#stars"), say = $("#say");
+  const labels = ["", "Muito ruim", "Ruim", "Ok", "Bom", "Excelente!"];
+  let nota = 0;
+  const starSvg = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6l2.9 6 6.5.9-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.1 1.1-6.5L2.6 9.5l6.5-.9z"/></svg>';
+  const paint = (n) => starsEl.querySelectorAll(".star").forEach((s, i) => s.classList.toggle("lit", i < n));
+  for (let i = 1; i <= 5; i++) {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "star"; b.innerHTML = starSvg;
+    b.setAttribute("role", "radio"); b.setAttribute("aria-label", i + " de 5 — " + labels[i]); b.setAttribute("aria-checked", "false");
+    b.addEventListener("mouseenter", () => { paint(i); say.textContent = labels[i]; });
+    b.addEventListener("click", () => {
+      nota = i; paint(i); say.textContent = labels[i];
+      starsEl.querySelectorAll(".star").forEach((s, k) => {
+        s.setAttribute("aria-checked", k + 1 === i);
+        if (k < i) { s.classList.remove("pop"); void s.offsetWidth; s.style.animationDelay = (k * 0.05) + "s"; s.classList.add("pop"); }
+      });
+    });
+    starsEl.appendChild(b);
+  }
+  starsEl.addEventListener("mouseleave", () => { paint(nota); say.textContent = labels[nota]; });
+
+  /* ---------- Campos ---------- */
+  const msg = $("#mensagem"), counter = $("#counter");
+  msg.addEventListener("input", () => (counter.textContent = msg.value.length + "/3000"));
+  const zap = $("#whatsapp");
+  zap.addEventListener("input", () => {
+    const d = zap.value.replace(/\D/g, "").slice(0, 11);
+    let out = d;
+    if (d.length > 2) out = "(" + d.slice(0, 2) + ") " + d.slice(2);
+    if (d.length > 7) out = "(" + d.slice(0, 2) + ") " + d.slice(2, d.length - 4) + "-" + d.slice(-4);
+    zap.value = out;
+  });
+
+  // Link personalizado: ?nome=Maria&empresa=Souza%20Adv&tipo=elogio
+  const qs = new URLSearchParams(location.search);
+  if (qs.get("nome")) $("#nome").value = qs.get("nome");
+  if (qs.get("empresa")) $("#empresa").value = qs.get("empresa");
+  if (["elogio", "reclamacao"].includes(qs.get("tipo"))) setTipo(qs.get("tipo"), false);
+
+  /* ---------- Envio ---------- */
+  const form = $("#form"), btn = $("#send"), errEl = $("#form-error");
+  const flagErr = (el) => { const f = el.closest(".field"); f.classList.remove("err"); void f.offsetWidth; f.classList.add("err"); };
+  form.querySelectorAll("input,textarea").forEach((el) => el.addEventListener("input", () => el.closest(".field")?.classList.remove("err")));
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    errEl.textContent = "";
+    const data = Object.fromEntries(new FormData(form));
+    data.nota = nota;
+    const problems = [];
+    if (!data.tipo) problems.push("Escolha lá em cima se é um elogio ou uma reclamação.");
+    if ((data.nome || "").trim().length < 2) { flagErr($("#nome")); problems.push("Diga seu nome."); }
+    if ((data.mensagem || "").trim().length < 5) { flagErr(msg); problems.push("Escreva sua mensagem."); }
+    if (problems.length) {
+      errEl.textContent = problems.join(" ");
+      if (!data.tipo) document.querySelector(".choices").scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    btn.classList.add("loading");
+    try {
+      const res = await fetch(WEBHOOK, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      showSuccess(data);
+    } catch (err) {
+      errEl.textContent = "Não conseguimos enviar agora. Confira sua internet e tente de novo em instantes.";
+    } finally {
+      btn.classList.remove("loading");
+    }
+  });
+
+  const success = $("#success");
+  function showSuccess(data) {
+    const first = data.nome.trim().split(/\s+/)[0];
+    if (data.tipo === "elogio") {
+      $("#ok-title").innerHTML = "Obrigado, <em></em>!";
+      $("#ok-text").textContent = "Seu elogio já chegou no time da Unlockify. Isso faz o nosso dia.";
+    } else {
+      $("#ok-title").innerHTML = "Recebemos, <em></em>.";
+      $("#ok-text").textContent = "Sua reclamação já está com o nosso time. Vamos olhar com prioridade e te procurar em breve.";
+    }
+    $("#ok-title em").textContent = first;
+    success.classList.add("show");
+    document.body.classList.add("locked");
+    if (data.tipo === "elogio" && !reduce) confetti();
+    $("#again").focus();
+  }
+  $("#again").addEventListener("click", () => {
+    success.classList.remove("show");
+    document.body.classList.remove("locked");
+    msg.value = ""; counter.textContent = "0/3000";
+    nota = 0; paint(0); say.textContent = "";
+    $("#assunto").value = "";
+  });
+
+  /* ---------- Confete ---------- */
+  function confetti() {
+    const c = $("#confetti"), g = c.getContext("2d");
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    c.width = innerWidth * dpr; c.height = innerHeight * dpr;
+    const colors = ["#9184D9", "#D2CEFD", "#5D5294", "#FFC75F", "#6FD3A8", "#ffffff"];
+    const ps = Array.from({ length: 160 }, () => ({
+      x: c.width / 2, y: c.height * .45,
+      vx: (Math.random() - .5) * 22 * dpr, vy: (-Math.random() * 18 - 6) * dpr,
+      w: (Math.random() * 8 + 4) * dpr, h: (Math.random() * 5 + 3) * dpr,
+      rot: Math.random() * 6, vr: (Math.random() - .5) * .3, col: colors[(Math.random() * colors.length) | 0]
+    }));
+    let frame = 0;
+    const step = () => {
+      g.clearRect(0, 0, c.width, c.height);
+      ps.forEach((p) => {
+        p.vy += .45 * dpr; p.vx *= .985; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+        g.save(); g.translate(p.x, p.y); g.rotate(p.rot); g.fillStyle = p.col;
+        g.globalAlpha = Math.max(0, 1 - frame / 170); g.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); g.restore();
+      });
+      if (++frame < 170) requestAnimationFrame(step); else g.clearRect(0, 0, c.width, c.height);
+    };
+    step();
+  }
+})();
+</script>
+</body>
+</html>
