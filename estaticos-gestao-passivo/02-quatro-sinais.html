@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Estático 02 — 4 sinais</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  h1 { top: 176px; font-size: 76px; line-height: 1.06; font-weight: 900; letter-spacing: -.01em; }
+  .list { top: 470px; display: grid; gap: 20px; }
+  .item { display: grid; grid-template-columns: 76px 1fr; gap: 26px; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 26px 32px; box-shadow: 0 8px 24px rgba(18,28,43,.06); }
+  .n { width: 76px; height: 76px; border-radius: 18px; background: var(--navy); color: var(--gold2); display: grid; place-items: center; font-family: 'Fraunces', serif; font-weight: 900; font-size: 40px; }
+  .item b { display: block; font-size: 31px; font-weight: 800; color: var(--ink); }
+  .item span { display: block; margin-top: 6px; font-size: 23px; color: var(--muted); line-height: 1.35; }
+  .item.alert { border-color: rgba(224,83,61,.4); background: #fff7f5; }
+  .item.alert .n { background: var(--red); color: #fff; }
+  .cta-wrap { top: 1108px; }
+  .foot { color: var(--ink); }
+  .firm .mark { background: var(--navy); color: var(--gold2); }
+</style></head>
+<body><div class="ad light">
+  <div class="pad top"><span class="tag"><i></i>EMPRESÁRIO, ATENÇÃO</span></div>
+
+  <h1 class="pad">4 sinais de que a dívida bancária da sua empresa precisa de <em>análise jurídica</em></h1>
+
+  <div class="pad list">
+    <div class="item"><div class="n">1</div><div><b>As parcelas só aumentam</b><span>Você paga em dia, mas o saldo devedor não diminui.</span></div></div>
+    <div class="item"><div class="n">2</div><div><b>Renegociar virou rotina</b><span>Cada acordo com o banco gera uma dívida nova e maior.</span></div></div>
+    <div class="item"><div class="n">3</div><div><b>O limite virou capital de giro</b><span>Cheque especial e cartão empresarial usados todo mês.</span></div></div>
+    <div class="item alert"><div class="n">4</div><div><b>Já há cobrança ou ameaça de bloqueio</b><span>Notificações, protesto, execução ou risco às contas da empresa.</span></div></div>
+  </div>
+
+  <div class="pad cta-wrap"><span class="cta">Fale com um especialista <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+
+  <div class="pad foot">
+    <div class="firm"><div class="mark">A</div><div><b>[NOME DO ESCRITÓRIO]</b><span>Advocacia Empresarial · OAB/UF 00.000</span></div></div>
+    <p class="disc">Conteúdo informativo. Cada caso exige análise individual.</p>
+  </div>
+</div></body></html>

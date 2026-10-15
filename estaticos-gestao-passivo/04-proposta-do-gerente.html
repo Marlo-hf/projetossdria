@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Estático 04 — Proposta do gerente</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  h1 { top: 176px; font-size: 80px; line-height: 1.04; font-weight: 900; letter-spacing: -.012em; }
+  .cols { top: 500px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .col { border-radius: 26px; padding: 40px 36px; min-height: 440px; }
+  .col h3 { font-size: 22px; font-weight: 800; letter-spacing: .14em; }
+  .col.bad { background: var(--navy2); border: 1px solid rgba(255,255,255,.08); }
+  .col.bad h3 { color: #8f9bb0; }
+  .col.good { background: linear-gradient(160deg, #1f3657, #14233a); border: 2px solid var(--gold); box-shadow: 0 20px 60px rgba(217,164,65,.15); }
+  .col.good h3 { color: var(--gold2); }
+  .col ul { list-style: none; margin-top: 28px; display: grid; gap: 22px; }
+  .col li { display: grid; grid-template-columns: 40px 1fr; gap: 14px; font-size: 26px; line-height: 1.32; }
+  .bad li { color: #a8b2c3; }
+  .good li { color: #fff; font-weight: 600; }
+  .ic { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; margin-top: 2px; }
+  .ic svg { width: 22px; height: 22px; }
+  .bad .ic { background: rgba(224,83,61,.18); color: var(--red); }
+  .good .ic { background: var(--gold); color: var(--navy); }
+  .sub { top: 985px; font-size: 32px; }
+  .cta-wrap { top: 1108px; }
+</style></head>
+<body><div class="ad">
+  <div class="grid-bg"></div>
+
+  <div class="pad top"><span class="tag"><i></i>DÍVIDA BANCÁRIA EMPRESARIAL</span></div>
+
+  <h1 class="pad">Antes de aceitar a proposta do gerente, <em>leia isto.</em></h1>
+
+  <div class="pad cols">
+    <div class="col bad">
+      <h3>RENEGOCIAR SOZINHO</h3>
+      <ul>
+        <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span>Condições definidas pelo banco</li>
+        <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span>Encargos antigos embutidos na nova dívida</li>
+        <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span>Novas garantias exigidas da empresa e dos sócios</li>
+      </ul>
+    </div>
+    <div class="col good">
+      <h3>COM GESTÃO DE PASSIVO</h3>
+      <ul>
+        <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Análise técnica de todos os contratos</li>
+        <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Estratégia de negociação ou medida judicial</li>
+        <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Plano alinhado ao caixa real da empresa</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="pad sub">Sua empresa pode ter <b>mais margem para negociar</b> do que parece.</p>
+
+  <div class="pad cta-wrap"><span class="cta">Solicite uma análise do seu caso <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+
+  <div class="pad foot">
+    <div class="firm"><div class="mark">A</div><div><b>[NOME DO ESCRITÓRIO]</b><span>Advocacia Empresarial · OAB/UF 00.000</span></div></div>
+    <p class="disc">Conteúdo informativo. Cada caso exige análise individual.</p>
+  </div>
+</div></body></html>

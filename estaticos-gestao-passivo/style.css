@@ -1,0 +1,47 @@
+/* Estáticos 1080x1350 (feed 4:5) — Gestão de Passivo Empresarial */
+:root {
+  --navy: #0c1626; --navy2: #14233a; --navy3: #1d3150;
+  --gold: #d9a441; --gold2: #f2c66d;
+  --red: #e0533d; --red-soft: #fbe4df;
+  --paper: #f6f2ea; --ink: #121c2b; --muted: #5d6878; --line: #e3dccd;
+  --green: #3f9b6e;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1350px; background: var(--navy); }
+body { font-family: 'Inter', sans-serif; color: #fff; -webkit-font-smoothing: antialiased; }
+.ad { width: 1080px; height: 1350px; position: relative; overflow: hidden; background: var(--navy); }
+.ad.light { background: var(--paper); color: var(--ink); }
+h1, h2, .serif { font-family: 'Fraunces', serif; }
+em { font-style: normal; color: var(--gold2); }
+.light em { color: #b07a17; }
+.red { color: var(--red); }
+
+.pad { position: absolute; left: 84px; right: 84px; }
+
+/* topo */
+.top { top: 72px; display: flex; justify-content: space-between; align-items: center; }
+.tag { display: inline-flex; align-items: center; gap: 12px; border: 2px solid rgba(242,198,109,.55); color: var(--gold2); border-radius: 99px; padding: 12px 26px; font-size: 22px; font-weight: 700; letter-spacing: .16em; }
+.light .tag { border-color: rgba(176,122,23,.45); color: #9a6a12; }
+.tag i { width: 10px; height: 10px; border-radius: 50%; background: currentColor; display: block; }
+
+/* rodapé */
+.foot { bottom: 64px; display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; }
+.firm { display: flex; align-items: center; gap: 18px; }
+.firm .mark { width: 60px; height: 60px; border-radius: 14px; background: var(--gold); color: var(--navy); display: grid; place-items: center; font-family: 'Fraunces', serif; font-weight: 900; font-size: 34px; }
+.firm b { display: block; font-size: 24px; letter-spacing: .08em; }
+.firm span { display: block; font-size: 18px; opacity: .7; margin-top: 4px; }
+.disc { font-size: 16px; line-height: 1.45; opacity: .6; text-align: right; max-width: 380px; }
+
+/* CTA */
+.cta { display: inline-flex; align-items: center; gap: 18px; background: var(--gold); color: var(--navy); font-weight: 800; font-size: 32px; padding: 26px 40px; border-radius: 16px; box-shadow: 0 14px 40px rgba(217,164,65,.28); }
+.cta svg { width: 34px; height: 34px; }
+.light .cta { background: var(--navy); color: #fff; box-shadow: 0 14px 40px rgba(12,22,38,.25); }
+
+.sub { font-size: 34px; line-height: 1.45; color: #d4dbe6; font-weight: 400; }
+.light .sub { color: var(--muted); }
+.sub b { color: #fff; font-weight: 700; }
+.light .sub b { color: var(--ink); }
+
+/* grade de fundo sutil */
+.grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 54px 54px; }
+.glow { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .5; }
