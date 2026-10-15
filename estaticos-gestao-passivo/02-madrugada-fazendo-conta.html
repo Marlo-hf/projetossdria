@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Estático 02 — Madrugada fazendo conta</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .ad { background: radial-gradient(ellipse 60% 40% at 30% 30%, #2b0a0c 0%, var(--black) 70%); }
+  .clock { left: 56px; top: 70px; font-family: 'Inter'; font-weight: 800; font-size: 200px; letter-spacing: -.04em; line-height: 1; color: var(--red);
+    text-shadow: 0 0 30px rgba(255,59,48,.65), 0 0 90px rgba(255,59,48,.45); font-variant-numeric: tabular-nums; }
+  .am { left: 66px; top: 290px; font-size: 26px; font-weight: 700; letter-spacing: .3em; color: rgba(255,255,255,.5); }
+  h1 { left: 60px; right: 60px; top: 470px; font-size: 112px; line-height: 1; }
+
+  .note { right: 40px; top: 46px; width: 350px; padding: 34px 30px 30px; background: #ffe259; color: #1c1c1c; transform: rotate(5deg);
+    box-shadow: 0 30px 60px rgba(0,0,0,.6); }
+  .note::before { content: ''; position: absolute; top: -18px; left: 50%; margin-left: -60px; width: 120px; height: 36px; background: rgba(255,255,255,.55); transform: rotate(-3deg); }
+  .note .tt { font-size: 40px; line-height: 1; text-decoration: underline; }
+  .note ul { list-style: none; margin-top: 12px; font-size: 32px; line-height: 1.18; }
+  .note li s { text-decoration-thickness: 4px; text-decoration-color: var(--red-dark); }
+  .note .tot { margin-top: 16px; border-top: 3px solid #1c1c1c; padding-top: 8px; font-size: 44px; color: var(--red-dark); }
+  .note .tot small { font-size: 30px; color: #1c1c1c; }
+  .circle { position: absolute; left: -14px; bottom: -6px; width: 270px; height: 80px; border: 4px solid var(--red-dark); border-radius: 50%; transform: rotate(-5deg); }
+
+  .sub { left: 60px; right: 60px; top: 850px; font-size: 40px; line-height: 1.3; font-weight: 500; color: #e7e7ea; }
+  .sub b { color: #fff; font-weight: 800; }
+  .ctaw { left: 60px; top: 1080px; }
+  .foot { left: 60px; right: 60px; bottom: 34px; display: flex; justify-content: space-between; align-items: center; }
+</style></head>
+<body><div class="ad">
+  <div class="abs clock">03:47</div>
+  <div class="abs am">E VOCÊ AINDA ACORDADO</div>
+  <h1 class="abs hl">Mais uma noite <span class="y">fazendo conta</span> pra pagar o banco?</h1>
+
+  <div class="abs note hand">
+    <div class="tt">Pagar essa semana</div>
+    <ul>
+      <li>• capital de giro</li>
+      <li>• cheque especial PJ</li>
+      <li>• cartão da empresa</li>
+      <li><s>• fornecedor</s> ??</li>
+      <li><s>• folha</s> 😰</li>
+    </ul>
+    <div class="tot" style="position:relative"><small>Total:</small> R$ 186 mil<span class="circle"></span></div>
+  </div>
+
+  <p class="abs sub">Juros sobre juros, renegociação que só aumenta a dívida… <b>Isso não se resolve com outro empréstimo. Se resolve com estratégia jurídica.</b></p>
+  <div class="abs ctaw"><span class="cta">Quero sair dessa dívida <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+  <div class="abs foot"><div class="brand"><div class="seal">A</div><div><b>[NOME DO ESCRITÓRIO]</b> · OAB/UF 00.000</div></div><span class="disc">Situação ilustrativa. Cada caso exige análise individual.</span></div>
+</div></body></html>

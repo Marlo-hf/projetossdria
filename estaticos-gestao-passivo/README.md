@@ -1,39 +1,37 @@
-# Estáticos — Gestão de Passivo Empresarial
+# Estáticos — Dívida Bancária Empresarial
 
-4 criativos estáticos (1080×1350, feed 4:5) para Meta Ads de escritórios que captam **empresário (PJ) com dívida bancária**: capital de giro, cheque especial e cartão empresarial.
+4 criativos estáticos (1080×1350, feed 4:5) para Meta Ads, voltados ao **empresário endividado com banco** (capital de giro, cheque especial, cartão PJ) que quer resolver agora. A linguagem é direta, com elementos que param o scroll.
 
-| # | Arquivo | Ângulo | CTA da arte |
-|---|---------|--------|-------------|
-| 01 | `png/01-trabalha-para-o-banco.png` | Dor: o faturamento indo para juros (gráfico) | Solicite uma análise do seu caso |
-| 02 | `png/02-quatro-sinais.png` | Identificação: checklist de 4 sinais (fundo claro, contraste no feed) | Fale com um especialista |
-| 03 | `png/03-cobrancas-no-contrato.png` | Revisão de contratos: extrato com cobranças questionáveis | Peça a revisão dos seus contratos |
-| 04 | `png/04-proposta-do-gerente.png` | Comparação: renegociar sozinho × gestão de passivo | Solicite uma análise do seu caso |
+| # | Arquivo | Gancho | CTA |
+|---|---------|--------|-----|
+| 01 | `png/01-celular-notificacoes.png` | "Empresário, seu celular tá assim?": tela bloqueada com notificações de bloqueio judicial, parcela em atraso e protesto | Quero resolver minha dívida |
+| 02 | `png/02-madrugada-fazendo-conta.png` | Relógio "03:47" e post-it com as contas da semana: "Mais uma noite fazendo conta pra pagar o banco?" | Quero sair dessa dívida |
+| 03 | `png/03-carimbo-em-atraso.png` | Papéis com carimbos EM ATRASO / PROTESTO / EXECUÇÃO: "A dívida da sua empresa virou uma bola de neve?" (fundo claro, contrasta no feed) | Falar com especialista agora |
+| 04 | `png/04-conversa-gerente.png` | Conversa com o gerente pedindo o imóvel como garantia: "Seu gerente mandou isso? Não assine ainda." (fundo amarelo) | Quero orientação |
 
-## Copy sugerida (texto principal / título)
+## Copy sugerida
 
-**01** — *Título:* Seu faturamento está pagando juros?
-Texto: Se o cheque especial e o capital de giro viraram parte fixa do mês, a dívida da sua empresa precisa de estratégia, não de mais um empréstimo. Preencha o formulário e solicite uma análise do seu caso.
+**01** — *Título:* Sua dívida com o banco tem saída
+Texto: Bloqueio de conta, parcela atrasada, aviso de protesto… Se a sua empresa está nessa situação, pegar outro empréstimo só empurra o problema. Preencha o formulário e fale com um especialista em dívida bancária empresarial.
 
-**02** — *Título:* Sua empresa tem algum desses sinais?
-Texto: Parcelas que não diminuem, renegociações em sequência e limite usado como capital de giro são sinais de que o passivo bancário precisa de análise jurídica. Fale com um especialista.
+**02** — *Título:* Chega de noites fazendo conta
+Texto: Capital de giro, cheque especial, cartão da empresa: quando a dívida com o banco cresce mais rápido que o faturamento, é hora de ter estratégia jurídica. Clique e conte o seu caso.
 
-**03** — *Título:* Revise os contratos antes de negociar
-Texto: Juros acima do contratado, seguros embutidos e tarifas sem previsão podem aparecer em contratos bancários empresariais. Uma revisão técnica muda a base da negociação.
+**03** — *Título:* Antes do bloqueio, da execução ou do protesto
+Texto: A dívida bancária da empresa vira bola de neve rápido. Quanto antes você agir, mais opções existem. Fale agora com um especialista.
 
-**04** — *Título:* Antes de assinar a renegociação
-Texto: Aceitar a primeira proposta do banco costuma trazer encargos antigos para a nova dívida e exigir novas garantias. Entenda as alternativas da sua empresa antes de decidir.
+**04** — *Título:* Não assine a renegociação sem orientação
+Texto: Muitas renegociações exigem imóvel ou aval dos sócios como garantia. Antes de colocar seu patrimônio em risco, entenda as alternativas com um advogado especialista.
 
 ## Antes de publicar
 
-- Trocar `[NOME DO ESCRITÓRIO]`, `OAB/UF 00.000` e a letra do selo (`.mark`) pelos dados reais do cliente.
-- As artes seguem o Provimento 205/2021 da OAB: tom informativo, sem promessa de resultado, sem percentuais de redução e com aviso de análise individual. Mantenha esse padrão na copy.
+- Trocar `[NOME DO ESCRITÓRIO]`, `OAB/UF 00.000` e a letra do selo pelos dados reais do cliente.
+- Provimento 205/2021 da OAB: as artes não prometem resultado, não citam percentuais de redução e trazem "Situação ilustrativa. Cada caso exige análise individual." Mantenha esse padrão na copy.
 
 ## Editar e renderizar
 
-As artes são HTML + `style.css` (cores em `:root`). Depois de editar:
+HTML + `style.css` (cores em `:root`; fontes Anton, Inter e Caveat via Google Fonts). Depois de editar:
 
 ```bash
 NODE_PATH=/opt/node-tools/node_modules node render.js
 ```
-
-Requer Playwright com Chromium e acesso ao Google Fonts (Fraunces + Inter).

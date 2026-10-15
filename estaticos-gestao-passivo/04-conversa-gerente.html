@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Estático 04 — Conversa com o gerente</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .ad { background: var(--yellow); color: var(--black); }
+  h1 { left: 60px; right: 60px; top: 50px; font-size: 110px; line-height: 1.16; }
+  h1 .w { color: #fff; -webkit-text-stroke: 0; background: linear-gradient(transparent 20%, var(--black) 20%, var(--black) 96%, transparent 96%); padding: 0 .12em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+
+  .chat { left: 60px; right: 60px; top: 460px; height: 540px; background: #0b141a; border-radius: 34px; overflow: hidden; box-shadow: 0 30px 70px rgba(0,0,0,.35); transform: rotate(-1.5deg); }
+  .bar { display: flex; align-items: center; gap: 18px; background: #1f2c34; padding: 22px 30px; color: #e9edef; }
+  .bar .av { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg,#3b82f6,#1e3a8a); display: grid; place-items: center; font-weight: 800; font-size: 26px; }
+  .bar b { font-size: 28px; font-weight: 700; display: block; }
+  .bar span { font-size: 19px; color: #8696a0; }
+  .msgs { padding: 30px 30px; display: grid; gap: 16px; }
+  .m { max-width: 76%; background: #202c33; color: #e9edef; font-size: 27px; line-height: 1.35; padding: 18px 22px 30px; border-radius: 6px 22px 22px 22px; position: relative; }
+  .m i { position: absolute; right: 16px; bottom: 8px; font-style: normal; font-size: 15px; color: #8696a0; }
+  .m.me { justify-self: end; background: #005c4b; border-radius: 22px 6px 22px 22px; }
+  .m.danger { outline: 4px solid var(--red); }
+  .flag { position: absolute; left: 30px; top: 450px; background: var(--red); color: #fff; font-weight: 900; font-size: 24px; letter-spacing: .06em; padding: 12px 20px; border-radius: 10px; transform: rotate(-3deg); box-shadow: 0 12px 30px rgba(0,0,0,.4); text-transform: uppercase; }
+  .typing { justify-self: end; background: #005c4b; border-radius: 22px; padding: 18px 26px; display: flex; gap: 8px; }
+  .typing span { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,.6); }
+
+  .sub { left: 60px; right: 60px; top: 1036px; font-size: 36px; line-height: 1.25; font-weight: 800; }
+  .ctaw { left: 60px; top: 1160px; }
+  .cta { background: var(--black); color: var(--yellow); box-shadow: 0 16px 40px rgba(0,0,0,.3); font-size: 30px; padding: 24px 40px; }
+  .foot { right: 60px; top: 1170px; text-align: right; }
+  .foot .brand { color: rgba(0,0,0,.7); justify-content: flex-end; font-size: 18px; }
+  .foot .brand b { color: #000; }
+  .foot .brand .seal { background: var(--black); color: var(--yellow); }
+  .foot .disc { color: rgba(0,0,0,.5); margin-top: 8px; font-size: 14px; }
+</style></head>
+<body><div class="ad">
+  <h1 class="abs hl">Seu gerente mandou isso? <span class="w">Não assine</span> ainda.</h1>
+
+  <div class="abs chat">
+    <div class="bar"><div class="av">GB</div><div><b>Gerente do Banco</b><span>online</span></div></div>
+    <div class="msgs">
+      <div class="m">Bom dia! Tenho uma ótima notícia: aprovamos a renegociação da dívida da sua empresa 😊<i>09:14</i></div>
+      <div class="m danger">Só preciso que o senhor coloque o imóvel como garantia e assine ainda hoje, ok? A proposta vence amanhã.<i>09:15</i></div>
+      <div class="typing"><span></span><span></span><span></span></div>
+    </div>
+    <div class="flag">⚠ Alerta vermelho</div>
+  </div>
+
+  <p class="abs sub">Renegociar sem orientação pode colocar seu patrimônio em risco. Fale antes com um especialista.</p>
+  <div class="abs ctaw"><span class="cta">Quero orientação <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+  <div class="abs foot"><div class="brand"><div class="seal">A</div><div><b>[NOME DO ESCRITÓRIO]</b><br>OAB/UF 00.000</div></div><div class="disc">Situação ilustrativa. Cada caso exige análise individual.</div></div>
+</div></body></html>

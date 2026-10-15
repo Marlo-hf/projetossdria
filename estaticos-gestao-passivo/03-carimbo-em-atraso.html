@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Estático 03 — Bola de neve</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  h1 { left: 60px; right: 60px; top: 150px; font-size: 108px; line-height: 1.12; }
+  .kw { left: 60px; top: 64px; }
+
+  .docs { left: 0; right: 0; top: 560px; height: 470px; }
+  .doc { position: absolute; width: 470px; height: 420px; background: #fff; border-radius: 6px; padding: 34px 36px; box-shadow: 0 25px 50px rgba(0,0,0,.18), 0 2px 0 rgba(0,0,0,.05); }
+  .doc .t { font-weight: 900; font-size: 22px; letter-spacing: .1em; color: #222; }
+  .doc .s { font-size: 16px; color: #888; margin-top: 4px; }
+  .doc .l { height: 12px; background: #e8e4dc; border-radius: 6px; margin-top: 18px; }
+  .doc .row { display: flex; justify-content: space-between; margin-top: 22px; font-size: 20px; color: #444; }
+  .doc .row b { color: #111; font-size: 26px; }
+  .d1 { left: 70px; top: 40px; transform: rotate(-8deg); }
+  .d2 { left: 300px; top: 0; transform: rotate(3deg); }
+  .d3 { left: 560px; top: 40px; transform: rotate(9deg); }
+  .stamp { position: absolute; font-family: 'Anton'; text-transform: uppercase; color: var(--red-dark); border: 8px solid var(--red-dark); border-radius: 14px; padding: 4px 26px; letter-spacing: .04em; opacity: .9; mix-blend-mode: multiply; }
+  .st1 { left: 360px; top: 170px; font-size: 92px; transform: rotate(-14deg); }
+  .st2 { left: 690px; top: 300px; font-size: 54px; transform: rotate(8deg); }
+  .st3 { left: 110px; top: 300px; font-size: 54px; transform: rotate(-6deg); }
+
+  .sub { left: 60px; right: 60px; top: 1040px; font-size: 36px; line-height: 1.3; font-weight: 600; color: #2a2a2e; }
+  .sub b { font-weight: 900; color: #000; }
+  .ctaw { left: 60px; top: 1150px; }
+  .cta { font-size: 30px; padding: 24px 40px; }
+  .stamp { z-index: 5; }
+  .foot { left: 60px; right: 60px; bottom: 28px; display: flex; justify-content: space-between; align-items: center; }
+</style></head>
+<body><div class="ad paper">
+  <div class="abs kw"><span class="kicker"><span class="dot"></span>Empresa endividada</span></div>
+  <h1 class="abs hl">A dívida da sua empresa virou uma <span class="mark">bola de neve?</span></h1>
+
+  <div class="abs docs">
+    <div class="doc d1"><div class="t">CONTRATO</div><div class="s">Capital de giro · PJ</div><div class="l"></div><div class="l" style="width:80%"></div><div class="l" style="width:90%"></div><div class="row">Saldo devedor <b>R$ 312.480</b></div></div>
+    <div class="doc d2"><div class="t">NOTIFICAÇÃO</div><div class="s">Extrajudicial · cobrança</div><div class="l"></div><div class="l" style="width:70%"></div><div class="l"></div><div class="l" style="width:60%"></div><div class="row">Valor atualizado <b>R$ 98.150</b></div></div>
+    <div class="doc d3"><div class="t">CHEQUE ESPECIAL PJ</div><div class="s">Extrato mensal</div><div class="l" style="width:85%"></div><div class="l"></div><div class="l" style="width:75%"></div><div class="row">Juros do mês <b>R$ 14.903</b></div></div>
+    <div class="stamp st1">Em atraso</div>
+    <div class="stamp st3">Protesto</div>
+    <div class="stamp st2">Execução</div>
+  </div>
+
+  <p class="abs sub">Antes que vire <b>bloqueio de conta, protesto ou execução</b>, fale com um especialista.</p>
+  <div class="abs ctaw"><span class="cta">Falar com especialista agora <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+  <div class="abs foot"><div class="brand"><div class="seal">A</div><div><b>[NOME DO ESCRITÓRIO]</b> · OAB/UF 00.000</div></div><div class="disc">Valores ilustrativos. Cada caso exige análise individual.</div></div>
+</div></body></html>
