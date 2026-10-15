@@ -4,10 +4,10 @@
 
 | # | Arquivo | Gancho | CTA |
 |---|---------|--------|-----|
-| 01 | `png/01-celular-notificacoes.png` | "Empresário, seu celular tá assim?": tela bloqueada com notificações de bloqueio judicial, parcela em atraso e protesto | Quero resolver minha dívida |
-| 02 | `png/02-madrugada-fazendo-conta.png` | Relógio "03:47" e post-it com as contas da semana: "Mais uma noite fazendo conta pra pagar o banco?" | Quero sair dessa dívida |
-| 03 | `png/03-carimbo-em-atraso.png` | Papéis com carimbos EM ATRASO / PROTESTO / EXECUÇÃO: "A dívida da sua empresa virou uma bola de neve?" (fundo claro, contrasta no feed) | Falar com especialista agora |
-| 04 | `png/04-conversa-gerente.png` | Conversa com o gerente pedindo o imóvel como garantia: "Seu gerente mandou isso? Não assine ainda." (fundo amarelo) | Quero orientação |
+| 01 | `png/01-celular-notificacoes.png` | "Empresário, seu celular tá assim?": tela bloqueada com notificações de bloqueio judicial, parcela em atraso e protesto | Preencha o formulário |
+| 02 | `png/02-madrugada-fazendo-conta.png` | Relógio "03:47" e post-it com as contas da semana: "Mais uma noite fazendo conta pra pagar o banco?" | Preencha o formulário |
+| 03 | `png/03-carimbo-em-atraso.png` | Papéis com carimbos EM ATRASO / PROTESTO / EXECUÇÃO: "A dívida da sua empresa virou uma bola de neve?" (fundo claro, contrasta no feed) | Preencha o formulário |
+| 04 | `png/04-conversa-gerente.png` | Conversa com o gerente pedindo o imóvel como garantia: "Seu gerente mandou isso? Não assine ainda." (fundo amarelo) | Preencha o formulário |
 
 ## Copy sugerida
 
@@ -25,7 +25,7 @@ Texto: Muitas renegociações exigem imóvel ou aval dos sócios como garantia. 
 
 ## Antes de publicar
 
-- Trocar `[NOME DO ESCRITÓRIO]`, `OAB/UF 00.000` e a letra do selo pelos dados reais do cliente.
+- As artes não levam nome do escritório nem número da OAB (prontas para qualquer cliente). O CTA de todas é "Preencha o formulário", pensado para campanhas de formulário instantâneo.
 - Provimento 205/2021 da OAB: as artes não prometem resultado, não citam percentuais de redução e trazem "Situação ilustrativa. Cada caso exige análise individual." Mantenha esse padrão na copy.
 
 ## Editar e renderizar
