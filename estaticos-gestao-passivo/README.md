@@ -9,19 +9,9 @@
 | 03 | `png/03-carimbo-em-atraso.png` | Papéis com carimbos EM ATRASO / PROTESTO / EXECUÇÃO: "A dívida da sua empresa virou uma bola de neve?" (fundo claro, contrasta no feed) | Preencha o formulário |
 | 04 | `png/04-conversa-gerente.png` | Conversa com o gerente pedindo o imóvel como garantia: "Seu gerente mandou isso? Não assine ainda." (fundo amarelo) | Preencha o formulário |
 
-## Copy sugerida
+## Copies para o Meta
 
-**01** — *Título:* Sua dívida com o banco tem saída
-Texto: Bloqueio de conta, parcela atrasada, aviso de protesto… Se a sua empresa está nessa situação, pegar outro empréstimo só empurra o problema. Preencha o formulário e fale com um especialista em dívida bancária empresarial.
-
-**02** — *Título:* Chega de noites fazendo conta
-Texto: Capital de giro, cheque especial, cartão da empresa: quando a dívida com o banco cresce mais rápido que o faturamento, é hora de ter estratégia jurídica. Clique e conte o seu caso.
-
-**03** — *Título:* Antes do bloqueio, da execução ou do protesto
-Texto: A dívida bancária da empresa vira bola de neve rápido. Quanto antes você agir, mais opções existem. Fale agora com um especialista.
-
-**04** — *Título:* Não assine a renegociação sem orientação
-Texto: Muitas renegociações exigem imóvel ou aval dos sócios como garantia. Antes de colocar seu patrimônio em risco, entenda as alternativas com um advogado especialista.
+Ver [`COPIES-META.md`](COPIES-META.md): textos principais (longo e curto), títulos, descrição e texto do formulário instantâneo para cada estático.
 
 ## Antes de publicar
 
