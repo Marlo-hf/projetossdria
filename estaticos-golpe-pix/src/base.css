@@ -1,0 +1,9 @@
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1350px;overflow:hidden}
+body{font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;position:relative}
+.wrap{position:absolute;inset:0;padding:80px 76px;display:flex;flex-direction:column}
+.tag{display:inline-flex;align-items:center;gap:12px;font-weight:700;font-size:24px;letter-spacing:3px;text-transform:uppercase;padding:14px 26px;border-radius:999px;align-self:flex-start}
+.dot{width:12px;height:12px;border-radius:50%;background:currentColor;box-shadow:0 0 0 6px rgba(255,255,255,.08)}
+.cta{display:flex;align-items:center;justify-content:space-between;border-radius:28px;padding:34px 44px;font-weight:800;font-size:38px}
+.cta .arrow{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;font-size:40px}
+.foot{font-size:20px;opacity:.55;margin-top:22px;text-align:center;font-weight:500}
