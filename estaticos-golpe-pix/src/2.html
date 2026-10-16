@@ -1,30 +1,18 @@
-<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><style>
-body{background:#f3efe8;color:#0b1a24}
-.tag{background:#0b1a24;color:#fff}
-h1{font-size:88px;line-height:1.02;font-weight:900;letter-spacing:-3px;margin-top:40px}
-h1 u{text-decoration:none;background:linear-gradient(transparent 62%,#ffd23f 62%,#ffd23f 92%,transparent 92%)}
-.chat{margin-top:46px;display:flex;flex-direction:column;gap:20px}
-.b{max-width:780px;padding:26px 32px;border-radius:30px;font-size:31px;line-height:1.3;font-weight:500;box-shadow:0 10px 30px rgba(11,26,36,.08)}
-.b .who{display:block;font-size:20px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;opacity:.6}
-.me{align-self:flex-end;background:#0b1a24;color:#fff;border-bottom-right-radius:8px}
-.bank{align-self:flex-start;background:#fff;border-bottom-left-radius:8px}
-.bank.no{border:3px solid #e8403a}
-.bank.no b{color:#e8403a}
-.turn{margin-top:auto;display:flex;align-items:center;gap:26px}
-.turn .bar{width:10px;align-self:stretch;background:#32bcad;border-radius:8px}
-.turn p{font-size:44px;font-weight:800;line-height:1.15;letter-spacing:-1px}
-.turn p span{color:#1a9c8f}
-.cta{background:#0b1a24;color:#fff;margin-top:36px}
-.cta .arrow{background:#32bcad;color:#0b1a24}
-.foot{color:#0b1a24}
-</style></head><body><div class="wrap">
- <div class="tag"><span class="dot" style="background:#32bcad"></span>Golpe do Pix</div>
- <h1>Caiu em um <u style="white-space:nowrap">golpe do Pix</u> de mais de R$&nbsp;10&nbsp;mil?</h1>
- <div class="chat">
-  <div class="b me"><span class="who">Você</span>Caí num golpe, fiz um Pix de R$ 22 mil. Preciso de ajuda!</div>
-  <div class="b bank no"><span class="who">Banco</span><b>Infelizmente</b> a transação foi autorizada por você. Não há o que fazer.</div>
- </div>
- <div class="turn"><div class="bar"></div><p>O banco negou? <span>Você ainda pode buscar seu dinheiro de volta.</span></p></div>
- <div class="cta">Preencha o formulário<span class="arrow">→</span></div>
- <div class="foot">Leva menos de 1 minuto · Um especialista analisa seu caso</div>
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><style>.card{width:100%;border-radius:36px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.12);padding:40px 44px;position:relative;box-shadow:0 30px 70px rgba(0,0,0,.5)}
+.row{display:flex;align-items:center;gap:18px;font-size:24px;color:var(--mute);font-weight:600}
+.bk{width:54px;height:54px;border-radius:14px;background:#1f1f24;display:grid;place-items:center;border:1px solid rgba(255,255,255,.1)}
+.msg{font-size:34px;line-height:1.35;margin-top:22px;font-weight:500;color:#e9e4da}
+.stamp{position:absolute;right:34px;top:-34px;border:5px solid var(--red);color:var(--red);font-weight:900;font-size:40px;letter-spacing:5px;padding:8px 26px;border-radius:14px;transform:rotate(8deg);background:rgba(11,11,13,.85)}
+.turn{margin-top:30px;font-family:"Playfair Display",serif;font-size:46px;font-weight:800;line-height:1.15;text-align:center}
+.turn em{font-style:italic;color:var(--gold)}</style></head><body><div class="frame"></div><div class="wrap">
+ <div class="kicker">Golpe do Pix</div>
+ <h1>Caiu em um <em>golpe do Pix</em> de mais de R$&nbsp;10&nbsp;mil?</h1>
+ <div class="stage"><div style="width:100%">
+  <div class="card"><div class="stamp">NEGADO</div>
+   <div class="row"><div class="bk"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#e3bf72" stroke-width="2"><path d="M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 20h18"/></svg></div>Resposta do banco</div>
+   <div class="msg">“A transação foi autorizada pelo titular. Não é possível devolver o valor.”</div>
+  </div>
+  <div class="turn">O banco negou? <em>Isso não é o fim.</em></div>
+ </div></div>
+ <div class="cta">Preencha o formulário <svg viewBox="0 0 24 24" fill="none" stroke="#1a1408" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div><div class="foot"><span><i></i>Leva menos de 1 minuto</span><span><i></i>Atendimento 100% online</span></div>
 </div></body></html>
