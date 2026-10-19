@@ -1,0 +1,8 @@
+[
+ {"id":"s1","tag":"","cap":"Empresário: | quanto peso | a sua empresa | ainda aguenta?"},
+ {"id":"s2","tag":"O PESO","cap":"Capital de giro, | cheque especial, | cartão, | renegociação | em cima de renegociação. | Todo mês, | mais um bloco | em cima da estrutura."},
+ {"id":"s3","tag":"O ALERTA","cap":"Quando a dívida bancária | passa de R$ 200 mil, | resolver no improviso | costuma sair caro.",
+  "say":"Quando a dívida bancária passa de duzentos mil reais, resolver no improviso costuma sair caro."},
+ {"id":"s4","tag":"A ESTRATÉGIA","cap":"A gestão de passivos | tira esse peso | de forma organizada: | análise técnica dos contratos, | negociação estratégica com os bancos | e um plano | pra reorganizar o caixa."},
+ {"id":"s5","tag":"PRÓXIMO PASSO","cap":"Se esse é o seu caso, | toca em Saiba mais | e preenche o formulário. | Leva menos de um minuto, | e um especialista | em direito bancário | vai analisar | a sua situação."}
+]
