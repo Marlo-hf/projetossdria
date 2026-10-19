@@ -1,106 +1,137 @@
 import json, subprocess, numpy as np, wave, unicodedata
 SR = 44100
 script = json.load(open('script.json'))
+rng = np.random.default_rng(11)
 
 def norm(w): return ''.join(c for c in unicodedata.normalize('NFD', w.lower()) if unicodedata.category(c) != 'Mn').strip('.,:?!')
 def load_mp3(p):
     raw = subprocess.run(['ffmpeg','-v','error','-i',p,'-f','f32le','-ac','1','-ar',str(SR),'-'],capture_output=True,check=True).stdout
     return np.frombuffer(raw, np.float32).copy()
 
-LEAD, GAP, TAIL = 0.20, 0.30, 1.8
-t = LEAD; scenes = []; voice_clips = []
+LEAD, GAP, TAIL = 0.25, 0.28, 2.2
+EXTRA_GAP = {'s6': 0.5, 's7': 0.2}           # breathing room at the turning point
+t = LEAD; scenes = []; clips = []
 for s in script:
+    t += EXTRA_GAP.get(s['id'], 0)
     a = load_mp3(f"audio/{s['id']}.mp3")
-    words = [{'w': w, 'n': norm(w), 's': round(t+a0, 3), 'e': round(t+a1, 3)} for a0, a1, w in json.load(open(f"audio/{s['id']}.mp3.json"))]
-    toks = s['text'].split(); assert len(toks) == len(words), s['id']
-    for w, tk in zip(words, toks): w['p'] = tk
-    dur = len(a)/SR
-    scenes.append({'id': s['id'], 'tag': s['tag'], 'start': round(t if s['id'] != 's1' else 0, 3), 'vstart': round(t,3), 'vend': round(t+dur,3), 'words': words, 'cap': [len(g.split()) for g in s['cap'].split('|')]})
-    voice_clips.append((t, a)); t += dur + GAP
-total = t - GAP + TAIL
+    toks = s['cap'].replace(' | ', ' ').split()
+    tw = json.load(open(f"audio/{s['id']}.mp3.json")); assert len(tw) == len(toks), s['id']
+    words = [{'p': tk, 'n': norm(tk), 's': round(t+a0, 3), 'e': round(t+a1, 3)} for (a0, a1, _), tk in zip(tw, toks)]
+    scenes.append({'id': s['id'], 'tag': s['tag'], 'start': round(t, 3), 'words': words,
+                   'cap': [len(g.split()) for g in s['cap'].split('|')]})
+    clips.append((t, a)); t += len(a)/SR + GAP
+total = round(t - GAP + TAIL, 3)
+scenes[0]['start'] = 0
 for i, sc in enumerate(scenes):
-    sc['end'] = round(scenes[i+1]['start'] if i+1 < len(scenes) else total, 3)
+    sc['end'] = scenes[i+1]['start'] if i+1 < len(scenes) else total
 
-def wt(sid, word, k=0):
-    ws = [w for w in next(s for s in scenes if s['id']==sid)['words'] if w['n'].startswith(word)]
-    return ws[k]['s']
-ev = {
- 's2_cards': [wt('s2','capital'), wt('s2','cheque'), wt('s2','cartao')], 's2_chart': wt('s2','os'),
- 's3_loop': wt('s3','pegar'),
- 's5_check': [wt('s5','diagnostico') + i*0.42 for i in range(5)],
- 's6_hl': [wt('s6','juros'), wt('s6','tarifas'), wt('s6','clausulas')],
- 's7_level': wt('s7','estrategia'),
- 's8_up': wt('s8','reorganizar'),
- 's9_save': wt('s9','salve'), 's9_share': wt('s9','mande'),
-}
-json.dump({'total': round(total,3), 'fps': 30, 'scenes': scenes, 'ev': ev}, open('timeline.json','w'), ensure_ascii=False, indent=1)
+def W(sid, word):
+    ws = next(s for s in scenes if s['id'] == sid)['words']
+    for w in ws:
+        if w['n'] == word: return w['s']
+    raise KeyError((sid, word))
+EV = {'s1_vende':('s1','vende'),'s1_fatura':('s1','fatura'),'s1_nunca':('s1','nunca'),
+ 's2_fat':('s2','faturamento'),
+ 's3_passivo':('s3','passivo'),'s3_capital':('s3','capital'),'s3_cheque':('s3','cheque'),'s3_cartao':('s3','cartao'),'s3_juros':('s3','juros'),
+ 's4_erro':('s4','erro'),'s4_pegar':('s4','pegar'),'s4_antigo':('s4','antigo'),
+ 's5_bola':('s5','bola'),'s5_divida':('s5','divida'),'s5_caixa':('s5','caixa'),
+ 's6_gestao':('s6','gestao'),
+ 's7_raio':('s7','raio-x'),'s7_quanto':('s7','quanto'),'s7_quem':('s7','quem'),'s7_custo':('s7','custo'),
+ 's8_analise':('s8','analise'),'s8_juros':('s8','juros'),'s8_tarifas':('s8','tarifas'),'s8_clausulas':('s8','clausulas'),
+ 's9_negociacao':('s9','negociacao'),'s9_estrategia':('s9','estrategia'),'s9_desespero':('s9','desespero'),
+ 's10_reorganizar':('s10','reorganizar'),'s10_pe':('s10','pe'),
+ 's11_advogado':('s11','advogado'),'s11_manda':('s11','manda')}
+ev = {k: W(*v) for k, v in EV.items()}
+S = {s['id']: s for s in scenes}
+json.dump({'total': total, 'fps': 30, 'scenes': scenes, 'ev': ev}, open('timeline.json','w'), ensure_ascii=False, indent=1)
 
-N = int(total*SR); rng = np.random.default_rng(7)
+N = int(total*SR); tt = np.arange(N)/SR
 voice = np.zeros(N, np.float32)
-for st, a in voice_clips: i = int(st*SR); voice[i:i+len(a)] += a[:N-i]
+for st, a in clips: i = int(st*SR); voice[i:i+len(a)] += a[:N-i]
 
-# --- music: soft pad + pulse, dark (Am) for the problem, brighter (C/F/G) from the solution on
-def lp(x, a):  # one-pole lowpass
-    y = np.empty_like(x); acc = 0.0
-    for i in range(len(x)): acc += a*(x[i]-acc); y[i] = acc
-    return y
-def note(m): return 440*2**((m-69)/12)
-music = np.zeros(N, np.float32); tt = np.arange(N)/SR
-turn = scenes[4]['start']
-bar = 60/92*4
-prog_dark = [[57,60,64],[53,57,60],[55,59,62],[52,56,59]]      # Am F G E
-prog_light = [[48,52,55,60],[53,57,60,65],[57,60,64,69],[55,59,62,67]]  # C F Am G
-b = 0.0; k = 0
-while b < total:
-    chord = (prog_dark if b < turn - 0.01 else prog_light)[k % 4]
-    i0, i1 = int(b*SR), min(N, int((b+bar+0.6)*SR))
-    seg = tt[i0:i1]-b; env = np.minimum(1, seg/0.8)*np.minimum(1, np.maximum(0,(bar+0.6-seg))/0.6)
-    sig = sum(np.sin(2*np.pi*note(m)*d*seg + 0.3*np.sin(2*np.pi*0.3*seg)) for m in chord for d in (0.997, 1.003))
-    sig += 0.5*np.sin(2*np.pi*note(chord[0]-12)*seg)
-    music[i0:i1] += (sig*env*0.035).astype(np.float32)
-    b += bar; k += 1
-beat = 60/92; b = 0.0
-while b < total - 1.0:
-    i0 = int(b*SR); n = int(0.25*SR); s = np.arange(min(n, N-i0))/SR
-    kick = np.sin(2*np.pi*(50+80*np.exp(-s*30))*s)*np.exp(-s*12)
-    music[i0:i0+len(s)] += (kick*(0.10 if b >= turn else 0.07)).astype(np.float32)
-    h0 = int((b+beat/2)*SR); hn = min(int(0.05*SR), N-h0)
-    if hn > 0:
-        hat = rng.standard_normal(hn)*np.exp(-np.arange(hn)/SR*90); hat = hat - lp(hat, 0.5)
-        music[h0:h0+hn] += (hat*0.025).astype(np.float32)
-    b += beat
-fade = np.minimum(1, np.minimum(tt/1.0, (total-tt)/1.6)).astype(np.float32)
-music *= fade
-
-# --- sfx
-sfx = np.zeros(N, np.float32)
-def add(at, x, g):
-    i = int(at*SR); x = x[:max(0, N-i)]; sfx[i:i+len(x)] += (x*g).astype(np.float32)
-def whoosh(d=0.45):
-    n = int(d*SR); s = np.arange(n)/n; x = rng.standard_normal(n)
-    out = np.empty(n); acc = 0.0
-    for i in range(n):
-        a = 0.02 + 0.25*np.sin(np.pi*s[i]); acc += a*(x[i]-acc); out[i] = acc
-    return out*np.sin(np.pi*s)**2*3
-def pop(f=880):
-    n = int(0.12*SR); s = np.arange(n)/SR
-    return np.sin(2*np.pi*(f+f*0.6*np.exp(-s*40))*s)*np.exp(-s*35)
-def riser(d):
+def reverb(x, secs=2.2, wet=.35):
+    n = int(secs*SR); ir = rng.standard_normal(n)*np.exp(-np.arange(n)/SR*3.2); ir[0] = 0
+    L = 1 << int(np.ceil(np.log2(len(x)+n)))
+    y = np.fft.irfft(np.fft.rfft(x, L)*np.fft.rfft(ir, L), L)[:len(x)]
+    return x*(1-wet) + y/np.max(np.abs(y)+1e-9)*np.max(np.abs(x))*wet*1.4
+def f(m): return 440*2**((m-69)/12)
+def piano(m, d=2.4):
+    n = int(d*SR); s = np.arange(n)/SR; fr = f(m)
+    x = sum(a*np.sin(2*np.pi*fr*h*s)*np.exp(-s*(1.6+h*1.2)) for h, a in ((1,1),(2,.45),(3,.18),(4,.08)))
+    return x*np.minimum(1, s/0.006)
+def pad(ms, d):
     n = int(d*SR); s = np.arange(n)/SR
-    return np.sin(2*np.pi*(200*s + 400*s*s/d))*(s/d)**2*0.5 + lp(rng.standard_normal(n), 0.1)*(s/d)**3
-for sc in scenes[1:]: add(sc['start']-0.15, whoosh(), 0.35)
-for x in ev['s2_cards']: add(x, pop(660), 0.25)
-for x in ev['s5_check']: add(x, pop(990), 0.22)
-for x in ev['s6_hl']: add(x, pop(780), 0.22)
-add(ev['s9_save'], pop(880), 0.25); add(ev['s9_share'], pop(1100), 0.25)
-add(turn-1.6, riser(1.6), 0.18)
+    x = sum(np.sin(2*np.pi*f(m)*dt*s + .4*np.sin(2*np.pi*.25*s)) for m in ms for dt in (.996, 1.004))
+    return x*np.minimum(1, s/1.2)*np.minimum(1, (d-s)/1.0)
 
-# duck music under voice
-env = np.convolve(np.abs(voice), np.ones(int(0.25*SR))/(0.25*SR), mode='same')
-duck = 1 - 0.45*np.clip(env/0.03, 0, 1)
-mix = voice*1.0 + music*duck + sfx
-mix = mix/np.max(np.abs(mix))*0.89
-pcm = (np.clip(mix, -1, 1)*32767).astype(np.int16)
+music = np.zeros(N)
+def put(at, x, g):
+    i = int(at*SR)
+    if i >= N: return
+    x = x[:N-i]; music[i:i+len(x)] += x*g
+turn = S['s6']['start']
+bpm = 96; beat = 60/bpm; bar = beat*4
+dark = [(57,[45,57,60,64]),(53,[41,53,57,60]),(55,[43,55,59,62]),(52,[40,52,56,59])]   # Am F G E
+light = [(48,[36,55,60,64]),(55,[43,55,59,62]),(57,[45,57,60,64]),(53,[41,53,57,65])] # C G Am F
+b = 0.0; k = 0
+while b < total - 1:
+    prog = dark if b < turn - .01 else light
+    root, ch = prog[k % 4]
+    put(b, pad(ch[1:], bar+1.0), .010)
+    put(b, np.sin(2*np.pi*f(ch[0])*np.arange(int(bar*SR))/SR)*np.minimum(1, np.arange(int(bar*SR))/SR/.3)*np.exp(-np.arange(int(bar*SR))/SR*.4), .05)
+    arp = [ch[1], ch[2], ch[3], ch[2]+12, ch[3], ch[2], ch[1]+12, ch[3]]
+    for j, m in enumerate(arp):                       # 8th-note felt-piano arpeggio
+        if b < turn and j % 2: continue               # sparser in the problem half
+        put(b + j*beat/2, piano(m+12, 1.8), .045 if b >= turn else .05)
+    b += bar; k += 1
+# soft pulse after the turn
+b = turn
+while b < total - 2:
+    n = int(.3*SR); s = np.arange(n)/SR
+    put(b, np.sin(2*np.pi*(48+70*np.exp(-s*28))*s)*np.exp(-s*10), .16)
+    b += beat
+music = reverb(music)
+music *= np.minimum(1, np.minimum(tt/1.5, (total-tt)/2.0))
+# dip right before the turn for impact
+music *= 1 - .85*np.exp(-((tt-(turn-.15))/.35)**2)
+
+sfx = np.zeros(N)
+def add(at, x, g):
+    i = int(at*SR); x = x[:max(0, N-i)]; sfx[i:i+len(x)] += x*g
+def lp(x, a):
+    y = np.empty_like(x); acc = 0.0
+    for i in range(len(x)): acc += a[i]*(x[i]-acc); y[i] = acc
+    return y
+def whoosh(d=.55):
+    n = int(d*SR); s = np.arange(n)/n
+    return lp(rng.standard_normal(n), .015+.22*np.sin(np.pi*s)**2)*np.sin(np.pi*s)**1.5*2.5
+def tick(fr=1800):
+    n = int(.06*SR); s = np.arange(n)/SR
+    return np.sin(2*np.pi*fr*s)*np.exp(-s*90)
+def pop(fr=700):
+    n = int(.18*SR); s = np.arange(n)/SR
+    return np.sin(2*np.pi*(fr+fr*.8*np.exp(-s*45))*s)*np.exp(-s*26)
+def boom():
+    n = int(2.2*SR); s = np.arange(n)/SR
+    return np.sin(2*np.pi*(38+60*np.exp(-s*6))*s)*np.exp(-s*1.8) + lp(rng.standard_normal(n), np.full(n, .04))*np.exp(-s*4)*.8
+def riser(d=2.0):
+    n = int(d*SR); s = np.arange(n)/SR; u = s/d
+    return lp(rng.standard_normal(n), .01+.3*u**2)*u**2.5*2 + np.sin(2*np.pi*(120*s+300*s*u))*u**3*.3
+def swell():
+    n = int(1.6*SR); s = np.arange(n)/SR
+    return np.sin(2*np.pi*55*s)*np.sin(np.pi*s/1.6)**2
+for sc in scenes[1:]:
+    if sc['id'] != 's6': add(sc['start']-.22, whoosh(), .30)
+add(turn-2.0, riser(2.0), .25); add(turn, boom(), .55)
+for k2 in ('s3_capital','s3_cheque','s3_cartao','s7_quanto','s7_quem','s7_custo','s8_juros','s8_tarifas','s8_clausulas'): add(ev[k2], pop(680), .22)
+add(ev['s4_erro'], swell(), .35); add(ev['s9_estrategia'], pop(880), .25); add(ev['s10_pe'], pop(990), .25)
+add(ev['s11_manda'], tick(), .35); add(ev['s1_nunca'], swell(), .3)
+for i in range(16): add(ev['s1_vende'] + i*.13, tick(2400 + (i % 3)*200), .08)   # numbers ticking down
+
+env = np.convolve(np.abs(voice), np.ones(int(.3*SR))/(.3*SR), mode='same')
+duck = 1 - .55*np.clip(env/.03, 0, 1)
+mix = voice + music*duck + sfx
+mix = mix/np.max(np.abs(mix))*.9
 with wave.open('mix.wav','wb') as w:
-    w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR); w.writeframes(pcm.tobytes())
-print('total', total, ev)
+    w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR); w.writeframes((np.clip(mix,-1,1)*32767).astype(np.int16).tobytes())
+print('total', total); [print(s['id'], s['start'], s['end']) for s in scenes]

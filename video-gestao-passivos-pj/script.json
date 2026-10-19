@@ -2,55 +2,56 @@
  {
   "id": "s1",
   "tag": "",
-  "text": "Sua empresa fatura todo mês, mas o dinheiro some antes de pagar as contas?",
-  "cap": "Sua empresa fatura todo mês, | mas o dinheiro some | antes de pagar as contas?"
+  "cap": "Sua empresa vende, | fatura... | e mesmo assim | o dinheiro nunca sobra?"
  },
  {
   "id": "s2",
-  "tag": "O PROBLEMA",
-  "text": "Capital de giro, cheque especial, cartão empresarial. Os juros se acumulam, e a dívida cresce mais rápido que o faturamento.",
-  "cap": "Capital de giro, | cheque especial, | cartão empresarial. | Os juros se acumulam, | e a dívida cresce | mais rápido que o faturamento."
+  "tag": "",
+  "cap": "Então presta atenção, | porque o problema | pode não ser | o faturamento."
  },
  {
   "id": "s3",
-  "tag": "O ERRO MAIS COMUM",
-  "text": "Aí vem o erro mais comum: pegar um empréstimo novo para pagar o antigo.",
-  "cap": "Aí vem o erro mais comum: | pegar um empréstimo novo | para pagar o antigo."
+  "tag": "O PROBLEMA",
+  "cap": "É o passivo. | Capital de giro, | cheque especial, | cartão empresarial... | tudo rodando | com juros altos, | ao mesmo tempo."
  },
  {
   "id": "s4",
-  "tag": "O RESULTADO",
-  "text": "Isso vira uma bola de neve, e a cada mês fica mais difícil sair dela.",
-  "cap": "Isso vira | uma bola de neve, | e a cada mês | fica mais difícil sair dela."
+  "tag": "O ERRO CLÁSSICO",
+  "cap": "E aí vem o erro clássico: | pegar um empréstimo novo | pra pagar o antigo."
  },
  {
   "id": "s5",
-  "tag": "PASSO 1 · DIAGNÓSTICO",
-  "text": "A gestão de passivos é o caminho estruturado. Começa com um diagnóstico completo de todas as dívidas da empresa.",
-  "cap": "A gestão de passivos | é o caminho estruturado. | Começa com um diagnóstico completo | de todas as dívidas da empresa."
+  "tag": "O RESULTADO",
+  "cap": "Parece alívio, | mas é bola de neve. | A dívida cresce todo mês, | e o caixa encolhe."
  },
  {
   "id": "s6",
-  "tag": "PASSO 2 · CONTRATOS",
-  "text": "Depois, vem a análise dos contratos: juros, tarifas e cláusulas que podem ser revistas.",
-  "cap": "Depois, vem a análise | dos contratos: | juros, tarifas e cláusulas | que podem ser revistas."
+  "tag": "A SOLUÇÃO",
+  "cap": "É aqui que entra | a gestão de passivos."
  },
  {
   "id": "s7",
-  "tag": "PASSO 3 · NEGOCIAÇÃO",
-  "text": "Com isso, a negociação com os bancos é feita com estratégia, e não no desespero.",
-  "cap": "Com isso, | a negociação com os bancos | é feita com estratégia, | e não no desespero."
+  "tag": "PASSO 01",
+  "cap": "Primeiro: | um raio-X | de todas as dívidas. | Quanto deve, | pra quem, | e a que custo."
  },
  {
   "id": "s8",
-  "tag": "PASSO 4 · REORGANIZAÇÃO",
-  "text": "O objetivo é reorganizar o caixa e preservar a continuidade do seu negócio.",
-  "cap": "O objetivo é reorganizar o caixa | e preservar a continuidade | do seu negócio."
+  "tag": "PASSO 02",
+  "cap": "Segundo: | análise técnica dos contratos. | Juros, | tarifas | e cláusulas | que podem ser revistas."
  },
  {
   "id": "s9",
+  "tag": "PASSO 03",
+  "cap": "Terceiro: | negociação com os bancos, | com estratégia. | Não no desespero."
+ },
+ {
+  "id": "s10",
+  "tag": "O OBJETIVO",
+  "cap": "O objetivo é simples: | reorganizar o caixa | e manter | a empresa de pé."
+ },
+ {
+  "id": "s11",
   "tag": "",
-  "text": "Se a sua empresa está nessa situação, busque orientação de um advogado especialista em direito bancário. Salve este vídeo e mande para um empresário que precisa ver isso.",
-  "cap": "Se a sua empresa | está nessa situação, | busque orientação | de um advogado especialista | em direito bancário. | Salve este vídeo | e mande para um empresário | que precisa ver isso."
+  "cap": "Se você é empresário | e se viu nesse vídeo, | procure um advogado | especialista em | direito bancário. | E manda esse vídeo | pra quem precisa ver."
  }
 ]

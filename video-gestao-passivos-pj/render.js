@@ -1,29 +1,30 @@
-// usage: node render.js preview t1 t2 ...   |   node render.js video out.mp4
+// node render.js preview t1 t2 ...  |  node render.js frames <worker> <workers>  (writes frames/%05d.jpg)
 const { chromium } = require('playwright');
-const fs = require('fs'), path = require('path'), { spawn } = require('child_process');
+const fs = require('fs'), path = require('path');
 (async () => {
   const [mode, ...rest] = process.argv.slice(2);
   const tl = JSON.parse(fs.readFileSync(path.join(__dirname, 'timeline.json'), 'utf8'));
-  const browser = await chromium.launch();
+  // ES modules need http://, so serve this folder locally
+  const http = require('http'), types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json' };
+  const server = http.createServer((q, s) => fs.readFile(path.join(__dirname, decodeURIComponent(q.url.split('?')[0])), (e, d) => {
+    if (e) { s.writeHead(404); return s.end(); } s.writeHead(200, { 'Content-Type': types[path.extname(q.url)] || 'application/octet-stream' }); s.end(d); }));
+  await new Promise(r => server.listen(0, '127.0.0.1', r));
+  const browser = await chromium.launch({ args: ['--force-color-profile=srgb', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
   page.on('pageerror', e => { console.error('PAGE ERROR', e); process.exit(1); });
-  await page.goto('file://' + path.join(__dirname, 'index.html'));
+  await page.goto(`http://127.0.0.1:${server.address().port}/index.html`);
+  await page.waitForFunction(() => window.__3dReady);
   await page.evaluate(tl => { window.setTimeline(tl); return document.fonts.ready; }, tl);
+  const dir = path.join(__dirname, mode === 'preview' ? 'prev' : 'frames'); fs.mkdirSync(dir, { recursive: true });
   if (mode === 'preview') {
-    fs.mkdirSync(path.join(__dirname, 'prev'), { recursive: true });
-    for (const t of rest) { await page.evaluate(t => renderFrame(t), +t); await page.screenshot({ path: path.join(__dirname, 'prev', `t${t}.png`) }); }
+    for (const t of rest) { await page.evaluate(t => renderFrame(t), +t); await page.screenshot({ path: path.join(dir, `t${t}.png`) }); }
   } else {
-    const fps = tl.fps, n = Math.ceil(tl.total * fps);
-    const ff = spawn('ffmpeg', ['-y', '-v', 'error', '-f', 'image2pipe', '-framerate', String(fps), '-c:v', 'mjpeg', '-i', '-',
-      '-i', path.join(__dirname, 'mix.wav'), '-c:v', 'libx264', '-preset', 'slow', '-crf', '18', '-pix_fmt', 'yuv420p', '-profile:v', 'high',
-      '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-movflags', '+faststart', '-shortest', rest[0]], { stdio: ['pipe', 'inherit', 'inherit'] });
-    for (let f = 0; f < n; f++) {
-      await page.evaluate(t => renderFrame(t), f / fps);
-      const buf = await page.screenshot({ type: 'jpeg', quality: 95 });
-      if (!ff.stdin.write(buf)) await new Promise(r => ff.stdin.once('drain', r));
-      if (f % 150 === 0) console.log(`frame ${f}/${n}`);
+    const [w, n] = rest.map(Number), sub = 2 * tl.fps, total = Math.ceil(tl.total * sub);   // 2 sub-frames per output frame, blended later
+    for (let f = w; f < total; f += n) {
+      await page.evaluate(([t, f]) => renderFrame(t, f), [f / sub, f]);
+      await page.screenshot({ path: path.join(dir, String(f).padStart(5, '0') + '.jpg'), type: 'jpeg', quality: 94 });
+      if (f % 300 < n) console.log(`w${w} frame ${f}/${total}`);
     }
-    ff.stdin.end(); await new Promise(r => ff.on('close', r));
   }
-  await browser.close();
+  await browser.close(); server.close();
 })();

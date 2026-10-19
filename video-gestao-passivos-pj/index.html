@@ -4,308 +4,379 @@
 <meta charset="utf-8">
 <title>Gestão de Passivos PJ</title>
 <style>
-  :root {
-    --bg1: #0a1222; --bg2: #13213b; --gold: #e2b457; --gold2: #f4d58d;
-    --red: #ef4f55; --green: #35d48a; --ink: #f4f6fa; --muted: #8d9ab2; --panel: #1a2a47;
-  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--bg1); }
-  body { font-family: "Inter", sans-serif; color: var(--ink); }
-  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden;
-    background: radial-gradient(1200px 1100px at 50% 38%, var(--bg2), var(--bg1) 70%); }
-  #grid { position: absolute; inset: -120px; opacity: .07;
-    background-image: linear-gradient(#9fb3d9 1.5px, transparent 1.5px), linear-gradient(90deg, #9fb3d9 1.5px, transparent 1.5px);
-    background-size: 120px 120px; }
-  #vignette { position: absolute; inset: 0; pointer-events: none;
-    background: radial-gradient(900px 1300px at 50% 45%, transparent 55%, rgba(0,0,0,.55)); }
-  #progress { position: absolute; left: 60px; right: 60px; top: 70px; height: 8px; border-radius: 8px; background: rgba(255,255,255,.12); overflow: hidden; }
-  #progress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--gold), var(--gold2)); border-radius: 8px; }
-  #brand { position: absolute; top: 112px; left: 0; right: 0; text-align: center; font-weight: 800; letter-spacing: 6px; font-size: 30px; color: var(--muted); }
-  #brand b { color: var(--gold); }
-  #tag { position: absolute; top: 200px; left: 50%; transform: translateX(-50%); white-space: nowrap;
-    padding: 18px 40px; border-radius: 60px; font-weight: 800; font-size: 40px; letter-spacing: 3px;
-    background: rgba(226,180,87,.14); border: 3px solid var(--gold); color: var(--gold2); }
-  #art { position: absolute; left: 0; top: 330px; width: 1080px; height: 900px; overflow: visible; }
-  #cap { position: absolute; left: 70px; right: 70px; top: 1255px; height: 250px; display: flex; align-items: center; justify-content: center;
-    text-align: center; font-weight: 800; font-size: 76px; line-height: 1.12; letter-spacing: -1px; }
-  #cap span { display: inline-block; margin: 0 3px; text-shadow: 0 6px 0 rgba(0,0,0,.45), 0 0 30px rgba(0,0,0,.6); }
-  #cap span.on { color: var(--gold2); }
-  #cap span.off { color: var(--ink); }
-  svg text { font-family: "Inter", sans-serif; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05070c; }
+  body { font-family: "Inter", sans-serif; color: #f5f7fb; -webkit-font-smoothing: antialiased; }
+  #stage { position: absolute; inset: 0; overflow: hidden; background: #05070c; }
+  #bg { position: absolute; inset: 0; }
+  #dots { position: absolute; inset: -60px; opacity: .22;
+    background-image: radial-gradient(rgba(255,255,255,.35) 1.4px, transparent 1.6px); background-size: 48px 48px;
+    -webkit-mask-image: radial-gradient(ellipse 70% 55% at 50% 45%, #000 20%, transparent 75%); }
+  #scene { position: absolute; inset: 0; transform-origin: 540px 900px; }
+  #flash { position: absolute; inset: 0; background: #fff6dc; opacity: 0; pointer-events: none; }
+  #vig { position: absolute; inset: 0; background: radial-gradient(ellipse 85% 70% at 50% 45%, transparent 50%, rgba(0,0,0,.7)); }
+  #grain { position: absolute; inset: 0; width: 1080px; height: 1920px; opacity: .07; mix-blend-mode: screen; image-rendering: pixelated; }
+  #segs { position: absolute; top: 64px; left: 56px; right: 56px; display: flex; gap: 8px; }
+  #segs i { flex: 1; height: 6px; border-radius: 6px; background: rgba(255,255,255,.14); overflow: hidden; display: block; }
+  #segs i b { display: block; height: 100%; background: #fff; border-radius: 6px; }
+  #tag { position: absolute; top: 150px; left: 50%; display: flex; align-items: center; gap: 16px; white-space: nowrap;
+    padding: 16px 34px 16px 28px; border-radius: 60px; font-weight: 800; font-size: 32px; letter-spacing: 4px;
+    background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.16); backdrop-filter: blur(14px); }
+  #tag .dot { width: 16px; height: 16px; border-radius: 50%; }
+  #cap { position: absolute; left: 60px; right: 60px; top: 1395px; height: 210px; display: flex; align-items: center; justify-content: center; text-align: center; }
+  #cap div { font-weight: 800; font-size: 64px; line-height: 1.22; letter-spacing: -1px; }
+  #cap span { display: inline-block; padding: 0 13px; border-radius: 16px; color: #fff; text-shadow: 0 4px 18px rgba(0,0,0,.8), 0 2px 0 rgba(0,0,0,.6); }
+  #cap span.on { background: #f2c14e; color: #141006; text-shadow: none; box-shadow: 0 10px 30px rgba(242,193,78,.35); }
+
+  .a { position: absolute; }
+  .glass { background: linear-gradient(160deg, rgba(255,255,255,.11), rgba(255,255,255,.035)); border: 1.5px solid rgba(255,255,255,.15);
+    border-radius: 40px; box-shadow: 0 40px 90px rgba(0,0,0,.55), inset 0 1.5px 0 rgba(255,255,255,.18); backdrop-filter: blur(26px); }
+  .disp { font-family: "Inter Display", "Inter", sans-serif; font-weight: 900; letter-spacing: -0.045em; line-height: .95; }
+  .gold { background: linear-gradient(180deg, #fff3cf 0%, #f2c14e 50%, #b98426 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .red { background: linear-gradient(180deg, #ffb0a8 0%, #ff4d4d 55%, #c2232b 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .green { background: linear-gradient(180deg, #c6ffe3 0%, #34d399 55%, #0f9d6b 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ice { background: linear-gradient(180deg, #ffffff 0%, #d7e6ff 60%, #8fb0de 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .muted { color: #93a0b8; }
+  .w { display: inline-block; }
+  .center { text-align: center; left: 0; right: 0; }
+  .lbl { font-size: 28px; font-weight: 700; letter-spacing: 4px; color: #8f9bb3; text-transform: uppercase; }
+  .chip { display: inline-flex; align-items: center; gap: 12px; padding: 12px 24px; border-radius: 40px; font-weight: 800; font-size: 30px; }
+  .num { font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body>
 <div id="stage">
-  <div id="grid"></div>
-  <svg id="art" viewBox="0 0 1080 900"></svg>
-  <div id="vignette"></div>
-  <div id="progress"><i></i></div>
-  <div id="brand">GESTÃO DE <b>PASSIVOS</b> · EMPRESAS</div>
-  <div id="tag"></div>
+  <div id="bg"></div>
+  <div id="dots"></div>
+  <div id="scene3d" style="position:absolute;inset:0;transform-origin:540px 900px"><canvas id="gl" width="1080" height="1920" style="position:absolute;inset:0;width:1080px;height:1920px"></canvas></div>
+  <div id="scene"></div>
+  <div id="vig"></div>
+  <div id="flash"></div>
+  <canvas id="grain" width="540" height="960"></canvas>
+  <div id="segs"></div>
+  <div id="tag"><span class="dot"></span><span class="tx"></span></div>
   <div id="cap"></div>
 </div>
+<script type="importmap">{ "imports": { "three": "./lib/three.module.js" } }</script>
+<script type="module" src="three-layer.js"></script>
+<script src="icons.js"></script>
 <script>
-const C = { gold: '#e2b457', gold2: '#f4d58d', red: '#ef4f55', green: '#35d48a', ink: '#f4f6fa', muted: '#8d9ab2', panel: '#1a2a47', panel2: '#22365a', bg: '#0a1222' };
+// ---------- math / animation helpers ----------
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const lerp = (a, b, k) => a + (b - a) * k;
-const prog = (t, a, d) => clamp((t - a) / d);
+const P = (t, a, d) => clamp((t - a) / d);
 const eOut = k => 1 - Math.pow(1 - k, 3);
-const eInOut = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
-const eBack = k => { const c = 1.9; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
-const fmt = n => Math.round(n).toLocaleString('pt-BR');
-const T = (x, y, s, fill, txt, extra = '') => `<text x="${x}" y="${y}" font-size="${s}" fill="${fill}" ${extra}>${txt}</text>`;
-const pop = (t, at, cx, cy, inner) => {          // scale-in group around (cx, cy)
-  const k = eBack(prog(t, at, .35)); if (k <= 0) return '';
-  return `<g opacity="${clamp(prog(t, at, .15))}" transform="translate(${cx} ${cy}) scale(${k}) translate(${-cx} ${-cy})">${inner}</g>`;
-};
-// a banknote centered at 0,0
-const note = (w = 150) => `<g><rect x="${-w/2}" y="${-w*.24}" width="${w}" height="${w*.48}" rx="8" fill="#2fa36b" stroke="#bff2d6" stroke-width="4"/>
-  <circle r="${w*.15}" fill="none" stroke="#bff2d6" stroke-width="4"/>${T(0, w*.07, w*.17, '#e9fff3', 'R$', 'text-anchor="middle" font-weight="800"')}</g>`;
-const magnifier = (x, y, r = 60) => `<g transform="translate(${x} ${y})"><line x1="${r*.7}" y1="${r*.7}" x2="${r*1.6}" y2="${r*1.6}" stroke="${C.gold}" stroke-width="18" stroke-linecap="round"/>
-  <circle r="${r}" fill="rgba(244,213,141,.12)" stroke="${C.gold}" stroke-width="12"/><path d="M${-r*.5} ${-r*.2} A ${r*.55} ${r*.55} 0 0 1 ${-r*.15} ${-r*.5}" stroke="#fff" stroke-opacity=".6" stroke-width="7" fill="none" stroke-linecap="round"/></g>`;
-const shop = (lit) => `
-  <rect x="290" y="330" width="500" height="430" rx="10" fill="${C.panel}" stroke="#2f4670" stroke-width="6"/>
-  ${[0,1,2,3,4,5,6,7,8,9].map(i => `<path d="M${290+i*50} 300 h50 v70 a25 25 0 0 1 -50 0z" fill="${i%2 ? '#f6efe0' : C.gold}"/>`).join('')}
-  <rect x="330" y="215" width="420" height="70" rx="12" fill="${C.bg}" stroke="${C.gold}" stroke-width="5"/>
-  ${T(540, 263, 38, C.gold2, 'MINHA EMPRESA', 'text-anchor="middle" font-weight="800" letter-spacing="3"')}
-  <rect x="320" y="440" width="140" height="150" rx="8" fill="${lit ? '#f7d98c' : '#0d1830'}" stroke="#2f4670" stroke-width="6"/>
-  <rect x="620" y="440" width="140" height="150" rx="8" fill="${lit ? '#f7d98c' : '#0d1830'}" stroke="#2f4670" stroke-width="6"/>
-  <rect x="480" y="470" width="120" height="290" rx="6" fill="${lit ? '#ffe7a8' : '#050b17'}" stroke="#2f4670" stroke-width="6"/>
-  <circle cx="580" cy="620" r="7" fill="${C.gold}"/>`;
-
-// ---------- scenes: each returns SVG markup for local time lt (seconds since scene start), global t ----------
-const SCENES = {
-  s1(lt, t, sc) {
-    let s = shop(false);
-    for (let i = 0; i < 9; i++) {             // money flying out of the door
-      const k = ((lt - i * .42) % 2.4 + 2.4) % 2.4 / 2.4; if (lt < i * .42) continue;
-      const dir = i % 2 ? 1 : -1, x = 540 + dir * (90 + (i % 3) * 120) * eOut(k) * 1.6, y = 640 - (220 + (i % 4) * 40) * Math.sin(Math.PI * k * .8);
-      s += `<g opacity="${(1 - k) * clamp(k * 6)}" transform="translate(${x} ${y}) rotate(${dir * 200 * k + i * 20}) scale(${.7 + .3 * k})">${note(130)}</g>`;
-    }
-    const v = lerp(48300, 1240, eInOut(prog(lt, .4, 4.2)));
-    const col = v < 15000 ? C.red : C.ink;
-    s += `<g>${T(540, 70, 30, C.muted, 'SALDO EM CAIXA', 'text-anchor="middle" font-weight="700" letter-spacing="5"')}
-      ${T(540, 160, 96, col, 'R$ ' + fmt(v), 'text-anchor="middle" font-weight="800"')}</g>`;
-    const q = prog(lt, 3.3, .4);
-    if (q > 0) s += pop(lt, 3.3, 900, 360, `<circle cx="900" cy="360" r="78" fill="${C.red}"/>${T(900, 395, 110, '#fff', '?', 'text-anchor="middle" font-weight="800"')}`);
-    return s;
-  },
-  s2(lt, t, sc, ev) {
-    const items = [['CAPITAL DE GIRO', 'giro'], ['CHEQUE ESPECIAL', 'cheque'], ['CARTÃO EMPRESARIAL', 'cartao']];
-    let s = '';
-    items.forEach(([label, ic], i) => {
-      const y = 20 + i * 108, at = ev.s2_cards[i];
-      let icon = '';
-      if (ic === 'giro') icon = `<path d="M-22 -8 A24 24 0 0 1 20 -12 M22 8 A24 24 0 0 1 -20 12" stroke="${C.red}" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M14 -24 L22 -10 L8 -6 M-14 24 L-22 10 L-8 6" stroke="${C.red}" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
-      if (ic === 'cheque') icon = `<rect x="-30" y="-18" width="60" height="36" rx="5" fill="none" stroke="${C.red}" stroke-width="6"/><line x1="-18" y1="6" x2="18" y2="6" stroke="${C.red}" stroke-width="5"/>`;
-      if (ic === 'cartao') icon = `<rect x="-30" y="-20" width="60" height="40" rx="6" fill="none" stroke="${C.red}" stroke-width="6"/><line x1="-30" y1="-6" x2="30" y2="-6" stroke="${C.red}" stroke-width="8"/>`;
-      s += pop(t, at, 540, y + 45, `<rect x="190" y="${y}" width="700" height="90" rx="45" fill="${C.panel}" stroke="${C.red}" stroke-opacity=".6" stroke-width="4"/>
-        <g transform="translate(255 ${y + 45})">${icon}</g>${T(310, y + 59, 40, C.ink, label, 'font-weight="800" letter-spacing="1"')}
-        ${T(860, y + 60, 40, C.red, '%', 'text-anchor="end" font-weight="800"')}`);
-    });
-    // chart: revenue vs debt
-    const k = eInOut(prog(t, ev.s2_chart, 2.6)), X0 = 130, X1 = 950, Y0 = 860, Y1 = 380;
-    if (t > ev.s2_chart - .3) {
-      const a = clamp(prog(t, ev.s2_chart - .3, .3));
-      s += `<g opacity="${a}"><line x1="${X0}" y1="${Y0}" x2="${X1}" y2="${Y0}" stroke="#40577f" stroke-width="5"/><line x1="${X0}" y1="${Y0}" x2="${X0}" y2="${Y1}" stroke="#40577f" stroke-width="5"/>
-        ${T(X1, Y0 + 40, 26, C.muted, 'TEMPO →', 'text-anchor="end" font-weight="700" letter-spacing="3"')}`;
-      const pts = (f) => { const p = []; for (let i = 0; i <= 60 * k; i++) { const u = i / 60; p.push(`${X0 + u * (X1 - X0)},${Y0 - f(u)}`); } return p.join(' '); };
-      const rev = u => 150 + 110 * u, debt = u => 60 + 380 * Math.pow(u, 2.3);
-      s += `<polyline points="${pts(rev)}" fill="none" stroke="${C.green}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-        <polyline points="${pts(debt)}" fill="none" stroke="${C.red}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>`;
-      if (k > .02) {
-        const ex = X0 + k * (X1 - X0);
-        s += `<circle cx="${ex}" cy="${Y0 - rev(k)}" r="13" fill="${C.green}"/><circle cx="${ex}" cy="${Y0 - debt(k)}" r="13" fill="${C.red}"/>`;
-      }
-      s += `<g opacity="${a}"><circle cx="${X0 + 50}" cy="${Y1 + 10}" r="13" fill="${C.red}"/>${T(X0 + 75, Y1 + 22, 34, C.red, 'DÍVIDA', 'font-weight="800"')}
-        <circle cx="${X0 + 50}" cy="${Y1 + 65}" r="13" fill="${C.green}"/>${T(X0 + 75, Y1 + 77, 34, C.green, 'FATURAMENTO', 'font-weight="800"')}</g></g>`;
-    }
-    return s;
-  },
-  s3(lt, t, sc, ev) {
-    const hot = clamp(prog(t, ev.s3_loop, .6));
-    const speed = lerp(.7, 2.2, hot), ang = (lt * speed * 360) % 360;
-    const col = hot > .5 ? C.red : C.gold;
-    let s = `<g transform="translate(540 450)">
-      <circle r="300" fill="none" stroke="${col}" stroke-opacity=".25" stroke-width="40"/>
-      <g transform="rotate(${ang})">
-        <path d="M0 -300 A300 300 0 0 1 300 0" fill="none" stroke="${col}" stroke-width="16" stroke-linecap="round"/>
-        <path d="M282 -24 L300 14 L326 -22" fill="none" stroke="${col}" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M0 300 A300 300 0 0 1 -300 0" fill="none" stroke="${col}" stroke-width="16" stroke-linecap="round"/>
-        <path d="M-282 24 L-300 -14 L-326 22" fill="none" stroke="${col}" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
-      </g></g>`;
-    s += pop(t, sc.start + .1, 540, 150, `<rect x="250" y="105" width="580" height="96" rx="20" fill="${C.panel}" stroke="${C.gold}" stroke-width="5"/>${T(540, 168, 42, C.gold2, 'NOVO EMPRÉSTIMO', 'text-anchor="middle" font-weight="800"')}`);
-    s += pop(t, sc.start + .5, 540, 750, `<rect x="250" y="700" width="580" height="96" rx="20" fill="${C.panel}" stroke="${C.gold}" stroke-width="5"/>${T(540, 763, 42, C.gold2, 'PAGA O ANTIGO', 'text-anchor="middle" font-weight="800"')}`);
-    const debt = 100 * Math.pow(1.16, Math.floor(Math.max(0, t - ev.s3_loop) * 2.2));
-    s += `<g opacity="${hot}">${T(540, 420, 34, C.muted, 'DÍVIDA TOTAL', 'text-anchor="middle" font-weight="700" letter-spacing="4"')}
-      ${T(540, 510, 92, C.red, 'R$ ' + fmt(debt) + ' mil', 'text-anchor="middle" font-weight="800"')}</g>`;
-    return s;
-  },
-  s4(lt, t, sc) {
-    const A = [60, 140], B = [1020, 860], L = Math.hypot(B[0] - A[0], B[1] - A[1]);
-    const ux = (B[0] - A[0]) / L, uy = (B[1] - A[1]) / L, nx = uy, ny = -ux;   // normal pointing up-right
-    const k = eInOut(prog(lt, .1, sc.end - sc.start - .5));
-    const r = lerp(34, 175, k), d = lerp(60, L - 400, k);
-    const cx = A[0] + ux * d + nx * r, cy = A[1] + uy * d + ny * r;
-    const rot = (d / r) * 57.3;
-    let s = `<path d="M${A[0]} ${A[1]} L${B[0]} ${B[1]} L${B[0]} 900 L${A[0]} 900 Z" fill="#dfe8f5" opacity=".1"/>
-      <line x1="${A[0]}" y1="${A[1]}" x2="${B[0]}" y2="${B[1]}" stroke="#dfe8f5" stroke-width="10" stroke-linecap="round"/>`;
-    for (let i = 0; i < 14; i++) {         // snow spray trailing behind
-      const back = (i + 1) * 22 + ((lt * 300 + i * 37) % 40);
-      const px = cx - ux * (r * .6 + back) + nx * (-r * .2 + (i % 4) * 12), py = cy - uy * (r * .6 + back) + ny * (-r * .2 + (i % 4) * 12) ;
-      s += `<circle cx="${px}" cy="${py}" r="${4 + (i % 3) * 3}" fill="#fff" opacity="${.5 * (1 - i / 14) * clamp(k * 5)}"/>`;
-    }
-    s += `<g transform="translate(${cx} ${cy}) rotate(${rot})"><circle r="${r}" fill="#eef4fb" stroke="#b8c8de" stroke-width="6"/>
-      <path d="M${-r*.6} ${-r*.3} q${r*.3} ${-r*.2} ${r*.6} 0 M${-r*.1} ${r*.4} q${r*.3} ${r*.15} ${r*.55} -${r*.1}" stroke="#b8c8de" stroke-width="6" fill="none" stroke-linecap="round"/>
-      ${T(0, r * .22, r * .62, C.red, 'R$', 'text-anchor="middle" font-weight="800"')}</g>`;
-    const tags = [['+ JUROS', .18], ['+ MULTA', .42], ['+ ENCARGOS', .66]];
-    tags.forEach(([txt, at], i) => {
-      const y = 640 + i * 90;
-      s += pop(k * 10, at * 10, 220, y - 18, T(90, y, 52, C.red, txt, 'font-weight="800"'));
-    });
-    return s;
-  },
-  s5(lt, t, sc, ev) {
-    const items = ['Bancos e credores', 'Saldo devedor real', 'Taxas e encargos', 'Garantias dadas', 'Prazos e vencimentos'];
-    let s = `<rect x="170" y="40" width="740" height="830" rx="30" fill="${C.panel}" stroke="#2f4670" stroke-width="6"/>
-      <rect x="420" y="10" width="240" height="70" rx="18" fill="${C.gold}"/><circle cx="540" cy="30" r="12" fill="${C.panel}"/>
-      ${T(540, 160, 46, C.gold2, 'DIAGNÓSTICO', 'text-anchor="middle" font-weight="800" letter-spacing="4"')}
-      <line x1="240" y1="200" x2="840" y2="200" stroke="#2f4670" stroke-width="4"/>`;
-    items.forEach((txt, i) => {
-      const y = 280 + i * 120, at = ev.s5_check[i], appear = clamp(prog(lt, .25 + i * .18, .35));
-      const done = prog(t, at, .3);
-      s += `<g opacity="${appear}" transform="translate(${(1 - eOut(appear)) * 40} 0)">
-        <rect x="240" y="${y - 38}" width="70" height="70" rx="14" fill="${done > 0 ? 'rgba(53,212,138,.18)' : 'none'}" stroke="${done > 0 ? C.green : '#5a6f96'}" stroke-width="6"/>
-        <path d="M255 ${y} l18 18 l32 -40" fill="none" stroke="${C.green}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="80" stroke-dashoffset="${80 * (1 - eOut(done))}"/>
-        ${T(345, y + 14, 42, done > 0 ? C.ink : C.muted, txt, 'font-weight="700"')}</g>`;
-    });
-    const mx = 832 + 12 * Math.sin(lt * 1.6), my = 330 + 330 * (.5 + .5 * Math.sin(lt * .9));
-    s += `<g opacity="${clamp(prog(lt, .6, .4))}">${magnifier(mx, my, 62)}</g>`;
-    return s;
-  },
-  s6(lt, t, sc, ev) {
-    const x0 = 120, w = 600;
-    let s = `<rect x="${x0}" y="20" width="${w}" height="860" rx="20" fill="#f3f1ea"/>
-      <path d="M${x0 + w - 90} 20 l90 90 h-90z" fill="#d9d4c5"/>
-      ${T(x0 + 50, 100, 34, '#1b2640', 'CONTRATO BANCÁRIO', 'font-weight="800" letter-spacing="2"')}
-      <line x1="${x0 + 50}" y1="128" x2="${x0 + 420}" y2="128" stroke="#1b2640" stroke-width="4"/>`;
-    const lines = []; for (let i = 0; i < 17; i++) lines.push(180 + i * 40);
-    const targets = { 4: 0, 9: 1, 13: 2 };
-    const labels = ['JUROS', 'TARIFAS', 'CLÁUSULAS'];
-    lines.forEach((y, i) => {
-      const lw = [480, 450, 500, 420, 470, 380, 490, 440, 460, 500, 410, 470, 360, 480, 450, 500, 300][i];
-      if (i in targets) {
-        const h = eOut(prog(t, ev.s6_hl[targets[i]], .4));
-        s += `<rect x="${x0 + 42}" y="${y - 22}" width="${(lw + 16) * h}" height="36" rx="6" fill="${C.gold}" opacity=".75"/>`;
-      }
-      s += `<rect x="${x0 + 50}" y="${y - 12}" width="${lw}" height="14" rx="7" fill="#9aa3b5"/>`;
-    });
-    Object.entries(targets).forEach(([li, j]) => {
-      const y = lines[li], at = ev.s6_hl[j] + .15;
-      s += pop(t, at, 880, y, `<line x1="${x0 + w - 10}" y1="${y}" x2="760" y2="${y}" stroke="${C.gold}" stroke-width="6" stroke-dasharray="10 8"/>
-        <rect x="760" y="${y - 38}" width="${j === 2 ? 290 : 230}" height="76" rx="38" fill="${C.gold}"/>${T(j === 2 ? 905 : 875, y + 15, 38, C.bg, labels[j], 'text-anchor="middle" font-weight="800"')}`);
-    });
-    const my = 230 + 560 * (.5 - .5 * Math.cos(lt * .9)), mx = 380 + 120 * Math.sin(lt * 1.3);
-    s += `<g opacity="${clamp(prog(lt, .4, .4))}">${magnifier(mx, my, 70)}</g>`;
-    return s;
-  },
-  s7(lt, t, sc, ev) {
-    const drop = prog(t, ev.s7_level - .5, .5), settle = prog(t, ev.s7_level, 1.2);
-    const tilt = -16 * (1 - (settle > 0 ? 1 - Math.exp(-5 * settle) * Math.cos(9 * settle) : 0));
-    const cx = 540, cy = 260, arm = 330, rad = tilt * Math.PI / 180;
-    const L = [cx - arm * Math.cos(rad), cy - arm * Math.sin(rad)], R = [cx + arm * Math.cos(rad), cy + arm * Math.sin(rad)];
-    const pan = ([x, y], inner) => `<line x1="${x}" y1="${y}" x2="${x - 120}" y2="${y + 220}" stroke="${C.gold}" stroke-width="5"/><line x1="${x}" y1="${y}" x2="${x + 120}" y2="${y + 220}" stroke="${C.gold}" stroke-width="5"/>
-      <path d="M${x - 150} ${y + 220} h300 a150 60 0 0 1 -300 0z" fill="${C.gold}"/>${inner(x, y + 220)}`;
-    const bank = (x, y) => `<g transform="translate(${x} ${y - 10})"><path d="M-100 -60 L0 -130 L100 -60 Z" fill="#c9d3e6"/><rect x="-95" y="-58" width="190" height="14" fill="#c9d3e6"/>
-      ${[-70, -25, 25, 70].map(px => `<rect x="${px - 10}" y="-40" width="20" height="70" fill="#c9d3e6"/>`).join('')}<rect x="-105" y="30" width="210" height="16" fill="#c9d3e6"/>
-      ${T(0, -72, 30, C.bg, 'BANCO', 'text-anchor="middle" font-weight="800"')}</g>`;
-    const firm = (x, y) => {
-      let g = `<g transform="translate(${x} ${y - 10})"><rect x="-80" y="-80" width="160" height="125" rx="8" fill="#c9d3e6"/>
-        <rect x="-62" y="-60" width="40" height="40" fill="${C.panel}"/><rect x="22" y="-60" width="40" height="40" fill="${C.panel}"/><rect x="-18" y="-5" width="36" height="50" fill="${C.panel}"/>`;
-      if (drop > 0) g += `<g transform="translate(0 ${-120 - (1 - eOut(drop)) * 380})" opacity="${clamp(drop * 3)}"><rect x="-130" y="-40" width="260" height="76" rx="12" fill="${C.green}"/>${T(0, 12, 34, C.bg, 'ESTRATÉGIA', 'text-anchor="middle" font-weight="800"')}</g>`;
-      return g + `${T(0, 90, 28, C.ink, 'SUA EMPRESA', 'text-anchor="middle" font-weight="800"')}</g>`;
-    };
-    let s = `<rect x="${cx - 14}" y="${cy}" width="28" height="560" fill="${C.gold}"/><path d="M${cx - 160} 860 h320 l-40 -60 h-240z" fill="${C.gold}"/>
-      <line x1="${L[0]}" y1="${L[1]}" x2="${R[0]}" y2="${R[1]}" stroke="${C.gold}" stroke-width="22" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="26" fill="${C.gold2}"/>
-      ${pan(L, bank)}${pan(R, firm)}`;
-    const ok = clamp(prog(t, ev.s7_level + .6, .4));
-    s += `<g opacity="${ok}">${T(540, 120, 44, C.green, 'EQUILÍBRIO NA MESA', 'text-anchor="middle" font-weight="800" letter-spacing="3"')}</g>`;
-    return s;
-  },
-  s8(lt, t, sc, ev) {
-    const X0 = 110, X1 = 970, Z = 620, k = eInOut(prog(lt, .1, 1.4)), up = eInOut(prog(t, ev.s8_up, 2.4));
-    const f = u => { const dip = -150 * Math.sin(Math.PI * clamp(u / .45)) ; const rise = u > .38 ? 330 * eInOut(clamp((u - .38) / .5)) * up : 0; return dip * (u < .45 ? 1 : lerp(1, 0, up)) + rise; };
-    let s = `${T(X0, 90, 34, C.muted, 'FLUXO DE CAIXA', 'font-weight="800" letter-spacing="4"')}
-      <line x1="${X0}" y1="${Z}" x2="${X1}" y2="${Z}" stroke="#5a6f96" stroke-width="4" stroke-dasharray="14 10"/>${T(X1, Z + 45, 28, C.muted, 'ZERO', 'text-anchor="end" font-weight="700" letter-spacing="3"')}`;
-    const vis = lerp(.45, 1, up) * k; let pts = [], last;
-    for (let i = 0; i <= 80 * vis; i++) { const u = i / 80; last = [X0 + u * (X1 - X0), Z - f(u)]; pts.push(last.join(',')); }
-    if (pts.length > 1) {
-      s += `<defs><clipPath id="neg"><rect x="0" y="${Z}" width="1080" height="500"/></clipPath><clipPath id="pos"><rect x="0" y="0" width="1080" height="${Z}"/></clipPath></defs>
-        <polyline clip-path="url(#neg)" points="${pts.join(' ')}" fill="none" stroke="${C.red}" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-        <polyline clip-path="url(#pos)" points="${pts.join(' ')}" fill="none" stroke="${C.green}" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="${last[0]}" cy="${last[1]}" r="16" fill="${last[1] > Z ? C.red : C.green}"/>`;
-    }
-    const ok = clamp(prog(t, ev.s8_up + 1.8, .4));
-    s += `<g opacity="${ok}"><rect x="610" y="150" width="360" height="96" rx="48" fill="rgba(53,212,138,.15)" stroke="${C.green}" stroke-width="5"/>
-      ${T(790, 214, 44, C.green, 'NEGÓCIO VIVO', 'text-anchor="middle" font-weight="800"')}</g>`;
-    return s;
-  },
-  s9(lt, t, sc, ev) {
-    const sw = Math.sin(lt * 1.8) * 4;
-    let s = `<g transform="translate(540 300) scale(${eBack(prog(lt, 0, .5))})">
-      <rect x="-12" y="-170" width="24" height="330" fill="${C.gold}"/><circle cy="-182" r="26" fill="${C.gold2}"/>
-      <path d="M-150 175 h300 l-30 -40 h-240z" fill="${C.gold}"/>
-      <g transform="rotate(${sw})"><rect x="-250" y="-145" width="500" height="20" rx="10" fill="${C.gold}"/>
-        ${[-230, 230].map(x => `<g transform="translate(${x} -135) rotate(${-sw})"><line x1="0" y1="0" x2="-75" y2="140" stroke="${C.gold}" stroke-width="5"/><line x1="0" y1="0" x2="75" y2="140" stroke="${C.gold}" stroke-width="5"/>
-          <path d="M-95 140 h190 a95 42 0 0 1 -190 0z" fill="${C.gold}"/></g>`).join('')}</g></g>`;
-    const btn = (x, at, icon, label) => {
-      const b = 1 + .12 * Math.max(0, Math.sin(Math.PI * prog(t, at, .45)));
-      return pop(t, at - .35, x, 720, `<g transform="translate(${x} 720) scale(${b})"><rect x="-200" y="-70" width="400" height="140" rx="70" fill="${C.panel}" stroke="${C.gold}" stroke-width="5"/>
-        <g transform="translate(-110 0)">${icon}</g>${T(30, 18, 50, C.gold2, label, 'text-anchor="middle" font-weight="800"')}</g>`);
-    };
-    const adv = sc.words.find(w => w.n.startsWith('advogado')).s;
-    s += pop(t, adv, 540, 545, `<rect x="140" y="500" width="800" height="90" rx="45" fill="rgba(226,180,87,.14)" stroke="${C.gold}" stroke-width="4"/>${T(540, 558, 40, C.gold2, 'ADVOGADO · DIREITO BANCÁRIO', 'text-anchor="middle" font-weight="800" letter-spacing="1"')}`);
-    s += btn(310, ev.s9_save, `<path d="M-26 -36 h52 v74 l-26 -20 l-26 20z" fill="${C.gold}"/>`, 'SALVE');
-    s += btn(770, ev.s9_share, `<path d="M-34 4 L34 -32 L14 36 L2 12 Z" fill="${C.gold}"/><path d="M2 12 L34 -32" stroke="${C.panel}" stroke-width="5"/>`, 'ENVIE');
-    s += `<g opacity="${clamp(prog(lt, 1, .6))}">${T(540, 860, 28, C.muted, 'Conteúdo informativo. Cada caso exige análise individual.', 'text-anchor="middle" font-weight="600"')}</g>`;
-    return s;
-  },
-};
-
-let TL = null;
-const art = document.getElementById('art'), cap = document.getElementById('cap'), tag = document.getElementById('tag');
-const bar = document.querySelector('#progress i'), grid = document.getElementById('grid');
-
-function chunks(sc) {
-  if (sc._chunks) return sc._chunks;
-  const out = []; let i = 0;                    // groups come from the script's | breaks
-  sc.cap.forEach(n => { out.push(sc.words.slice(i, i + n)); i += n; });
-  return sc._chunks = out;
+const eIO = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+const spring = k => k <= 0 ? 0 : k >= 1 ? 1 : 1 - Math.exp(-6.5 * k) * Math.cos(10.5 * k);
+const mix = (c1, c2, k) => c1.map((v, i) => lerp(v, c2[i], k));
+const rgba = (c, a) => `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a})`;
+const brl = n => (n < 0 ? '-R$ ' : 'R$ ') + Math.abs(Math.round(n)).toLocaleString('pt-BR');
+const ic = (n, s, c, sw = 2) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="${c}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${ICONS[n]}</svg>`;
+// entrance: fade + rise + de-blur + spring scale
+function inS(t, at, { d = .6, y = 50, x = 0, blur = 16, s = .9 } = {}) {
+  const k = P(t, at, d); if (k <= 0) return 'opacity:0;';
+  const e = eOut(k), sp = spring(k);
+  return `opacity:${clamp(k * 2.5)};transform:translate(${(1 - e) * x}px,${(1 - e) * y}px) scale(${lerp(s, 1, sp)});${k < 1 ? `filter:blur(${(1 - e) * blur}px);` : ''}`;
+}
+// kinetic words: "texto *destaque*" -> words that enter one by one
+function words(t, text, at, step, cls = '', hcls = 'gold') {
+  return text.split(' ').map((w, i) => {
+    const hi = /^\*.*\*$/.test(w); w = w.replace(/\*/g, '');
+    return `<span class="w ${hi ? hcls : cls}" style="${inS(t, at + i * step, { y: 70, blur: 20, s: .85 })}">${w}</span>`;
+  }).join(' ');
+}
+const C = { gold: '#f2c14e', red: '#ff4d4d', green: '#34d399', ink: '#f5f7fb', muted: '#93a0b8' };
+const glassIcon = (n, size, color, tint) => `<div style="width:${size}px;height:${size}px;border-radius:${size * .3}px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(160deg, ${tint}, rgba(255,255,255,.03));border:1.5px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)">${ic(n, size * .5, color, 2.2)}</div>`;
+function stepHead(t, sc, num, l1, l2) {
+  const at = sc.start + .05;
+  return `<div class="a" style="left:96px;top:250px;${inS(t, at, { x: -60, y: 0 })}">
+      <div class="disp" style="font-size:230px;color:transparent;-webkit-text-stroke:3px rgba(242,193,78,.9);letter-spacing:-.06em">${num}</div></div>
+    <div class="a disp" style="left:400px;top:300px;font-size:92px;line-height:1">
+      <div>${words(t, l1, at + .12, .07)}</div><div class="gold">${words(t, l2, at + .26, .07, 'gold')}</div></div>`;
 }
 
-window.renderFrame = function (t) {
-  const i = TL.scenes.findIndex(s => t >= s.start && t < s.end), sc = TL.scenes[i < 0 ? TL.scenes.length - 1 : i];
-  const lt = t - sc.start, dur = sc.end - sc.start;
-  const enter = eBack(prog(lt, 0, .45)), exit = sc.id === 's9' ? 0 : eInOut(prog(lt, dur - .22, .22));
-  art.innerHTML = `<g opacity="${clamp(prog(lt, 0, .2)) * (1 - exit)}" transform="translate(${-exit * 120} ${(1 - enter) * 90}) translate(540 450) scale(${lerp(.9, 1, enter)}) translate(-540 -450)">${SCENES[sc.id](lt, t, sc, TL.ev)}</g>`;
-  grid.style.transform = `translate(${-(t * 18) % 120}px, ${-(t * 30) % 120}px)`;
-  bar.style.width = (100 * clamp(t / TL.total)) + '%';
-  if (sc.tag) {
-    tag.style.display = 'block'; tag.textContent = sc.tag;
-    const k = eBack(prog(lt, .05, .4));
-    tag.style.opacity = clamp(prog(lt, .05, .2)) * (1 - exit);
-    tag.style.transform = `translateX(-50%) scale(${lerp(.6, 1, k)})`;
-  } else tag.style.display = 'none';
-  // karaoke caption
-  const cs = chunks(sc); let ci = 0;
-  cs.forEach((c, j) => { if (t >= c[0].s - .05) ci = j; });
-  const c = cs[ci], ck = eBack(prog(t, c[0].s - .05, .25));
-  cap.style.opacity = t < c[0].s - .3 ? 0 : 1;
-  cap.style.transform = `scale(${lerp(.85, 1, ck)})`;
-  let wi = -1; c.forEach((w, j) => { if (t >= w.s - .03) wi = j; });
-  cap.innerHTML = '<div>' + c.map((w, j) => `<span class="${j === wi ? 'on' : 'off'}">${w.p}</span>`).join(' ') + '</div>';
+// ---------- scenes ----------
+const SC = {
+  s1(t, sc, ev) {
+    const n1 = ev.s1_fatura + .25, n3 = Math.max(ev.s1_nunca - .05, n1 + 1.1), n2 = (n1 + n3) / 2;
+    const tx = [[n1, 'Parcela empréstimo', 'landmark', 18400], [n2, 'Juros cheque especial', 'receipt', 6210], [n3, 'Fatura cartão PJ', 'credit-card', 22950]];
+    let bal = lerp(8950, 44290, eOut(P(t, .2, Math.max(.4, ev.s1_fatura - .2))));
+    tx.forEach(([at, , , v]) => bal -= v * eIO(P(t, at + .1, .45)));
+    const neg = bal < 0, tz = n3 + .45, al = t > tz ? Math.max(0, 1 - (t - tz) / .7) : 0;
+    const shake = al * Math.sin((t - tz) * 70) * 16;
+    let h = `<div class="a center disp" style="top:300px;font-size:138px">
+        <div>${words(t, 'Vende.', ev.s1_vende, 0)} ${words(t, 'Fatura.', ev.s1_fatura, 0)}</div>
+        <div style="margin-top:14px">${words(t, 'E *não* *sobra?*', ev.s1_nunca - .1, .09, '', 'red')}</div></div>`;
+    h += `<div class="a" style="left:110px;top:650px;width:860px;height:680px;transform:translateX(${shake}px)"><div class="glass" style="width:100%;height:100%;padding:46px 50px;
+      ${neg ? `border-color:rgba(255,77,77,${.5 + .5 * al});box-shadow:0 40px 90px rgba(0,0,0,.55), 0 0 ${40 + 80 * al}px rgba(255,77,77,${.25 + .4 * al});` : ''}${inS(t, -.7, { y: 120 })}">
+      <div style="display:flex;align-items:center;gap:22px">${glassIcon('wallet', 92, C.gold, 'rgba(242,193,78,.25)')}
+        <div><div style="font-size:38px;font-weight:800">Conta PJ</div><div style="font-size:28px" class="muted">Saldo disponível</div></div>
+        ${neg ? `<div class="chip" style="margin-left:auto;font-size:26px;padding:10px 20px;background:rgba(255,77,77,.2);border:2px solid #ff4d4d;color:#ffb0a8;${inS(t, tz, { s: .5, y: 0 })}">${ic('triangle-alert', 30, '#ff8f8a', 2.6)}SALDO NEGATIVO</div>`
+          : `<div style="margin-left:auto;font-size:28px;letter-spacing:3px" class="muted">•••• 4821</div>`}</div>
+      <div class="disp num ${neg ? 'red' : ''}" style="font-size:118px;margin:34px 0 26px;${neg ? '' : 'color:#fff'}">${brl(bal)}</div>
+      <div style="height:1.5px;background:rgba(255,255,255,.12);margin-bottom:10px"></div>`;
+    tx.forEach(([at, name, icn, v]) => {
+      h += `<div style="display:flex;align-items:center;gap:22px;height:110px;${inS(t, at, { x: 140, y: 0, blur: 10 })}">
+        ${glassIcon(icn, 76, C.red, 'rgba(255,77,77,.22)')}<div style="font-size:34px;font-weight:700">${name}</div>
+        <div class="num" style="margin-left:auto;font-size:36px;font-weight:800;color:${C.red}">-${brl(v)}</div></div>`;
+    });
+    return h + '</div></div>';
+  },
+  s2(t, sc, ev) {
+    const strike = eIO(P(t, ev.s2_fat + .35, .45)), dim = 1 - .45 * strike;
+    const pode = sc.words.find(w => w.n === 'pode').s;
+    let h = '<div class="a" style="left:120px;right:120px;top:1020px;height:300px;display:flex;align-items:flex-end;gap:26px;opacity:' + (.5 * (1 - strike * .7)) + '">';
+    for (let i = 0; i < 8; i++) {
+      const g = eOut(P(t, sc.start + .2 + i * .1, .8));
+      h += `<div style="flex:1;height:${(60 + i * 30) * g}px;border-radius:14px 14px 4px 4px;background:linear-gradient(180deg,rgba(52,211,153,.75),rgba(52,211,153,.08))"></div>`;
+    }
+    h += '</div>';
+    h += `<div class="a center disp" style="top:470px;font-size:96px;line-height:1.08">
+      <div class="muted">${words(t, 'o problema', sc.start + .1, .08, 'muted')}</div>
+      <div>${words(t, 'pode não ser o', pode - .05, .07)}</div></div>
+      <div class="a center" style="top:760px;opacity:${dim}"><div class="disp" style="display:inline-block;position:relative;font-size:116px;${inS(t, ev.s2_fat - .15, { s: .7 })}">
+        <span class="green">FATURAMENTO</span>
+        <div style="position:absolute;left:-20px;top:46%;height:20px;width:${strike * 104}%;background:${C.red};border-radius:10px;transform:rotate(-4deg);box-shadow:0 0 40px rgba(255,77,77,.8)"></div></div></div>`;
+    return h;
+  },
+  s3(t, sc, ev) {
+    let h = `<div class="a center" style="top:255px"><div class="disp muted" style="font-size:64px;${inS(t, ev.s3_passivo - .25)}">É o</div>
+      <div class="disp gold" style="font-size:208px;filter:drop-shadow(0 0 50px rgba(242,193,78,.35));${inS(t, ev.s3_passivo, { s: .6, blur: 24 })}">PASSIVO</div></div>`;
+    const cards = [['refresh-cw', 'Capital de giro', 'parcelas todo mês', ev.s3_capital], ['receipt', 'Cheque especial', 'limite da conta', ev.s3_cheque], ['credit-card', 'Cartão empresarial', 'fatura no rotativo', ev.s3_cartao]];
+    const jk = P(t, ev.s3_juros, .5), pulse = jk > 0 ? .5 + .5 * Math.sin((t - ev.s3_juros) * 9) : 0;
+    cards.forEach(([icn, ttl, sub, at], i) => {
+      const y = 620 + i * 228;
+      h += `<div class="a glass" style="left:90px;top:${y}px;width:900px;height:200px;display:flex;align-items:center;gap:30px;padding:0 40px;
+        box-shadow:0 40px 90px rgba(0,0,0,.55), 0 0 ${60 * jk * pulse}px rgba(255,77,77,${.5 * jk}), inset 0 1.5px 0 rgba(255,255,255,.18);${inS(t, at, { x: 160, y: 0 })}">
+        ${glassIcon(icn, 112, C.gold, 'rgba(242,193,78,.22)')}
+        <div><div style="font-size:46px;font-weight:800;letter-spacing:-1px;white-space:nowrap">${ttl}</div><div class="muted" style="font-size:30px;margin-top:4px">${sub}</div></div>
+        <div class="chip" style="margin-left:auto;background:rgba(255,77,77,.16);border:2px solid rgba(255,77,77,.7);color:#ff8f8a;${inS(t, ev.s3_juros + i * .12, { s: .5, y: 20 })}">
+          ${ic('trending-up', 34, '#ff8f8a', 2.6)}JUROS</div></div>`;
+    });
+    return h;
+  },
+  s4(t, sc, ev) {
+    const cx = 540, cy = 975, R = 290, go = P(t, ev.s4_pegar, .6);
+    const spin = Math.max(0, t - ev.s4_pegar) * 150 * (1 + Math.max(0, t - ev.s4_pegar) * .35);
+    const shake = Math.max(0, 1 - (t - ev.s4_erro) / .6) * (t > ev.s4_erro ? Math.sin((t - ev.s4_erro) * 60) * 10 : 0);
+    let h = `<div class="a center" style="top:285px;transform:translateX(${shake}px)"><div style="display:inline-flex;align-items:center;gap:26px;${inS(t, ev.s4_erro - .1, { s: .6 })}">
+      ${ic('triangle-alert', 92, C.red, 2.2)}<div class="disp red" style="font-size:100px">ERRO CLÁSSICO</div></div></div>`;
+    const cycles = Math.max(0, t - ev.s4_pegar) * 1.4;
+    const debt = 250 * Math.pow(1.13, Math.floor(cycles * 2));
+    h += `<svg class="a" style="left:0;top:0" width="1080" height="1920"><defs>
+        <linearGradient id="rg" x1="0" x2="1"><stop offset="0" stop-color="#ff4d4d"/><stop offset="1" stop-color="#f2c14e"/></linearGradient>
+        <filter id="gl"><feGaussianBlur stdDeviation="8"/></filter></defs>
+      <g opacity="${clamp(P(t, sc.start, .4))}"><circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="56"/>
+      <g transform="rotate(${spin} ${cx} ${cy})" opacity="${.35 + .65 * go}">
+        ${[0, 180].map(a => `<g transform="rotate(${a} ${cx} ${cy})">
+          <path d="M${cx} ${cy - R} A${R} ${R} 0 0 1 ${cx + R * Math.sin(1.25)} ${cy - R * Math.cos(1.25)}" fill="none" stroke="url(#rg)" stroke-width="18" stroke-linecap="round"/>
+          <path d="M${cx} ${cy - R} A${R} ${R} 0 0 1 ${cx + R * Math.sin(1.25)} ${cy - R * Math.cos(1.25)}" fill="none" stroke="url(#rg)" stroke-width="18" stroke-linecap="round" filter="url(#gl)"/>
+          <g transform="rotate(${1.25 * 57.3} ${cx} ${cy})"><path d="M${cx - 30} ${cy - R - 28} L${cx + 8} ${cy - R} L${cx - 30} ${cy - R + 28}" fill="none" stroke="#f2c14e" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/></g></g>`).join('')}
+        ${[0, 1, 2, 3, 4, 5].map(i => { const a = i * 60 * Math.PI / 180; return `<circle cx="${cx + R * Math.sin(a)}" cy="${cy - R * Math.cos(a)}" r="7" fill="#fff" opacity=".7"/>`; }).join('')}
+      </g></g></svg>`;
+    h += `<div class="a center" style="top:${cy - 80}px;${inS(t, ev.s4_pegar + .3)}"><div class="lbl">Dívida total</div>
+      <div class="disp red num" style="font-size:104px;margin-top:8px">R$ ${Math.round(debt)} mil</div></div>`;
+    const node = (y, icn, a, b, at) => `<div class="a" style="left:0;right:0;top:${y}px;display:flex;justify-content:center;${inS(t, at, { s: .7 })}">
+      <div class="glass" style="display:flex;align-items:center;gap:22px;padding:24px 44px 24px 26px;border-radius:70px;background:rgba(14,18,30,.82)">
+      ${glassIcon(icn, 86, C.gold, 'rgba(242,193,78,.22)')}<div style="font-size:44px;font-weight:800">${a} <span class="gold">${b}</span></div></div></div>`;
+    h += node(cy - R - 72, 'landmark', 'Empréstimo', 'novo', ev.s4_pegar - .1) + node(cy + R - 72, 'banknote', 'Paga o', 'antigo', ev.s4_antigo - .35);
+    return h;
+  },
+  s5(t, sc, ev) {
+    const b0 = ev.s5_bola - .35, roll = P(t, b0, 2.2), k = eOut(roll);
+    const r = lerp(55, 175, eOut(P(t, b0, 4.5))), x = lerp(-180, 540, k), y = 830 - (r - 175) * .0;
+    const rot = (x + 180) / r * 57.3 + Math.max(0, t - b0 - 2.2) * 60;
+    const head = P(t, ev.s5_bola - .2, .3);
+    let h = `<div class="a center disp muted" style="top:330px;font-size:96px;opacity:${1 - head}">${words(t, 'Parece alívio...', sc.start + .05, .1, 'muted')}</div>
+      <div class="a center disp" style="top:310px;font-size:132px">${words(t, 'BOLA DE NEVE', ev.s5_bola - .1, .08, 'ice')}</div>`;
+    const dk = eIO(P(t, ev.s5_divida + .1, 2.4)), ck = eIO(P(t, ev.s5_caixa + .1, 1.6));
+    const meter = (left, at, label, val, pct, col, icn) => `<div class="a glass" style="left:${left}px;top:1075px;width:430px;height:255px;padding:32px 36px;${inS(t, at, { y: 80 })}">
+      <div style="display:flex;align-items:center;gap:14px">${ic(icn, 40, col, 2.4)}<span class="lbl" style="color:${col}">${label}</span></div>
+      <div class="disp num" style="font-size:66px;margin:16px 0 22px;color:#fff;white-space:nowrap">${val}</div>
+      <div style="height:16px;border-radius:10px;background:rgba(255,255,255,.1)"><div style="height:100%;width:${pct}%;border-radius:10px;background:${col};box-shadow:0 0 24px ${col}"></div></div></div>`;
+    h += meter(85, ev.s5_divida - .1, 'Dívida', 'R$ ' + Math.round(lerp(380, 640, dk)) + ' mil', lerp(45, 98, dk), C.red, 'trending-up');
+    const cc = ck > .5 ? C.red : C.green;
+    h += meter(565, ev.s5_caixa - .1, 'Caixa', 'R$ ' + Math.round(lerp(95, 8, ck)) + ' mil', lerp(70, 6, ck), cc, 'trending-down');
+    return h;
+  },
+  s6(t, sc, ev) {
+    const lt = t - sc.start, rot = lt * 12;
+    return `<div class="a" style="left:-460px;top:-160px;width:2000px;height:2000px;opacity:${.5 * clamp(lt * 2)};transform:rotate(${rot}deg);
+        background:repeating-conic-gradient(from 0deg at 50% 50%, rgba(242,193,78,.22) 0deg 5deg, transparent 5deg 20deg);
+        -webkit-mask-image:radial-gradient(circle at 50% 50%, #000 0%, transparent 45%)"></div>
+      <div class="a center disp" style="top:770px;font-size:120px">${words(t, 'GESTÃO DE', ev.s6_gestao - .05, .1)}</div>
+      <div class="a center" style="top:890px"><div class="disp gold" style="display:inline-block;font-size:182px;filter:drop-shadow(0 0 60px rgba(242,193,78,.45));${inS(t, ev.s6_gestao + .25, { s: .6, blur: 30 })}">PASSIVOS</div></div>
+      <div class="a center" style="top:1120px;${inS(t, ev.s6_gestao + .6)}"><div class="lbl" style="letter-spacing:8px;color:#d8c58f">O caminho estruturado</div></div>`;
+  },
+  s7(t, sc, ev) {
+    let h = stepHead(t, sc, '01', 'Raio-X das', 'dívidas');
+    const rows = [['landmark', 'Banco A', 420, 3.1], ['landmark', 'Banco B', 185, 2.4], ['building-2', 'Cooperativa', 96, 1.7], ['credit-card', 'Cartão PJ', 38, 12.9]];
+    const colQ = ev.s7_quanto, colW = ev.s7_quem, colC = ev.s7_custo;
+    h += `<div class="a glass" style="left:70px;top:610px;width:940px;height:720px;overflow:hidden;${inS(t, sc.start + .25, { y: 100 })}">
+      <div style="display:flex;padding:40px 46px 18px;white-space:nowrap" class="lbl"><div style="width:380px;${inS(t, colW, { y: 10 })}">Credor</div><div style="width:250px;${inS(t, colQ, { y: 10 })}">Saldo</div><div style="${inS(t, colC, { y: 10 })}">Custo a.m.</div></div>`;
+    rows.forEach(([icn, name, v, c], i) => {
+      const sk = (w) => `<div style="width:${w}px;height:26px;border-radius:13px;background:rgba(255,255,255,${.07 + .04 * Math.sin(t * 5 - i)})"></div>`;
+      const cell = (at, w, content) => P(t, at + i * .1, .01) > 0 ? `<div style="width:${w}px;${inS(t, at + i * .1, { y: 18, blur: 8 })}">${content}</div>` : `<div style="width:${w}px">${sk(w * .6)}</div>`;
+      const hot = c > 5;
+      h += `<div style="display:flex;align-items:center;height:142px;margin:0 46px;border-top:1.5px solid rgba(255,255,255,.08)">
+        ${cell(colW, 380, `<div style="display:flex;align-items:center;gap:20px">${glassIcon(icn, 74, C.gold, 'rgba(242,193,78,.18)')}<span style="font-size:38px;font-weight:700">${name}</span></div>`)}
+        ${cell(colQ, 250, `<span class="num" style="font-size:42px;font-weight:800;white-space:nowrap">R$ ${v} mil</span>`)}
+        ${cell(colC, 210, `<span class="chip num" style="padding:10px 20px;font-size:34px;background:${hot ? 'rgba(255,77,77,.18)' : 'rgba(242,193,78,.15)'};color:${hot ? '#ff8f8a' : '#f6d27a'}">${c.toLocaleString('pt-BR')}%</span>`)}</div>`;
+    });
+    const sweep = P(t, ev.s7_raio - .1, 1.6);
+    if (sweep > 0 && sweep < 1) h += `<div style="position:absolute;left:0;right:0;top:${sweep * 720 - 60}px;height:120px;background:linear-gradient(180deg,transparent,rgba(242,193,78,.18) 45%,rgba(255,240,200,.9) 50%,rgba(242,193,78,.18) 55%,transparent)"></div>`;
+    return h + '</div>';
+  },
+  s8(t, sc, ev) {
+    let h = stepHead(t, sc, '02', 'Análise dos', 'contratos');
+    const hl = [[2, ev.s8_juros, 'Juros', 'percent'], [6, ev.s8_tarifas, 'Tarifas', 'receipt'], [10, ev.s8_clausulas, 'Cláusulas', 'file-text']];
+    const W = [460, 430, 470, 400, 450, 360, 470, 420, 440, 470, 390, 450, 300];
+    let lines = '';
+    W.forEach((w, i) => {
+      const m = hl.find(x => x[0] === i);
+      const g = m ? eOut(P(t, m[1], .45)) : 0;
+      lines += `<div style="position:relative;height:36px;margin-bottom:6px">${m ? `<div style="position:absolute;left:-10px;top:-2px;height:40px;width:${(w + 20) * g}px;background:rgba(242,193,78,.85);border-radius:6px"></div>` : ''}
+        <div style="position:relative;top:11px;width:${w}px;height:14px;border-radius:7px;background:${g > .5 ? '#3d3420' : '#a9b0bf'}"></div></div>`;
+    });
+    h += `<div class="a" style="left:120px;top:620px;width:560px;height:720px;perspective:1600px;${inS(t, sc.start + .25, { y: 120 })}">
+      <div style="width:100%;height:100%;border-radius:22px;background:linear-gradient(170deg,#ffffff,#e9e6dd);transform:rotateY(14deg) rotateX(4deg);transform-origin:left center;
+        box-shadow:-30px 50px 100px rgba(0,0,0,.6);padding:44px 48px;color:#1c2333">
+        <div style="height:110px"><div style="font-size:26px;font-weight:900;letter-spacing:1px;white-space:nowrap">CÉDULA DE CRÉDITO BANCÁRIO</div>
+        <div style="font-size:20px;font-weight:600;color:#6a7285;margin-top:8px">Contrato nº 0000.4821 · Pessoa Jurídica</div></div>${lines}</div></div>`;
+    hl.forEach(([li, at, lab, icn], j) => {
+      const y = 620 + 44 + 110 + li * 42 + 18;   // paper top + padding + title block + line pitch
+      h += `<div class="a" style="left:640px;top:${y - 2}px;width:${110 * eOut(P(t, at + .1, .3))}px;height:3px;background:${C.gold};box-shadow:0 0 12px ${C.gold}"></div>
+        <div class="a" style="left:740px;top:${y - 42}px;${inS(t, at + .2, { x: -40, y: 0, s: .7 })}"><div class="chip" style="background:${C.gold};color:#1a1406;font-size:36px;padding:14px 28px;box-shadow:0 14px 40px rgba(242,193,78,.4)">${ic(icn, 36, '#1a1406', 2.6)}${lab}</div></div>`;
+    });
+    const lx = 300 + 110 * Math.sin((t - sc.start) * 1.2), ly = 820 + 260 * Math.sin((t - sc.start) * .7);
+    h += `<div class="a" style="left:${lx}px;top:${ly}px;${inS(t, sc.start + .7)}"><div style="width:170px;height:170px;border-radius:50%;border:10px solid ${C.gold};
+      background:radial-gradient(circle at 35% 30%, rgba(255,255,255,.45), rgba(255,255,255,.08));box-shadow:0 20px 50px rgba(0,0,0,.4)"></div>
+      <div style="position:absolute;left:142px;top:142px;width:90px;height:26px;border-radius:13px;background:${C.gold};transform:rotate(45deg);transform-origin:left center"></div></div>`;
+    return h;
+  },
+  s9(t, sc, ev) {
+    let h = stepHead(t, sc, '03', 'Negociação', 'estratégica');
+    const ok = eIO(P(t, ev.s9_estrategia, .7)), cy = 905;
+    const node = (x, icn, label, at, col) => `<div class="a" style="left:${x - 150}px;top:${cy - 150}px;width:300px;text-align:center;${inS(t, at, { s: .6 })}">
+      <div style="width:300px;height:300px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.03));
+        border:2px solid rgba(255,255,255,.18);box-shadow:0 40px 90px rgba(0,0,0,.55), 0 0 ${80 * ok}px rgba(242,193,78,${.35 * ok})">${ic(icn, 140, col, 1.7)}</div>
+      <div style="font-size:40px;font-weight:800;margin-top:26px">${label}</div></div>`;
+    let pts = [];
+    for (let i = 0; i <= 40; i++) {
+      const u = i / 40, x = 300 + u * 480, j = (i % 2 ? 1 : -1) * 34 * (1 - ok) * Math.sin(Math.PI * u) * (.7 + .3 * Math.sin(t * 30 + i));
+      pts.push(`${x},${cy + j}`);
+    }
+    const col = ok > .5 ? C.gold : C.red;
+    h += `<svg class="a" style="left:0;top:0" width="1080" height="1920" opacity="${clamp(P(t, sc.start + .5, .4))}">
+      <polyline points="${pts.join(' ')}" fill="none" stroke="${col}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 14px ${col})"/>
+      ${ok > 0 ? [0, 1, 2, 3].map(i => `<circle cx="${300 + ((t * 260 + i * 120) % 480)}" cy="${cy}" r="9" fill="#fff8e0" opacity="${ok}"/>`).join('') : ''}</svg>`;
+    h += node(205, 'landmark', 'Bancos', sc.start + .35, '#dfe6f3') + node(875, 'building-2', 'Sua empresa', sc.start + .5, C.gold);
+    h += `<div class="a center" style="top:${cy - 80}px;${inS(t, ev.s9_estrategia + .35, { s: .3 })}"><div style="display:inline-flex;width:160px;height:160px;border-radius:50%;align-items:center;justify-content:center;
+      background:radial-gradient(circle at 35% 30%, #fff3cf, #f2c14e 60%, #b98426);box-shadow:0 0 70px rgba(242,193,78,.6)">${ic('handshake', 92, '#1a1406', 2)}</div></div>`;
+    const dz = P(t, ev.s9_desespero - .55, .4), strike = eIO(P(t, ev.s9_desespero + .25, .35));
+    h += `<div class="a center" style="top:1200px;opacity:${dz * (1 - .5 * strike)}"><div class="chip" style="position:relative;font-size:40px;padding:16px 36px;background:rgba(255,77,77,.12);border:2px solid rgba(255,77,77,.6);color:#ff8f8a;${inS(t, ev.s9_desespero - .55, { s: .6 })}">
+      DESESPERO<div style="position:absolute;left:18px;top:47%;height:6px;width:${strike * 86}%;background:#ff4d4d;border-radius:3px"></div></div></div>`;
+    return h;
+  },
+  s10(t, sc, ev) {
+    let h = stepHead(t, sc, '04', 'Caixa', 'reorganizado');
+    const X0 = 60, X1 = 820, Z = 330, up = eIO(P(t, ev.s10_reorganizar, 2.2)), draw = eOut(P(t, sc.start + .3, 1.0));
+    const f = u => { const dip = -120 * Math.sin(Math.PI * clamp(u / .42)); const rise = u > .36 ? 260 * eIO(clamp((u - .36) / .55)) * up : 0; return (u < .42 ? dip : dip * (1 - up)) + rise; };
+    const vis = lerp(.42, 1, up) * draw; const pts = [];
+    for (let i = 0; i <= 90 * vis; i++) { const u = i / 90; pts.push([X0 + u * (X1 - X0), Z - f(u)]); }
+    const last = pts[pts.length - 1] || [X0, Z];
+    const line = pts.map(p => p.join(',')).join(' ');
+    const area = pts.length > 1 ? `M${X0},${Z} L${line.replace(/ /g, ' L')} L${last[0]},${Z} Z` : '';
+    const val = lerp(-38, 64, up) * 1000;
+    h += `<div class="a glass" style="left:70px;top:610px;width:940px;height:560px;padding:36px 40px;${inS(t, sc.start + .2, { y: 100 })}">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span class="lbl">Fluxo de caixa</span>
+        <span class="disp num ${val < 0 ? 'red' : 'green'}" style="font-size:64px">${val < 0 ? '' : '+'}${brl(val).replace(/\.\d{3}$/, ' mil')}</span></div>
+      <svg width="860" height="430" style="margin-top:10px"><defs>
+        <linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34d399" stop-opacity=".45"/><stop offset="1" stop-color="#34d399" stop-opacity="0"/></linearGradient>
+        <clipPath id="cp"><rect x="0" y="0" width="900" height="${Z}"/></clipPath><clipPath id="cn"><rect x="0" y="${Z}" width="900" height="300"/></clipPath></defs>
+        <line x1="${X0}" y1="${Z}" x2="${X1}" y2="${Z}" stroke="rgba(255,255,255,.25)" stroke-width="3" stroke-dasharray="10 10"/>
+        <path d="${area}" fill="url(#ag)" clip-path="url(#cp)"/><path d="${area}" fill="rgba(255,77,77,.25)" clip-path="url(#cn)"/>
+        <polyline points="${line}" fill="none" stroke="#ff4d4d" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#cn)"/>
+        <polyline points="${line}" fill="none" stroke="#34d399" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#cp)" style="filter:drop-shadow(0 0 10px #34d399)"/>
+        <circle cx="${last[0]}" cy="${last[1]}" r="15" fill="${last[1] > Z ? '#ff4d4d' : '#34d399'}" stroke="#fff" stroke-width="4"/></svg></div>`;
+    h += `<div class="a center" style="top:1205px;${inS(t, ev.s10_pe - .2, { s: .6 })}"><div class="chip" style="font-size:46px;padding:20px 42px;background:rgba(52,211,153,.14);border:2px solid rgba(52,211,153,.7);color:#bff5dc;box-shadow:0 0 50px rgba(52,211,153,.3)">
+      ${ic('circle-check', 54, '#34d399', 2.4)}Empresa de pé</div></div>`;
+    return h;
+  },
+  s11(t, sc, ev) {
+    const lt = t - sc.start;
+    let h = '';
+    const adv = ev.s11_advogado;
+    h += `<div class="a center disp" style="top:690px;font-size:84px;line-height:1.05">
+        <div>${words(t, 'Procure um', adv - .2, .07)}</div><div>${words(t, 'especialista em', adv, .07)}</div>
+        <div style="font-size:112px;margin-top:10px">${words(t, '*Direito* *Bancário*', adv + .35, .12)}</div></div>`;
+    const tap = P(t, ev.s11_manda, .7);
+    const btn = (x, icn, label, at, active) => `<div class="a glass" style="left:${x}px;top:1050px;width:400px;height:140px;border-radius:70px;display:flex;align-items:center;justify-content:center;gap:20px;
+      ${active ? `transform:scale(${1 - .06 * Math.sin(Math.PI * clamp(tap * 2.5))});background:${tap > .15 ? 'rgba(242,193,78,.95)' : ''};` : ''}${inS(t, at, { y: 60 })}">
+      ${ic(icn, 54, active && tap > .15 ? '#1a1406' : C.gold, 2.4)}<span style="font-size:46px;font-weight:800;color:${active && tap > .15 ? '#1a1406' : '#fff'}">${label}</span>
+      ${active && tap > 0 ? `<div style="position:absolute;left:50%;top:50%;width:${300 * tap}px;height:${300 * tap}px;margin:-${150 * tap}px;border-radius:50%;border:4px solid rgba(255,255,255,${1 - tap})"></div>` : ''}</div>`;
+    h += btn(120, 'bookmark', 'Salvar', adv + 1.6, false) + btn(560, 'send', 'Enviar', adv + 1.8, true);
+    h += `<div class="a center muted" style="top:1250px;font-size:26px;font-weight:600;${inS(t, adv + 2)}">Conteúdo informativo. Cada caso exige análise individual.</div>`;
+    return h;
+  },
 };
-window.setTimeline = tl => { TL = tl; };
+
+// ---------- frame compositor ----------
+let TL;
+const $ = id => document.getElementById(id);
+const sceneEl = $('scene'), cap = $('cap'), tag = $('tag'), bg = $('bg'), segs = $('segs'), flash = $('flash');
+const gctx = $('grain').getContext('2d'), gimg = gctx.createImageData(540, 960);
+function grain(seed) {
+  let s = (seed * 2654435761) >>> 0; const d = gimg.data;
+  for (let i = 0; i < d.length; i += 4) { s ^= s << 13; s ^= s >>> 17; s ^= s << 5; const v = (s >>> 0) & 255; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; }
+  gctx.putImageData(gimg, 0, 0);
+}
+window.setTimeline = tl => {
+  TL = tl;
+  segs.innerHTML = tl.scenes.map(() => '<i><b></b></i>').join('');
+};
+window.renderFrame = function (t, frame) {
+  const S = TL.scenes, i = Math.max(0, S.findIndex(s => t >= s.start && t < s.end)), sc = t >= TL.total ? S[S.length - 1] : S[i] || S[S.length - 1];
+  const lt = t - sc.start, dur = sc.end - sc.start, last = sc === S[S.length - 1];
+  const turn = S.find(s => s.id === 's6').start, m = eIO(P(t, turn - .2, .6));
+  // background mood: red/amber problem -> gold/emerald solution
+  const c1 = mix([255, 60, 60], [242, 193, 78], m), c2 = mix([255, 140, 50], [40, 200, 140], m);
+  bg.style.background = `radial-gradient(ellipse 900px 800px at ${30 + 10 * Math.sin(t * .3)}% ${22 + 6 * Math.cos(t * .25)}%, ${rgba(c1, .30)}, transparent 70%),
+    radial-gradient(ellipse 900px 900px at ${75 + 8 * Math.cos(t * .27)}% ${75 + 6 * Math.sin(t * .31)}%, ${rgba(c2, .24)}, transparent 70%),
+    radial-gradient(ellipse 1200px 1400px at 50% 45%, #0d1426, #05070c 75%)`;
+  $('dots').style.transform = `translateY(${-(t * 14) % 48}px)`;
+  // scene with push-in camera and blur transitions
+  const ein = sc === S[0] ? 1 : P(lt, 0, .45), eout = last ? 0 : P(lt, dur - .25, .25);
+  const sc_ = lerp(.95, 1, eOut(ein)) * (1 + .035 * lt / dur) * (1 + .1 * eout * eout);
+  sceneEl.style.transform = `scale(${sc_})`;
+  sceneEl.style.opacity = clamp(ein * 3) * (1 - eout);
+  sceneEl.style.filter = (ein < 1 || eout > 0) ? `blur(${(1 - eOut(ein)) * 14 + eout * 18}px)` : 'none';
+  sceneEl.innerHTML = SC[sc.id](t, sc, TL.ev);
+  const s3d = $('scene3d'); s3d.style.transform = sceneEl.style.transform; s3d.style.opacity = sceneEl.style.opacity; s3d.style.filter = sc.id === 's1' ? `blur(2.5px) brightness(.8) ${sceneEl.style.filter === 'none' ? '' : sceneEl.style.filter}` : sceneEl.style.filter;   // depth of field: coins sit behind the type
+  window.render3D(t, sc, TL.ev);
+  flash.style.opacity = .85 * Math.exp(-Math.pow((t - turn) / .12, 2)) + .55 * Math.max(0, 1 - (t - turn) / .5) * (t >= turn ? 1 : 0);
+  // progress segments
+  [...segs.children].forEach((el, j) => { el.firstChild.style.width = (100 * clamp((t - S[j].start) / (S[j].end - S[j].start))) + '%'; });
+  // tag pill
+  if (sc.tag) {
+    tag.style.display = 'flex'; tag.querySelector('.tx').textContent = sc.tag;
+    tag.querySelector('.dot').style.background = m > .5 ? '#34d399' : '#ff4d4d';
+    tag.querySelector('.dot').style.boxShadow = `0 0 14px ${m > .5 ? '#34d399' : '#ff4d4d'}`;
+    const k = P(lt, .05, .45);
+    tag.style.opacity = clamp(k * 3) * (1 - eout);
+    tag.style.transform = `translateX(-50%) translateY(${(1 - eOut(k)) * -30}px)`;
+  } else tag.style.display = 'none';
+  // karaoke captions
+  const groups = []; let w0 = 0; sc.cap.forEach(n => { groups.push(sc.words.slice(w0, w0 + n)); w0 += n; });
+  let gi = 0; groups.forEach((g, j) => { if (t >= g[0].s - .06) gi = j; });
+  const g = groups[gi], gk = P(t, g[0].s - .06, .22);
+  let wi = -1; g.forEach((w, j) => { if (t >= w.s - .03) wi = j; });
+  cap.style.opacity = t < g[0].s - .3 ? 0 : 1 - eout;
+  cap.style.transform = `translateY(${(1 - eOut(gk)) * 24}px) scale(${lerp(.92, 1, spring(gk))})`;
+  cap.innerHTML = '<div>' + g.map((w, j) => `<span class="${j === wi ? 'on' : ''}">${w.p}</span>`).join('') + '</div>';
+  grain(frame || Math.round(t * 30));
+};
 </script>
 </body>
 </html>
