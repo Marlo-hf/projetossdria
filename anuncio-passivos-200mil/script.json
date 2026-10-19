@@ -1,0 +1,9 @@
+[
+ {"id":"s1","tag":"","cap":"Empresário, | se a sua empresa deve | mais de R$ 200 mil | pros bancos, | assista até o final.",
+  "say":"Empresário, se a sua empresa deve mais de duzentos mil reais pros bancos, assista até o final."},
+ {"id":"s2","tag":"O CENÁRIO","cap":"Capital de giro, | cheque especial, | cartão, | empréstimo pra cobrir empréstimo... | e os juros | comendo o caixa todo mês."},
+ {"id":"s3","tag":"O ERRO","cap":"Negociar sozinho, | direto com o gerente, | muitas vezes | só empurra o problema | pra frente."},
+ {"id":"s4","tag":"O CAMINHO","cap":"Na gestão de passivos, | um advogado especialista | em direito bancário | analisa cada contrato | e conduz a negociação | com estratégia, | pra reorganizar o caixa | e proteger a empresa."},
+ {"id":"s5","tag":"PRÓXIMO PASSO","cap":"Se a sua dívida bancária | passa de R$ 200 mil, | toca em Saiba mais | e preenche o formulário. | É rápido, | e o seu caso | vai ser analisado | por um especialista.",
+  "say":"Se a sua dívida bancária passa de duzentos mil reais, toca em Saiba mais e preenche o formulário. É rápido, e o seu caso vai ser analisado por um especialista."}
+]
