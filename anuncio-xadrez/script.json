@@ -1,0 +1,8 @@
+[
+ {"id":"s1","tag":"","cap":"Empresário, | negociar dívida com banco | é um jogo. | E o banco | joga esse jogo | todo dia."},
+ {"id":"s2","tag":"O TABULEIRO","cap":"Se a sua empresa deve | mais de R$ 200 mil | e você negocia sozinho, | cada movimento errado | custa caro: | juros, | garantias, | prazos.",
+  "say":"Se a sua empresa deve mais de duzentos mil reais e você negocia sozinho, cada movimento errado custa caro: juros, garantias, prazos."},
+ {"id":"s3","tag":"A ESTRATÉGIA","cap":"Na gestão de passivos, | um advogado especialista | em direito bancário | entra no jogo com você. | Analisa os contratos, | identifica o que pode ser revisto | e conduz a negociação | com estratégia."},
+ {"id":"s4","tag":"PRÓXIMO PASSO","cap":"Se a sua dívida bancária | passa de R$ 200 mil, | toca em Saiba mais | e preenche o formulário. | Um especialista | vai analisar o seu caso.",
+  "say":"Se a sua dívida bancária passa de duzentos mil reais, toca em Saiba mais e preenche o formulário. Um especialista vai analisar o seu caso."}
+]

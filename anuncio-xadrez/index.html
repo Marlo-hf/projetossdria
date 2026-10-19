@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Gestão de Passivos PJ</title>
+<style>
+  @font-face { font-family: "Playfair Display"; font-weight: 700; font-style: normal; src: url(fonts/playfair-display-latin-700-normal.woff2); }
+  @font-face { font-family: "Playfair Display"; font-weight: 800; font-style: normal; src: url(fonts/playfair-display-latin-800-normal.woff2); }
+  @font-face { font-family: "Playfair Display"; font-weight: 700; font-style: italic; src: url(fonts/playfair-display-latin-700-italic.woff2); }
+  @font-face { font-family: "Playfair Display"; font-weight: 800; font-style: italic; src: url(fonts/playfair-display-latin-800-italic.woff2); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05070c; }
+  body { font-family: "Inter", sans-serif; color: #f5f7fb; -webkit-font-smoothing: antialiased; }
+  #stage { position: absolute; inset: 0; overflow: hidden; background: #05070c; }
+  #bg { position: absolute; inset: 0; }
+  #dots { position: absolute; inset: -60px; opacity: .22;
+    background-image: radial-gradient(rgba(255,255,255,.35) 1.4px, transparent 1.6px); background-size: 48px 48px;
+    -webkit-mask-image: radial-gradient(ellipse 70% 55% at 50% 45%, #000 20%, transparent 75%); }
+  #scene { position: absolute; inset: 0; transform-origin: 540px 900px; }
+  #flash { position: absolute; inset: 0; background: #fff6dc; opacity: 0; pointer-events: none; }
+  #vig { position: absolute; inset: 0; background: radial-gradient(ellipse 85% 70% at 50% 45%, transparent 50%, rgba(0,0,0,.7)); }
+  #grain { position: absolute; inset: 0; width: 1080px; height: 1920px; opacity: .07; mix-blend-mode: screen; image-rendering: pixelated; }
+  #segs { position: absolute; top: 64px; left: 56px; right: 56px; display: flex; gap: 8px; }
+  #segs i { flex: 1; height: 6px; border-radius: 6px; background: rgba(255,255,255,.14); overflow: hidden; display: block; }
+  #segs i b { display: block; height: 100%; background: #fff; border-radius: 6px; }
+  #tag { position: absolute; top: 150px; left: 50%; display: flex; align-items: center; gap: 16px; white-space: nowrap;
+    padding: 16px 34px 16px 28px; border-radius: 60px; font-weight: 800; font-size: 32px; letter-spacing: 4px;
+    background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.16); backdrop-filter: blur(14px); }
+  #tag .dot { width: 16px; height: 16px; border-radius: 50%; }
+  #cap { position: absolute; left: 60px; right: 60px; top: 1395px; height: 210px; display: flex; align-items: center; justify-content: center; text-align: center; }
+  #cap div { font-weight: 800; font-size: 64px; line-height: 1.22; letter-spacing: -1px; }
+  #cap span { display: inline-block; padding: 0 13px; border-radius: 16px; color: #fff; text-shadow: 0 4px 18px rgba(0,0,0,.8), 0 2px 0 rgba(0,0,0,.6); }
+  #cap span.on { background: #f2c14e; color: #141006; text-shadow: none; box-shadow: 0 10px 30px rgba(242,193,78,.35); }
+
+  .a { position: absolute; }
+  .glass { background: linear-gradient(160deg, rgba(255,255,255,.11), rgba(255,255,255,.035)); border: 1.5px solid rgba(255,255,255,.15);
+    border-radius: 40px; box-shadow: 0 40px 90px rgba(0,0,0,.55), inset 0 1.5px 0 rgba(255,255,255,.18); backdrop-filter: blur(26px); }
+  .disp { font-family: "Inter Display", "Inter", sans-serif; font-weight: 900; letter-spacing: -0.045em; line-height: .95; }
+  .gold { background: linear-gradient(180deg, #fff3cf 0%, #f2c14e 50%, #b98426 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .red { background: linear-gradient(180deg, #ffb0a8 0%, #ff4d4d 55%, #c2232b 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .green { background: linear-gradient(180deg, #c6ffe3 0%, #34d399 55%, #0f9d6b 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ice { background: linear-gradient(180deg, #ffffff 0%, #d7e6ff 60%, #8fb0de 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .muted { color: #93a0b8; }
+  .serif { font-family: "Playfair Display", serif; font-weight: 800; letter-spacing: -.01em; line-height: 1.02; text-shadow: 0 6px 30px rgba(0,0,0,.6); }
+  .serif .gold, .serif.gold { text-shadow: none; }
+  .it { font-style: italic; }
+  .w { display: inline-block; }
+  .center { text-align: center; left: 0; right: 0; }
+  .lbl { font-size: 28px; font-weight: 700; letter-spacing: 4px; color: #8f9bb3; text-transform: uppercase; }
+  .chip { display: inline-flex; align-items: center; gap: 12px; padding: 12px 24px; border-radius: 40px; font-weight: 800; font-size: 30px; }
+  .num { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bg"></div>
+  <div id="dots"></div>
+  <div id="scene3d" style="position:absolute;inset:0;transform-origin:540px 900px"><canvas id="gl" width="1080" height="1920" style="position:absolute;inset:0;width:1080px;height:1920px"></canvas></div>
+  <div id="scene"></div>
+  <div id="vig"></div>
+  <div id="flash"></div>
+  <canvas id="grain" width="540" height="960"></canvas>
+  <div id="segs"></div>
+  <div id="tag"><span class="dot"></span><span class="tx"></span></div>
+  <div id="cap"></div>
+</div>
+<script type="importmap">{ "imports": { "three": "./lib/three.module.js" } }</script>
+<script type="module" src="three-layer.js"></script>
+<script src="icons.js"></script>
+<script>
+// ---------- math / animation helpers ----------
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const P = (t, a, d) => clamp((t - a) / d);
+const eOut = k => 1 - Math.pow(1 - k, 3);
+const eIO = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+const spring = k => k <= 0 ? 0 : k >= 1 ? 1 : 1 - Math.exp(-6.5 * k) * Math.cos(10.5 * k);
+const mix = (c1, c2, k) => c1.map((v, i) => lerp(v, c2[i], k));
+const rgba = (c, a) => `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a})`;
+const brl = n => (n < 0 ? '-R$ ' : 'R$ ') + Math.abs(Math.round(n)).toLocaleString('pt-BR');
+const ic = (n, s, c, sw = 2) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="${c}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${ICONS[n]}</svg>`;
+// entrance: fade + rise + de-blur + spring scale
+function inS(t, at, { d = .6, y = 50, x = 0, blur = 16, s = .9 } = {}) {
+  const k = P(t, at, d); if (k <= 0) return 'opacity:0;';
+  const e = eOut(k), sp = spring(k);
+  return `opacity:${clamp(k * 2.5)};transform:translate(${(1 - e) * x}px,${(1 - e) * y}px) scale(${lerp(s, 1, sp)});${k < 1 ? `filter:blur(${(1 - e) * blur}px);` : ''}`;
+}
+// kinetic words: "texto *destaque*" -> words that enter one by one
+function words(t, text, at, step, cls = '', hcls = 'gold') {
+  return text.split(' ').map((w, i) => {
+    const hi = /^\*.*\*$/.test(w); w = w.replace(/\*/g, '');
+    return `<span class="w ${hi ? hcls : cls}" style="${inS(t, at + i * step, { y: 70, blur: 20, s: .85 })}">${w}</span>`;
+  }).join(' ');
+}
+const C = { gold: '#f2c14e', red: '#ff4d4d', green: '#34d399', ink: '#f5f7fb', muted: '#93a0b8' };
+const glassIcon = (n, size, color, tint) => `<div style="width:${size}px;height:${size}px;border-radius:${size * .3}px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(160deg, ${tint}, rgba(255,255,255,.03));border:1.5px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)">${ic(n, size * .5, color, 2.2)}</div>`;
+function stepHead(t, sc, num, l1, l2) {
+  const at = sc.start + .05;
+  return `<div class="a" style="left:96px;top:250px;${inS(t, at, { x: -60, y: 0 })}">
+      <div class="disp" style="font-size:230px;color:transparent;-webkit-text-stroke:3px rgba(242,193,78,.9);letter-spacing:-.06em">${num}</div></div>
+    <div class="a disp" style="left:400px;top:300px;font-size:92px;line-height:1">
+      <div>${words(t, l1, at + .12, .07)}</div><div class="gold">${words(t, l2, at + .26, .07, 'gold')}</div></div>`;
+}
+
+// ---------- scenes ----------
+// Overlays for "Xadrez" (3D board lives in three-layer.js).
+const wordAt = (sc, n) => sc.words.find(w => w.n === n).s;
+const L = () => window.__labels || {};
+const serif = (t, text, at, step, size, extra = '') => `<div class="serif" style="font-size:${size}px;${extra}">${words(t, text, at, step, '', 'gold it')}</div>`;
+
+function formScene(t, sc, { sel1, typeAt, sel2, done, saiba }) {
+  const ok = P(t, done - .2, .45), send = done - .7;
+  const name = 'Carlos M.'.slice(0, Math.floor(clamp((t - typeAt) / .5) * 9)), phone = '(11) 9•••• ••••'.slice(0, Math.floor(clamp((t - typeAt - .55) / .6) * 15));
+  const opt = (txt, on) => `<div style="display:flex;align-items:center;gap:16px;padding:16px 20px;border-radius:16px;border:2.5px solid ${on ? '#1f6feb' : '#d7dbe3'};background:${on ? '#eef4ff' : '#fff'};font-size:26px;font-weight:${on ? 800 : 600};color:#1c2333">
+    <span style="width:26px;height:26px;border-radius:50%;border:3px solid ${on ? '#1f6feb' : '#9aa3b5'};display:flex;align-items:center;justify-content:center">${on ? '<i style="width:12px;height:12px;border-radius:50%;background:#1f6feb"></i>' : ''}</span>${txt}</div>`;
+  const field = (label, val, active) => `<div style="margin-top:14px"><div style="font-size:21px;font-weight:700;color:#6a7285;margin-bottom:6px">${label}</div>
+    <div style="height:58px;border-radius:14px;border:2.5px solid ${active ? '#1f6feb' : '#d7dbe3'};padding:0 18px;display:flex;align-items:center;font-size:26px;font-weight:700;color:#1c2333">${val}${active ? `<i style="width:3px;height:30px;background:#1f6feb;margin-left:2px;opacity:${Math.sin(t * 12) > 0 ? 1 : 0}"></i>` : ''}</div></div>`;
+  const pressing = P(t, send, .25), sent = t > send + .25;
+  const form = `<div style="display:flex;align-items:center;gap:16px;padding-bottom:18px;border-bottom:2px solid #eceef2">
+      <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(160deg,#f6d27a,#b98426);display:flex;align-items:center;justify-content:center">${ic('scale', 36, '#1a1406', 2.2)}</div>
+      <div><div style="font-size:27px;font-weight:900;color:#1c2333">Gestão de Passivos PJ</div><div style="font-size:21px;font-weight:600;color:#6a7285">Análise do seu caso</div></div></div>
+    <div style="font-size:24px;font-weight:800;color:#1c2333;margin:20px 0 10px">Valor total das dívidas bancárias</div>
+    <div style="display:flex;flex-direction:column;gap:10px">${opt('Até R$ 200 mil', false)}${opt('Acima de R$ 200 mil', t > sel1)}</div>
+    <div style="font-size:24px;font-weight:800;color:#1c2333;margin:20px 0 10px">Situação atual</div>
+    <div style="display:flex;flex-direction:column;gap:10px">${opt('Em dia, mas apertado', false)}${opt('Já em atraso', t > sel2)}</div>
+    ${field('Nome', name, t > typeAt && t < typeAt + .55)}${field('WhatsApp', phone, t > typeAt + .55 && t < sel2)}
+    <div style="margin-top:22px;height:76px;border-radius:16px;background:${sent ? '#16a34a' : '#1f6feb'};display:flex;align-items:center;justify-content:center;gap:12px;color:#fff;font-size:30px;font-weight:800;
+      transform:scale(${1 - .06 * Math.sin(Math.PI * pressing)})">${sent ? ic('check', 34, '#fff', 3) + 'Enviado' : 'Enviar'}</div>
+    <div style="margin-top:14px;font-size:17px;color:#8a93a6;text-align:center">Conteúdo informativo. Cada caso exige análise individual.</div>`;
+  let h = `<div class="a" style="left:225px;top:285px;width:630px;height:1000px;border-radius:72px;padding:18px;background:linear-gradient(160deg,#2a3143,#0d111b);
+      box-shadow:0 50px 120px rgba(0,0,0,.7), inset 0 2px 0 rgba(255,255,255,.18), 0 0 0 3px #3a4256;${inS(t, sc.start + .05, { y: 160, s: .85 })}">
+    <div style="position:relative;width:100%;height:100%;border-radius:56px;background:#f6f7f9;overflow:hidden;padding:56px 30px 30px">
+      <div style="position:absolute;left:50%;top:16px;width:150px;height:30px;margin-left:-75px;border-radius:15px;background:#0d111b"></div>${form}
+      ${ok > 0 ? `<div style="position:absolute;inset:0;background:rgba(246,247,249,${.96 * clamp(ok * 2)});display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:50px;text-align:center">
+        <div style="width:170px;height:170px;border-radius:50%;background:#16a34a;display:flex;align-items:center;justify-content:center;transform:scale(${spring(ok)});box-shadow:0 20px 60px rgba(22,163,74,.45)">${ic('check', 100, '#fff', 3)}</div>
+        <div style="font-size:44px;font-weight:900;color:#1c2333;${inS(t, done + .1)}">Recebido!</div>
+        <div style="font-size:30px;font-weight:600;color:#4a5263;line-height:1.35;${inS(t, done + .25)}">Seu caso vai ser analisado por um especialista em direito bancário.</div></div>` : ''}
+    </div></div>`;
+  const bob = Math.sin((t - saiba) * 6) * 10 * (t > saiba + .4 ? 1 : 0);
+  h += `<div class="a center" style="top:1298px;${inS(t, saiba - .1, { s: .6 })}"><div class="chip" style="font-size:34px;padding:14px 34px;background:#f2c14e;color:#1a1406;box-shadow:0 14px 50px rgba(242,193,78,.45)">
+    Toque em Saiba mais<span style="display:inline-block;transform:translateY(${bob}px)">${ic('arrow-down', 38, '#1a1406', 3)}</span></div></div>`;
+  return h;
+}
+
+const chipAt = (t, key, at, txt, col, dy = 0, until = 1e9) => {
+  const p = L()[key]; if (!p) return '';
+  const k = P(t, at, .35) * (1 - P(t, until, .3)); if (k <= 0) return '';
+  return `<div class="a" style="left:${clamp(p[0], 170, 910)}px;top:${p[1] - 70 + dy}px;transform:translateX(-50%) scale(${lerp(.5, 1, spring(k))});opacity:${clamp(k * 3)}">
+    <div class="chip" style="font-size:28px;letter-spacing:2px;padding:10px 22px;white-space:nowrap;${col}">${txt}</div></div>`;
+};
+const RED = 'background:rgba(30,6,8,.85);border:2px solid #ff4d4d;color:#ffb0a8', GOLD = 'background:#f2c14e;color:#1a1406;box-shadow:0 10px 30px rgba(242,193,78,.4)';
+
+const SC = {
+  s1(t, sc, ev) {
+    return `<div class="a center" style="top:225px">${serif(t, 'Empresário,', -.6, 0, 100)}
+        ${serif(t, 'negociar dívida com banco', ev.s1_negociar - .1, .07, 58, 'color:#c9d3e6;margin-top:14px')}
+        ${serif(t, 'é um *jogo.*', ev.s1_jogo - .35, .12, 140, 'margin-top:4px')}</div>
+      <div class="a center" style="top:610px">${serif(t, '*E* *o* *banco* *joga* *todo* *dia.*', wordAt(sc, 'joga') - .3, .08, 58)}</div>
+      ${chipAt(t, 'king', ev.s1_jogo + .6, 'SUA EMPRESA', 'background:rgba(10,14,24,.8);border:2px solid #f2c14e;color:#f6d27a', -10)}`;
+  },
+  s2(t, sc, ev) {
+    const x = P(t, ev.s2_movimento + .1, .4);
+    let h = `<div class="a center" style="top:240px">${serif(t, 'Dívida acima de', ev.s2_200 - .5, .07, 60, 'color:#c9d3e6')}
+      <div style="${inS(t, ev.s2_200 - .2, { s: .6, blur: 24 })}"><div class="serif gold it" style="display:inline-block;font-size:130px">R$ 200 mil</div></div></div>`;
+    if (x > 0) h += `<div class="a center" style="top:560px"><div class="serif" style="display:inline-block;font-size:110px;color:#ff4d4d;letter-spacing:.06em;transform:scale(${lerp(1.8, 1, eOut(x))});opacity:${clamp(x * 2)};text-shadow:0 0 40px rgba(255,60,60,.6)">XEQUE.</div></div>`;
+    h += chipAt(t, 'rook', ev.s2_juros, 'JUROS', RED) + chipAt(t, 'bishop', ev.s2_garantias, 'GARANTIAS', RED) + chipAt(t, 'queen', ev.s2_prazos, 'PRAZOS', RED);
+    return h;
+  },
+  s3(t, sc, ev) {
+    return `<div class="a center" style="top:240px">${serif(t, 'Gestão de', ev.s3_gestao - .05, 0, 92)}${serif(t, '*Passivos*', ev.s3_gestao + .25, 0, 150, 'margin-top:-14px')}</div>
+      <div class="a center" style="top:500px;${inS(t, ev.s3_advogado)}"><div class="lbl" style="letter-spacing:5px;color:#d8c58f">com advogado especialista em direito bancário</div></div>
+      ${chipAt(t, 'knight', ev.s3_entra + .1, 'ESPECIALISTA', GOLD, 0, ev.s3_estrategia)}${chipAt(t, 'arook', ev.s3_analisa + .1, 'CONTRATOS', GOLD, 0, ev.s3_estrategia)}${chipAt(t, 'abishop', ev.s3_conduz + .1, 'NEGOCIAÇÃO', GOLD, 0, ev.s3_estrategia)}
+      ${chipAt(t, 'king', ev.s3_estrategia + .2, 'EMPRESA PROTEGIDA', 'background:rgba(6,40,26,.85);border:2px solid #34d399;color:#bff5dc', -10)}`;
+  },
+  s4(t, sc, ev) {
+    return formScene(t, sc, { sel1: ev.s4_200 + .2, typeAt: ev.s4_formulario + .3, sel2: ev.s4_especialista - .4, done: ev.s4_analisar, saiba: ev.s4_saiba });
+  },
+};
+
+// ---------- frame compositor ----------
+let TL;
+const $ = id => document.getElementById(id);
+const sceneEl = $('scene'), cap = $('cap'), tag = $('tag'), bg = $('bg'), segs = $('segs'), flash = $('flash');
+const gctx = $('grain').getContext('2d'), gimg = gctx.createImageData(540, 960);
+function grain(seed) {
+  let s = (seed * 2654435761) >>> 0; const d = gimg.data;
+  for (let i = 0; i < d.length; i += 4) { s ^= s << 13; s ^= s >>> 17; s ^= s << 5; const v = (s >>> 0) & 255; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; }
+  gctx.putImageData(gimg, 0, 0);
+}
+window.setTimeline = tl => {
+  TL = tl; window.__TL = tl;
+  segs.innerHTML = tl.scenes.map(() => '<i><b></b></i>').join('');
+};
+window.renderFrame = function (t, frame) {
+  const S = TL.scenes, i = Math.max(0, S.findIndex(s => t >= s.start && t < s.end)), sc = t >= TL.total ? S[S.length - 1] : S[i] || S[S.length - 1];
+  const lt = t - sc.start, dur = sc.end - sc.start, last = sc === S[S.length - 1];
+  const turn = S.find(s => s.id === 's3').start, m = eIO(P(t, turn - .2, .6));
+  // background mood: red/amber problem -> gold/emerald solution
+  const c1 = mix([255, 60, 60], [242, 193, 78], m), c2 = mix([255, 140, 50], [40, 200, 140], m);
+  bg.style.background = `radial-gradient(ellipse 900px 800px at ${30 + 10 * Math.sin(t * .3)}% ${22 + 6 * Math.cos(t * .25)}%, ${rgba(c1, .30)}, transparent 70%),
+    radial-gradient(ellipse 900px 900px at ${75 + 8 * Math.cos(t * .27)}% ${75 + 6 * Math.sin(t * .31)}%, ${rgba(c2, .24)}, transparent 70%),
+    radial-gradient(ellipse 1200px 1400px at 50% 45%, #0d1426, #05070c 75%)`;
+  $('dots').style.transform = `translateY(${-(t * 14) % 48}px)`;
+  // scene with push-in camera and blur transitions
+  const ein = sc === S[0] ? 1 : P(lt, 0, .45), eout = last ? 0 : P(lt, dur - .25, .25);
+  const sc_ = lerp(.95, 1, eOut(ein)) * (1 + .035 * lt / dur) * (1 + .1 * eout * eout);
+  sceneEl.style.transform = `scale(${sc_})`;
+  sceneEl.style.opacity = clamp(ein * 3) * (1 - eout);
+  sceneEl.style.filter = (ein < 1 || eout > 0) ? `blur(${(1 - eOut(ein)) * 14 + eout * 18}px)` : 'none';
+  // the 3D layer is one continuous camera move, so it skips the per-scene transitions; it renders first so overlays can anchor to it
+  const s3d = $('scene3d'); s3d.style.opacity = sc.id === S[S.length - 1].id ? 0 : 1 - (S[S.length - 2] === sc ? eout : 0);
+  window.render3D(t, sc, TL.ev);
+  sceneEl.innerHTML = SC[sc.id](t, sc, TL.ev);
+  flash.style.opacity = .85 * Math.exp(-Math.pow((t - turn) / .12, 2)) + .55 * Math.max(0, 1 - (t - turn) / .5) * (t >= turn ? 1 : 0);
+  // progress segments
+  [...segs.children].forEach((el, j) => { el.firstChild.style.width = (100 * clamp((t - S[j].start) / (S[j].end - S[j].start))) + '%'; });
+  // tag pill
+  if (sc.tag) {
+    tag.style.display = 'flex'; tag.querySelector('.tx').textContent = sc.tag;
+    tag.querySelector('.dot').style.background = m > .5 ? '#34d399' : '#ff4d4d';
+    tag.querySelector('.dot').style.boxShadow = `0 0 14px ${m > .5 ? '#34d399' : '#ff4d4d'}`;
+    const k = P(lt, .05, .45);
+    tag.style.opacity = clamp(k * 3) * (1 - eout);
+    tag.style.transform = `translateX(-50%) translateY(${(1 - eOut(k)) * -30}px)`;
+  } else tag.style.display = 'none';
+  // karaoke captions
+  const groups = []; let w0 = 0; sc.cap.forEach(n => { groups.push(sc.words.slice(w0, w0 + n)); w0 += n; });
+  let gi = 0; groups.forEach((g, j) => { if (t >= g[0].s - .06) gi = j; });
+  const g = groups[gi], gk = P(t, g[0].s - .06, .22);
+  let wi = -1; g.forEach((w, j) => { if (t >= w.s - .03) wi = j; });
+  cap.style.opacity = t < g[0].s - .3 ? 0 : 1 - eout;
+  cap.style.transform = `translateY(${(1 - eOut(gk)) * 24}px) scale(${lerp(.92, 1, spring(gk))})`;
+  cap.innerHTML = '<div>' + g.map((w, j) => `<span class="${j === wi ? 'on' : ''}">${w.p}</span>`).join('') + '</div>';
+  grain(frame || Math.round(t * 30));
+};
+</script>
+</body>
+</html>
