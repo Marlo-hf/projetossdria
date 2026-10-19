@@ -1,0 +1,56 @@
+[
+ {
+  "id": "s1",
+  "tag": "",
+  "text": "Sua empresa fatura todo mês, mas o dinheiro some antes de pagar as contas?",
+  "cap": "Sua empresa fatura todo mês, | mas o dinheiro some | antes de pagar as contas?"
+ },
+ {
+  "id": "s2",
+  "tag": "O PROBLEMA",
+  "text": "Capital de giro, cheque especial, cartão empresarial. Os juros se acumulam, e a dívida cresce mais rápido que o faturamento.",
+  "cap": "Capital de giro, | cheque especial, | cartão empresarial. | Os juros se acumulam, | e a dívida cresce | mais rápido que o faturamento."
+ },
+ {
+  "id": "s3",
+  "tag": "O ERRO MAIS COMUM",
+  "text": "Aí vem o erro mais comum: pegar um empréstimo novo para pagar o antigo.",
+  "cap": "Aí vem o erro mais comum: | pegar um empréstimo novo | para pagar o antigo."
+ },
+ {
+  "id": "s4",
+  "tag": "O RESULTADO",
+  "text": "Isso vira uma bola de neve, e a cada mês fica mais difícil sair dela.",
+  "cap": "Isso vira | uma bola de neve, | e a cada mês | fica mais difícil sair dela."
+ },
+ {
+  "id": "s5",
+  "tag": "PASSO 1 · DIAGNÓSTICO",
+  "text": "A gestão de passivos é o caminho estruturado. Começa com um diagnóstico completo de todas as dívidas da empresa.",
+  "cap": "A gestão de passivos | é o caminho estruturado. | Começa com um diagnóstico completo | de todas as dívidas da empresa."
+ },
+ {
+  "id": "s6",
+  "tag": "PASSO 2 · CONTRATOS",
+  "text": "Depois, vem a análise dos contratos: juros, tarifas e cláusulas que podem ser revistas.",
+  "cap": "Depois, vem a análise | dos contratos: | juros, tarifas e cláusulas | que podem ser revistas."
+ },
+ {
+  "id": "s7",
+  "tag": "PASSO 3 · NEGOCIAÇÃO",
+  "text": "Com isso, a negociação com os bancos é feita com estratégia, e não no desespero.",
+  "cap": "Com isso, | a negociação com os bancos | é feita com estratégia, | e não no desespero."
+ },
+ {
+  "id": "s8",
+  "tag": "PASSO 4 · REORGANIZAÇÃO",
+  "text": "O objetivo é reorganizar o caixa e preservar a continuidade do seu negócio.",
+  "cap": "O objetivo é reorganizar o caixa | e preservar a continuidade | do seu negócio."
+ },
+ {
+  "id": "s9",
+  "tag": "",
+  "text": "Se a sua empresa está nessa situação, busque orientação de um advogado especialista em direito bancário. Salve este vídeo e mande para um empresário que precisa ver isso.",
+  "cap": "Se a sua empresa | está nessa situação, | busque orientação | de um advogado especialista | em direito bancário. | Salve este vídeo | e mande para um empresário | que precisa ver isso."
+ }
+]

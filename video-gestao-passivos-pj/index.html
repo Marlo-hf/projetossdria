@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Gestão de Passivos PJ</title>
+<style>
+  :root {
+    --bg1: #0a1222; --bg2: #13213b; --gold: #e2b457; --gold2: #f4d58d;
+    --red: #ef4f55; --green: #35d48a; --ink: #f4f6fa; --muted: #8d9ab2; --panel: #1a2a47;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--bg1); }
+  body { font-family: "Inter", sans-serif; color: var(--ink); }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden;
+    background: radial-gradient(1200px 1100px at 50% 38%, var(--bg2), var(--bg1) 70%); }
+  #grid { position: absolute; inset: -120px; opacity: .07;
+    background-image: linear-gradient(#9fb3d9 1.5px, transparent 1.5px), linear-gradient(90deg, #9fb3d9 1.5px, transparent 1.5px);
+    background-size: 120px 120px; }
+  #vignette { position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(900px 1300px at 50% 45%, transparent 55%, rgba(0,0,0,.55)); }
+  #progress { position: absolute; left: 60px; right: 60px; top: 70px; height: 8px; border-radius: 8px; background: rgba(255,255,255,.12); overflow: hidden; }
+  #progress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--gold), var(--gold2)); border-radius: 8px; }
+  #brand { position: absolute; top: 112px; left: 0; right: 0; text-align: center; font-weight: 800; letter-spacing: 6px; font-size: 30px; color: var(--muted); }
+  #brand b { color: var(--gold); }
+  #tag { position: absolute; top: 200px; left: 50%; transform: translateX(-50%); white-space: nowrap;
+    padding: 18px 40px; border-radius: 60px; font-weight: 800; font-size: 40px; letter-spacing: 3px;
+    background: rgba(226,180,87,.14); border: 3px solid var(--gold); color: var(--gold2); }
+  #art { position: absolute; left: 0; top: 330px; width: 1080px; height: 900px; overflow: visible; }
+  #cap { position: absolute; left: 70px; right: 70px; top: 1255px; height: 250px; display: flex; align-items: center; justify-content: center;
+    text-align: center; font-weight: 800; font-size: 76px; line-height: 1.12; letter-spacing: -1px; }
+  #cap span { display: inline-block; margin: 0 3px; text-shadow: 0 6px 0 rgba(0,0,0,.45), 0 0 30px rgba(0,0,0,.6); }
+  #cap span.on { color: var(--gold2); }
+  #cap span.off { color: var(--ink); }
+  svg text { font-family: "Inter", sans-serif; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="grid"></div>
+  <svg id="art" viewBox="0 0 1080 900"></svg>
+  <div id="vignette"></div>
+  <div id="progress"><i></i></div>
+  <div id="brand">GESTÃO DE <b>PASSIVOS</b> · EMPRESAS</div>
+  <div id="tag"></div>
+  <div id="cap"></div>
+</div>
+<script>
+const C = { gold: '#e2b457', gold2: '#f4d58d', red: '#ef4f55', green: '#35d48a', ink: '#f4f6fa', muted: '#8d9ab2', panel: '#1a2a47', panel2: '#22365a', bg: '#0a1222' };
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const prog = (t, a, d) => clamp((t - a) / d);
+const eOut = k => 1 - Math.pow(1 - k, 3);
+const eInOut = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+const eBack = k => { const c = 1.9; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
+const fmt = n => Math.round(n).toLocaleString('pt-BR');
+const T = (x, y, s, fill, txt, extra = '') => `<text x="${x}" y="${y}" font-size="${s}" fill="${fill}" ${extra}>${txt}</text>`;
+const pop = (t, at, cx, cy, inner) => {          // scale-in group around (cx, cy)
+  const k = eBack(prog(t, at, .35)); if (k <= 0) return '';
+  return `<g opacity="${clamp(prog(t, at, .15))}" transform="translate(${cx} ${cy}) scale(${k}) translate(${-cx} ${-cy})">${inner}</g>`;
+};
+// a banknote centered at 0,0
+const note = (w = 150) => `<g><rect x="${-w/2}" y="${-w*.24}" width="${w}" height="${w*.48}" rx="8" fill="#2fa36b" stroke="#bff2d6" stroke-width="4"/>
+  <circle r="${w*.15}" fill="none" stroke="#bff2d6" stroke-width="4"/>${T(0, w*.07, w*.17, '#e9fff3', 'R$', 'text-anchor="middle" font-weight="800"')}</g>`;
+const magnifier = (x, y, r = 60) => `<g transform="translate(${x} ${y})"><line x1="${r*.7}" y1="${r*.7}" x2="${r*1.6}" y2="${r*1.6}" stroke="${C.gold}" stroke-width="18" stroke-linecap="round"/>
+  <circle r="${r}" fill="rgba(244,213,141,.12)" stroke="${C.gold}" stroke-width="12"/><path d="M${-r*.5} ${-r*.2} A ${r*.55} ${r*.55} 0 0 1 ${-r*.15} ${-r*.5}" stroke="#fff" stroke-opacity=".6" stroke-width="7" fill="none" stroke-linecap="round"/></g>`;
+const shop = (lit) => `
+  <rect x="290" y="330" width="500" height="430" rx="10" fill="${C.panel}" stroke="#2f4670" stroke-width="6"/>
+  ${[0,1,2,3,4,5,6,7,8,9].map(i => `<path d="M${290+i*50} 300 h50 v70 a25 25 0 0 1 -50 0z" fill="${i%2 ? '#f6efe0' : C.gold}"/>`).join('')}
+  <rect x="330" y="215" width="420" height="70" rx="12" fill="${C.bg}" stroke="${C.gold}" stroke-width="5"/>
+  ${T(540, 263, 38, C.gold2, 'MINHA EMPRESA', 'text-anchor="middle" font-weight="800" letter-spacing="3"')}
+  <rect x="320" y="440" width="140" height="150" rx="8" fill="${lit ? '#f7d98c' : '#0d1830'}" stroke="#2f4670" stroke-width="6"/>
+  <rect x="620" y="440" width="140" height="150" rx="8" fill="${lit ? '#f7d98c' : '#0d1830'}" stroke="#2f4670" stroke-width="6"/>
+  <rect x="480" y="470" width="120" height="290" rx="6" fill="${lit ? '#ffe7a8' : '#050b17'}" stroke="#2f4670" stroke-width="6"/>
+  <circle cx="580" cy="620" r="7" fill="${C.gold}"/>`;
+
+// ---------- scenes: each returns SVG markup for local time lt (seconds since scene start), global t ----------
+const SCENES = {
+  s1(lt, t, sc) {
+    let s = shop(false);
+    for (let i = 0; i < 9; i++) {             // money flying out of the door
+      const k = ((lt - i * .42) % 2.4 + 2.4) % 2.4 / 2.4; if (lt < i * .42) continue;
+      const dir = i % 2 ? 1 : -1, x = 540 + dir * (90 + (i % 3) * 120) * eOut(k) * 1.6, y = 640 - (220 + (i % 4) * 40) * Math.sin(Math.PI * k * .8);
+      s += `<g opacity="${(1 - k) * clamp(k * 6)}" transform="translate(${x} ${y}) rotate(${dir * 200 * k + i * 20}) scale(${.7 + .3 * k})">${note(130)}</g>`;
+    }
+    const v = lerp(48300, 1240, eInOut(prog(lt, .4, 4.2)));
+    const col = v < 15000 ? C.red : C.ink;
+    s += `<g>${T(540, 70, 30, C.muted, 'SALDO EM CAIXA', 'text-anchor="middle" font-weight="700" letter-spacing="5"')}
+      ${T(540, 160, 96, col, 'R$ ' + fmt(v), 'text-anchor="middle" font-weight="800"')}</g>`;
+    const q = prog(lt, 3.3, .4);
+    if (q > 0) s += pop(lt, 3.3, 900, 360, `<circle cx="900" cy="360" r="78" fill="${C.red}"/>${T(900, 395, 110, '#fff', '?', 'text-anchor="middle" font-weight="800"')}`);
+    return s;
+  },
+  s2(lt, t, sc, ev) {
+    const items = [['CAPITAL DE GIRO', 'giro'], ['CHEQUE ESPECIAL', 'cheque'], ['CARTÃO EMPRESARIAL', 'cartao']];
+    let s = '';
+    items.forEach(([label, ic], i) => {
+      const y = 20 + i * 108, at = ev.s2_cards[i];
+      let icon = '';
+      if (ic === 'giro') icon = `<path d="M-22 -8 A24 24 0 0 1 20 -12 M22 8 A24 24 0 0 1 -20 12" stroke="${C.red}" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M14 -24 L22 -10 L8 -6 M-14 24 L-22 10 L-8 6" stroke="${C.red}" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+      if (ic === 'cheque') icon = `<rect x="-30" y="-18" width="60" height="36" rx="5" fill="none" stroke="${C.red}" stroke-width="6"/><line x1="-18" y1="6" x2="18" y2="6" stroke="${C.red}" stroke-width="5"/>`;
+      if (ic === 'cartao') icon = `<rect x="-30" y="-20" width="60" height="40" rx="6" fill="none" stroke="${C.red}" stroke-width="6"/><line x1="-30" y1="-6" x2="30" y2="-6" stroke="${C.red}" stroke-width="8"/>`;
+      s += pop(t, at, 540, y + 45, `<rect x="190" y="${y}" width="700" height="90" rx="45" fill="${C.panel}" stroke="${C.red}" stroke-opacity=".6" stroke-width="4"/>
+        <g transform="translate(255 ${y + 45})">${icon}</g>${T(310, y + 59, 40, C.ink, label, 'font-weight="800" letter-spacing="1"')}
+        ${T(860, y + 60, 40, C.red, '%', 'text-anchor="end" font-weight="800"')}`);
+    });
+    // chart: revenue vs debt
+    const k = eInOut(prog(t, ev.s2_chart, 2.6)), X0 = 130, X1 = 950, Y0 = 860, Y1 = 380;
+    if (t > ev.s2_chart - .3) {
+      const a = clamp(prog(t, ev.s2_chart - .3, .3));
+      s += `<g opacity="${a}"><line x1="${X0}" y1="${Y0}" x2="${X1}" y2="${Y0}" stroke="#40577f" stroke-width="5"/><line x1="${X0}" y1="${Y0}" x2="${X0}" y2="${Y1}" stroke="#40577f" stroke-width="5"/>
+        ${T(X1, Y0 + 40, 26, C.muted, 'TEMPO →', 'text-anchor="end" font-weight="700" letter-spacing="3"')}`;
+      const pts = (f) => { const p = []; for (let i = 0; i <= 60 * k; i++) { const u = i / 60; p.push(`${X0 + u * (X1 - X0)},${Y0 - f(u)}`); } return p.join(' '); };
+      const rev = u => 150 + 110 * u, debt = u => 60 + 380 * Math.pow(u, 2.3);
+      s += `<polyline points="${pts(rev)}" fill="none" stroke="${C.green}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="${pts(debt)}" fill="none" stroke="${C.red}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>`;
+      if (k > .02) {
+        const ex = X0 + k * (X1 - X0);
+        s += `<circle cx="${ex}" cy="${Y0 - rev(k)}" r="13" fill="${C.green}"/><circle cx="${ex}" cy="${Y0 - debt(k)}" r="13" fill="${C.red}"/>`;
+      }
+      s += `<g opacity="${a}"><circle cx="${X0 + 50}" cy="${Y1 + 10}" r="13" fill="${C.red}"/>${T(X0 + 75, Y1 + 22, 34, C.red, 'DÍVIDA', 'font-weight="800"')}
+        <circle cx="${X0 + 50}" cy="${Y1 + 65}" r="13" fill="${C.green}"/>${T(X0 + 75, Y1 + 77, 34, C.green, 'FATURAMENTO', 'font-weight="800"')}</g></g>`;
+    }
+    return s;
+  },
+  s3(lt, t, sc, ev) {
+    const hot = clamp(prog(t, ev.s3_loop, .6));
+    const speed = lerp(.7, 2.2, hot), ang = (lt * speed * 360) % 360;
+    const col = hot > .5 ? C.red : C.gold;
+    let s = `<g transform="translate(540 450)">
+      <circle r="300" fill="none" stroke="${col}" stroke-opacity=".25" stroke-width="40"/>
+      <g transform="rotate(${ang})">
+        <path d="M0 -300 A300 300 0 0 1 300 0" fill="none" stroke="${col}" stroke-width="16" stroke-linecap="round"/>
+        <path d="M282 -24 L300 14 L326 -22" fill="none" stroke="${col}" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M0 300 A300 300 0 0 1 -300 0" fill="none" stroke="${col}" stroke-width="16" stroke-linecap="round"/>
+        <path d="M-282 24 L-300 -14 L-326 22" fill="none" stroke="${col}" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+      </g></g>`;
+    s += pop(t, sc.start + .1, 540, 150, `<rect x="250" y="105" width="580" height="96" rx="20" fill="${C.panel}" stroke="${C.gold}" stroke-width="5"/>${T(540, 168, 42, C.gold2, 'NOVO EMPRÉSTIMO', 'text-anchor="middle" font-weight="800"')}`);
+    s += pop(t, sc.start + .5, 540, 750, `<rect x="250" y="700" width="580" height="96" rx="20" fill="${C.panel}" stroke="${C.gold}" stroke-width="5"/>${T(540, 763, 42, C.gold2, 'PAGA O ANTIGO', 'text-anchor="middle" font-weight="800"')}`);
+    const debt = 100 * Math.pow(1.16, Math.floor(Math.max(0, t - ev.s3_loop) * 2.2));
+    s += `<g opacity="${hot}">${T(540, 420, 34, C.muted, 'DÍVIDA TOTAL', 'text-anchor="middle" font-weight="700" letter-spacing="4"')}
+      ${T(540, 510, 92, C.red, 'R$ ' + fmt(debt) + ' mil', 'text-anchor="middle" font-weight="800"')}</g>`;
+    return s;
+  },
+  s4(lt, t, sc) {
+    const A = [60, 140], B = [1020, 860], L = Math.hypot(B[0] - A[0], B[1] - A[1]);
+    const ux = (B[0] - A[0]) / L, uy = (B[1] - A[1]) / L, nx = uy, ny = -ux;   // normal pointing up-right
+    const k = eInOut(prog(lt, .1, sc.end - sc.start - .5));
+    const r = lerp(34, 175, k), d = lerp(60, L - 400, k);
+    const cx = A[0] + ux * d + nx * r, cy = A[1] + uy * d + ny * r;
+    const rot = (d / r) * 57.3;
+    let s = `<path d="M${A[0]} ${A[1]} L${B[0]} ${B[1]} L${B[0]} 900 L${A[0]} 900 Z" fill="#dfe8f5" opacity=".1"/>
+      <line x1="${A[0]}" y1="${A[1]}" x2="${B[0]}" y2="${B[1]}" stroke="#dfe8f5" stroke-width="10" stroke-linecap="round"/>`;
+    for (let i = 0; i < 14; i++) {         // snow spray trailing behind
+      const back = (i + 1) * 22 + ((lt * 300 + i * 37) % 40);
+      const px = cx - ux * (r * .6 + back) + nx * (-r * .2 + (i % 4) * 12), py = cy - uy * (r * .6 + back) + ny * (-r * .2 + (i % 4) * 12) ;
+      s += `<circle cx="${px}" cy="${py}" r="${4 + (i % 3) * 3}" fill="#fff" opacity="${.5 * (1 - i / 14) * clamp(k * 5)}"/>`;
+    }
+    s += `<g transform="translate(${cx} ${cy}) rotate(${rot})"><circle r="${r}" fill="#eef4fb" stroke="#b8c8de" stroke-width="6"/>
+      <path d="M${-r*.6} ${-r*.3} q${r*.3} ${-r*.2} ${r*.6} 0 M${-r*.1} ${r*.4} q${r*.3} ${r*.15} ${r*.55} -${r*.1}" stroke="#b8c8de" stroke-width="6" fill="none" stroke-linecap="round"/>
+      ${T(0, r * .22, r * .62, C.red, 'R$', 'text-anchor="middle" font-weight="800"')}</g>`;
+    const tags = [['+ JUROS', .18], ['+ MULTA', .42], ['+ ENCARGOS', .66]];
+    tags.forEach(([txt, at], i) => {
+      const y = 640 + i * 90;
+      s += pop(k * 10, at * 10, 220, y - 18, T(90, y, 52, C.red, txt, 'font-weight="800"'));
+    });
+    return s;
+  },
+  s5(lt, t, sc, ev) {
+    const items = ['Bancos e credores', 'Saldo devedor real', 'Taxas e encargos', 'Garantias dadas', 'Prazos e vencimentos'];
+    let s = `<rect x="170" y="40" width="740" height="830" rx="30" fill="${C.panel}" stroke="#2f4670" stroke-width="6"/>
+      <rect x="420" y="10" width="240" height="70" rx="18" fill="${C.gold}"/><circle cx="540" cy="30" r="12" fill="${C.panel}"/>
+      ${T(540, 160, 46, C.gold2, 'DIAGNÓSTICO', 'text-anchor="middle" font-weight="800" letter-spacing="4"')}
+      <line x1="240" y1="200" x2="840" y2="200" stroke="#2f4670" stroke-width="4"/>`;
+    items.forEach((txt, i) => {
+      const y = 280 + i * 120, at = ev.s5_check[i], appear = clamp(prog(lt, .25 + i * .18, .35));
+      const done = prog(t, at, .3);
+      s += `<g opacity="${appear}" transform="translate(${(1 - eOut(appear)) * 40} 0)">
+        <rect x="240" y="${y - 38}" width="70" height="70" rx="14" fill="${done > 0 ? 'rgba(53,212,138,.18)' : 'none'}" stroke="${done > 0 ? C.green : '#5a6f96'}" stroke-width="6"/>
+        <path d="M255 ${y} l18 18 l32 -40" fill="none" stroke="${C.green}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="80" stroke-dashoffset="${80 * (1 - eOut(done))}"/>
+        ${T(345, y + 14, 42, done > 0 ? C.ink : C.muted, txt, 'font-weight="700"')}</g>`;
+    });
+    const mx = 832 + 12 * Math.sin(lt * 1.6), my = 330 + 330 * (.5 + .5 * Math.sin(lt * .9));
+    s += `<g opacity="${clamp(prog(lt, .6, .4))}">${magnifier(mx, my, 62)}</g>`;
+    return s;
+  },
+  s6(lt, t, sc, ev) {
+    const x0 = 120, w = 600;
+    let s = `<rect x="${x0}" y="20" width="${w}" height="860" rx="20" fill="#f3f1ea"/>
+      <path d="M${x0 + w - 90} 20 l90 90 h-90z" fill="#d9d4c5"/>
+      ${T(x0 + 50, 100, 34, '#1b2640', 'CONTRATO BANCÁRIO', 'font-weight="800" letter-spacing="2"')}
+      <line x1="${x0 + 50}" y1="128" x2="${x0 + 420}" y2="128" stroke="#1b2640" stroke-width="4"/>`;
+    const lines = []; for (let i = 0; i < 17; i++) lines.push(180 + i * 40);
+    const targets = { 4: 0, 9: 1, 13: 2 };
+    const labels = ['JUROS', 'TARIFAS', 'CLÁUSULAS'];
+    lines.forEach((y, i) => {
+      const lw = [480, 450, 500, 420, 470, 380, 490, 440, 460, 500, 410, 470, 360, 480, 450, 500, 300][i];
+      if (i in targets) {
+        const h = eOut(prog(t, ev.s6_hl[targets[i]], .4));
+        s += `<rect x="${x0 + 42}" y="${y - 22}" width="${(lw + 16) * h}" height="36" rx="6" fill="${C.gold}" opacity=".75"/>`;
+      }
+      s += `<rect x="${x0 + 50}" y="${y - 12}" width="${lw}" height="14" rx="7" fill="#9aa3b5"/>`;
+    });
+    Object.entries(targets).forEach(([li, j]) => {
+      const y = lines[li], at = ev.s6_hl[j] + .15;
+      s += pop(t, at, 880, y, `<line x1="${x0 + w - 10}" y1="${y}" x2="760" y2="${y}" stroke="${C.gold}" stroke-width="6" stroke-dasharray="10 8"/>
+        <rect x="760" y="${y - 38}" width="${j === 2 ? 290 : 230}" height="76" rx="38" fill="${C.gold}"/>${T(j === 2 ? 905 : 875, y + 15, 38, C.bg, labels[j], 'text-anchor="middle" font-weight="800"')}`);
+    });
+    const my = 230 + 560 * (.5 - .5 * Math.cos(lt * .9)), mx = 380 + 120 * Math.sin(lt * 1.3);
+    s += `<g opacity="${clamp(prog(lt, .4, .4))}">${magnifier(mx, my, 70)}</g>`;
+    return s;
+  },
+  s7(lt, t, sc, ev) {
+    const drop = prog(t, ev.s7_level - .5, .5), settle = prog(t, ev.s7_level, 1.2);
+    const tilt = -16 * (1 - (settle > 0 ? 1 - Math.exp(-5 * settle) * Math.cos(9 * settle) : 0));
+    const cx = 540, cy = 260, arm = 330, rad = tilt * Math.PI / 180;
+    const L = [cx - arm * Math.cos(rad), cy - arm * Math.sin(rad)], R = [cx + arm * Math.cos(rad), cy + arm * Math.sin(rad)];
+    const pan = ([x, y], inner) => `<line x1="${x}" y1="${y}" x2="${x - 120}" y2="${y + 220}" stroke="${C.gold}" stroke-width="5"/><line x1="${x}" y1="${y}" x2="${x + 120}" y2="${y + 220}" stroke="${C.gold}" stroke-width="5"/>
+      <path d="M${x - 150} ${y + 220} h300 a150 60 0 0 1 -300 0z" fill="${C.gold}"/>${inner(x, y + 220)}`;
+    const bank = (x, y) => `<g transform="translate(${x} ${y - 10})"><path d="M-100 -60 L0 -130 L100 -60 Z" fill="#c9d3e6"/><rect x="-95" y="-58" width="190" height="14" fill="#c9d3e6"/>
+      ${[-70, -25, 25, 70].map(px => `<rect x="${px - 10}" y="-40" width="20" height="70" fill="#c9d3e6"/>`).join('')}<rect x="-105" y="30" width="210" height="16" fill="#c9d3e6"/>
+      ${T(0, -72, 30, C.bg, 'BANCO', 'text-anchor="middle" font-weight="800"')}</g>`;
+    const firm = (x, y) => {
+      let g = `<g transform="translate(${x} ${y - 10})"><rect x="-80" y="-80" width="160" height="125" rx="8" fill="#c9d3e6"/>
+        <rect x="-62" y="-60" width="40" height="40" fill="${C.panel}"/><rect x="22" y="-60" width="40" height="40" fill="${C.panel}"/><rect x="-18" y="-5" width="36" height="50" fill="${C.panel}"/>`;
+      if (drop > 0) g += `<g transform="translate(0 ${-120 - (1 - eOut(drop)) * 380})" opacity="${clamp(drop * 3)}"><rect x="-130" y="-40" width="260" height="76" rx="12" fill="${C.green}"/>${T(0, 12, 34, C.bg, 'ESTRATÉGIA', 'text-anchor="middle" font-weight="800"')}</g>`;
+      return g + `${T(0, 90, 28, C.ink, 'SUA EMPRESA', 'text-anchor="middle" font-weight="800"')}</g>`;
+    };
+    let s = `<rect x="${cx - 14}" y="${cy}" width="28" height="560" fill="${C.gold}"/><path d="M${cx - 160} 860 h320 l-40 -60 h-240z" fill="${C.gold}"/>
+      <line x1="${L[0]}" y1="${L[1]}" x2="${R[0]}" y2="${R[1]}" stroke="${C.gold}" stroke-width="22" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="26" fill="${C.gold2}"/>
+      ${pan(L, bank)}${pan(R, firm)}`;
+    const ok = clamp(prog(t, ev.s7_level + .6, .4));
+    s += `<g opacity="${ok}">${T(540, 120, 44, C.green, 'EQUILÍBRIO NA MESA', 'text-anchor="middle" font-weight="800" letter-spacing="3"')}</g>`;
+    return s;
+  },
+  s8(lt, t, sc, ev) {
+    const X0 = 110, X1 = 970, Z = 620, k = eInOut(prog(lt, .1, 1.4)), up = eInOut(prog(t, ev.s8_up, 2.4));
+    const f = u => { const dip = -150 * Math.sin(Math.PI * clamp(u / .45)) ; const rise = u > .38 ? 330 * eInOut(clamp((u - .38) / .5)) * up : 0; return dip * (u < .45 ? 1 : lerp(1, 0, up)) + rise; };
+    let s = `${T(X0, 90, 34, C.muted, 'FLUXO DE CAIXA', 'font-weight="800" letter-spacing="4"')}
+      <line x1="${X0}" y1="${Z}" x2="${X1}" y2="${Z}" stroke="#5a6f96" stroke-width="4" stroke-dasharray="14 10"/>${T(X1, Z + 45, 28, C.muted, 'ZERO', 'text-anchor="end" font-weight="700" letter-spacing="3"')}`;
+    const vis = lerp(.45, 1, up) * k; let pts = [], last;
+    for (let i = 0; i <= 80 * vis; i++) { const u = i / 80; last = [X0 + u * (X1 - X0), Z - f(u)]; pts.push(last.join(',')); }
+    if (pts.length > 1) {
+      s += `<defs><clipPath id="neg"><rect x="0" y="${Z}" width="1080" height="500"/></clipPath><clipPath id="pos"><rect x="0" y="0" width="1080" height="${Z}"/></clipPath></defs>
+        <polyline clip-path="url(#neg)" points="${pts.join(' ')}" fill="none" stroke="${C.red}" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline clip-path="url(#pos)" points="${pts.join(' ')}" fill="none" stroke="${C.green}" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="${last[0]}" cy="${last[1]}" r="16" fill="${last[1] > Z ? C.red : C.green}"/>`;
+    }
+    const ok = clamp(prog(t, ev.s8_up + 1.8, .4));
+    s += `<g opacity="${ok}"><rect x="610" y="150" width="360" height="96" rx="48" fill="rgba(53,212,138,.15)" stroke="${C.green}" stroke-width="5"/>
+      ${T(790, 214, 44, C.green, 'NEGÓCIO VIVO', 'text-anchor="middle" font-weight="800"')}</g>`;
+    return s;
+  },
+  s9(lt, t, sc, ev) {
+    const sw = Math.sin(lt * 1.8) * 4;
+    let s = `<g transform="translate(540 300) scale(${eBack(prog(lt, 0, .5))})">
+      <rect x="-12" y="-170" width="24" height="330" fill="${C.gold}"/><circle cy="-182" r="26" fill="${C.gold2}"/>
+      <path d="M-150 175 h300 l-30 -40 h-240z" fill="${C.gold}"/>
+      <g transform="rotate(${sw})"><rect x="-250" y="-145" width="500" height="20" rx="10" fill="${C.gold}"/>
+        ${[-230, 230].map(x => `<g transform="translate(${x} -135) rotate(${-sw})"><line x1="0" y1="0" x2="-75" y2="140" stroke="${C.gold}" stroke-width="5"/><line x1="0" y1="0" x2="75" y2="140" stroke="${C.gold}" stroke-width="5"/>
+          <path d="M-95 140 h190 a95 42 0 0 1 -190 0z" fill="${C.gold}"/></g>`).join('')}</g></g>`;
+    const btn = (x, at, icon, label) => {
+      const b = 1 + .12 * Math.max(0, Math.sin(Math.PI * prog(t, at, .45)));
+      return pop(t, at - .35, x, 720, `<g transform="translate(${x} 720) scale(${b})"><rect x="-200" y="-70" width="400" height="140" rx="70" fill="${C.panel}" stroke="${C.gold}" stroke-width="5"/>
+        <g transform="translate(-110 0)">${icon}</g>${T(30, 18, 50, C.gold2, label, 'text-anchor="middle" font-weight="800"')}</g>`);
+    };
+    const adv = sc.words.find(w => w.n.startsWith('advogado')).s;
+    s += pop(t, adv, 540, 545, `<rect x="140" y="500" width="800" height="90" rx="45" fill="rgba(226,180,87,.14)" stroke="${C.gold}" stroke-width="4"/>${T(540, 558, 40, C.gold2, 'ADVOGADO · DIREITO BANCÁRIO', 'text-anchor="middle" font-weight="800" letter-spacing="1"')}`);
+    s += btn(310, ev.s9_save, `<path d="M-26 -36 h52 v74 l-26 -20 l-26 20z" fill="${C.gold}"/>`, 'SALVE');
+    s += btn(770, ev.s9_share, `<path d="M-34 4 L34 -32 L14 36 L2 12 Z" fill="${C.gold}"/><path d="M2 12 L34 -32" stroke="${C.panel}" stroke-width="5"/>`, 'ENVIE');
+    s += `<g opacity="${clamp(prog(lt, 1, .6))}">${T(540, 860, 28, C.muted, 'Conteúdo informativo. Cada caso exige análise individual.', 'text-anchor="middle" font-weight="600"')}</g>`;
+    return s;
+  },
+};
+
+let TL = null;
+const art = document.getElementById('art'), cap = document.getElementById('cap'), tag = document.getElementById('tag');
+const bar = document.querySelector('#progress i'), grid = document.getElementById('grid');
+
+function chunks(sc) {
+  if (sc._chunks) return sc._chunks;
+  const out = []; let i = 0;                    // groups come from the script's | breaks
+  sc.cap.forEach(n => { out.push(sc.words.slice(i, i + n)); i += n; });
+  return sc._chunks = out;
+}
+
+window.renderFrame = function (t) {
+  const i = TL.scenes.findIndex(s => t >= s.start && t < s.end), sc = TL.scenes[i < 0 ? TL.scenes.length - 1 : i];
+  const lt = t - sc.start, dur = sc.end - sc.start;
+  const enter = eBack(prog(lt, 0, .45)), exit = sc.id === 's9' ? 0 : eInOut(prog(lt, dur - .22, .22));
+  art.innerHTML = `<g opacity="${clamp(prog(lt, 0, .2)) * (1 - exit)}" transform="translate(${-exit * 120} ${(1 - enter) * 90}) translate(540 450) scale(${lerp(.9, 1, enter)}) translate(-540 -450)">${SCENES[sc.id](lt, t, sc, TL.ev)}</g>`;
+  grid.style.transform = `translate(${-(t * 18) % 120}px, ${-(t * 30) % 120}px)`;
+  bar.style.width = (100 * clamp(t / TL.total)) + '%';
+  if (sc.tag) {
+    tag.style.display = 'block'; tag.textContent = sc.tag;
+    const k = eBack(prog(lt, .05, .4));
+    tag.style.opacity = clamp(prog(lt, .05, .2)) * (1 - exit);
+    tag.style.transform = `translateX(-50%) scale(${lerp(.6, 1, k)})`;
+  } else tag.style.display = 'none';
+  // karaoke caption
+  const cs = chunks(sc); let ci = 0;
+  cs.forEach((c, j) => { if (t >= c[0].s - .05) ci = j; });
+  const c = cs[ci], ck = eBack(prog(t, c[0].s - .05, .25));
+  cap.style.opacity = t < c[0].s - .3 ? 0 : 1;
+  cap.style.transform = `scale(${lerp(.85, 1, ck)})`;
+  let wi = -1; c.forEach((w, j) => { if (t >= w.s - .03) wi = j; });
+  cap.innerHTML = '<div>' + c.map((w, j) => `<span class="${j === wi ? 'on' : 'off'}">${w.p}</span>`).join(' ') + '</div>';
+};
+window.setTimeline = tl => { TL = tl; };
+</script>
+</body>
+</html>
