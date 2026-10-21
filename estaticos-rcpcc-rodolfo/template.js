@@ -1,55 +1,46 @@
-// Modelo "URGENTE: ... pode ser REDUZIDA" (mesmo layout do L3 ST 09, campeão da conta RCPCC)
-const ICON_BELL = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>';
-const ICON_CHART = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18" stroke="#c98b8b"/><path d="M7 9l4 4 3-3 5 5" stroke="#ff5a67"/><path d="M19 11v4h-4" stroke="#ff5a67"/></svg>';
-const ICON_WARN = '<svg viewBox="0 0 24 24" fill="none" stroke="#c8102e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>';
-const ICON_BOX = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>';
-
-module.exports = ({ headline, valor, pct, alerta, cta }) => `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=block" rel="stylesheet">
+// DNA do anúncio campeão da conta (AD01 "Dr Rodolfo 1"): foto do Dr. Rodolfo + caixa de gancho + legendas pretas com bolinhas.
+const dot = c => `<i class="dot ${c}"></i>`;
+module.exports = ({ formato, pre, palavra, pos, bullets, cta }) => {
+  const story = formato === 'story';
+  const H = story ? 1920 : 1350;
+  // feed: sobe a foto 120px para caber o texto abaixo do rosto
+  const imgY = story ? -40 : -190;
+  const fadeA = story ? 800 : 600, fadeB = story ? 990 : 800;
+  const topo = story ? 1010 : 750;
+  return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@700;800;900&display=block" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:1080px;height:1350px}
-body{font-family:Poppins,sans-serif;color:#fff;overflow:hidden;-webkit-font-smoothing:antialiased;
- background:radial-gradient(90% 60% at 30% 8%,#a8242b 0%,#7d1218 45%,#3a0609 100%)}
-body::after{content:"";position:absolute;inset:0;background:radial-gradient(60% 50% at 100% 50%,rgba(150,10,20,.35),transparent 70%);pointer-events:none}
-.top{position:absolute;left:72px;top:114px;display:flex;align-items:center;gap:24px}
-.bell{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center}
-.bell svg{width:34px;height:34px}
-.top b{font-size:46px;font-weight:800;letter-spacing:.01em;text-shadow:0 4px 18px rgba(0,0,0,.35)}
-.card{position:absolute;left:72px;right:72px;top:220px;bottom:114px;border-radius:34px;padding:48px 50px;
- background:linear-gradient(180deg,rgba(60,6,10,.72),rgba(30,3,6,.82));border:1.5px solid rgba(255,255,255,.1);box-shadow:0 40px 80px rgba(0,0,0,.35);display:flex;flex-direction:column}
-.hrow{display:flex;justify-content:space-between;gap:24px}
-h1{font-size:62px;line-height:1.17;font-weight:700;letter-spacing:-.015em;text-shadow:0 4px 18px rgba(0,0,0,.35)}
-h1 em{font-style:normal;color:#ff5a67;font-weight:800}
-.chart{flex:none;width:100px;height:100px;border-radius:18px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center}
-.chart svg{width:46px;height:46px}
-.res{margin-top:44px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-radius:22px;padding:28px 30px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1)}
-.res p{font-size:26px;line-height:1.36;font-weight:300}
-.res p b{font-weight:600}
-.pill{flex:none;display:flex;align-items:center;gap:18px;background:#0c0c0e;border-radius:18px;padding:26px 28px}
-.pill span{font-size:50px;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
-.ok{width:40px;height:40px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center}
-.ok svg{width:22px;height:22px}
-.tag{margin-top:26px;align-self:flex-start;border:1.5px solid rgba(255,214,150,.55);border-radius:6px;padding:10px 14px;font-size:19px;font-weight:700;letter-spacing:.12em;color:#ffd38a}
-.disc{margin-top:16px;font-size:19.5px;line-height:1.5;color:rgba(255,255,255,.82);font-weight:300}
-.alert{margin-top:30px;background:#f3e7d6;color:#2a1a1a;border-radius:22px;padding:28px 30px;display:flex;gap:16px;font-size:25px;line-height:1.42}
-.alert svg{flex:none;width:30px;height:30px;margin-top:4px}
-.alert b{color:#c8102e;font-weight:700}
-.btn{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:18px;border-radius:20px;padding:30px 20px;background:linear-gradient(180deg,#f04652,#d91f2c);box-shadow:0 18px 40px rgba(240,40,55,.35);font-size:31px;font-weight:700;letter-spacing:.01em;text-transform:uppercase}
-.btn svg{width:34px;height:34px}
-.foot{position:absolute;left:72px;right:72px;bottom:44px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,.15);padding-top:26px}
-.foot b{font-size:24px;font-weight:700;letter-spacing:.08em}
-.foot span{font-size:17.5px;line-height:1.35;text-align:right;color:rgba(255,255,255,.75);max-width:420px}
+html,body{width:1080px;height:${H}px}
+body{position:relative;overflow:hidden;background:#0b0b0d;font-family:Nunito,sans-serif;-webkit-font-smoothing:antialiased}
+.foto{position:absolute;left:0;top:${imgY}px;width:1080px;height:1920px;background:url(rodolfo.jpg) center top/1080px 1920px no-repeat}
+.fade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) ${fadeA}px,#08080a ${fadeB}px,#08080a 100%)}
+.vig{position:absolute;inset:0;background:radial-gradient(120% 70% at 50% 25%,transparent 55%,rgba(0,0,0,.45))}
+.tag{position:absolute;left:50%;top:${story ? 120 : 56}px;transform:translateX(-50%);background:#ffd400;color:#111;font-weight:900;font-size:${story ? 34 : 30}px;letter-spacing:.02em;padding:12px 28px;border-radius:10px;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.bloco{position:absolute;left:0;right:0;top:${topo}px;display:flex;flex-direction:column;align-items:center}
+.hook{width:${story ? 820 : 800}px;text-align:center;padding:${story ? '24px 26px 26px' : '16px 24px 18px'};border-radius:6px;color:#fff;
+ background:repeating-linear-gradient(90deg,#0d0d0f 0 22px,#16161a 22px 26px);border:2px solid #222;box-shadow:0 20px 50px rgba(0,0,0,.6)}
+.hook .a,.hook .c{font-size:${story ? 38 : 31}px;font-weight:700;line-height:1.2;white-space:nowrap}
+.hook b{font-weight:900}
+.hook .w{display:block;font-family:Anton,sans-serif;color:#ffd400;font-size:${story ? 124 : 96}px;line-height:1.02;letter-spacing:.01em;margin:4px 0 6px;white-space:nowrap;text-shadow:0 4px 0 rgba(0,0,0,.4)}
+.lst{margin-top:${story ? 34 : 18}px;display:flex;flex-direction:column;gap:${story ? 18 : 12}px;width:${story ? 860 : 860}px}
+.li{display:flex;align-items:center;gap:20px}
+.dot{flex:none;width:${story ? 62 : 50}px;height:${story ? 62 : 50}px;border-radius:50%;box-shadow:inset -6px -8px 14px rgba(0,0,0,.35),inset 6px 6px 12px rgba(255,255,255,.35),0 6px 16px rgba(0,0,0,.5)}
+.r{background:radial-gradient(circle at 35% 30%,#ff6a5a,#e00000 55%,#8a0000)}
+.y{background:radial-gradient(circle at 35% 30%,#fff38a,#ffd000 55%,#c79200)}
+.g{background:radial-gradient(circle at 35% 30%,#3ad07a,#0f8a3c 55%,#0a4f6e)}
+.li span{flex:1;text-align:center;background:#000;color:#fff;font-weight:800;font-size:${story ? 40 : 32}px;line-height:1.16;padding:${story ? '12px 18px 14px' : '8px 16px 10px'};border-radius:14px;box-decoration-break:clone}
+.cta{margin-top:${story ? 44 : 26}px;color:#fff;font-weight:900;font-size:${story ? 36 : 28}px;letter-spacing:.02em;display:flex;align-items:center;gap:14px;opacity:.95}
+.cta em{font-style:normal;background:#ffd400;color:#111;padding:6px 16px;border-radius:8px}
+.leg{position:absolute;left:0;right:0;bottom:${story ? 56 : 16}px;text-align:center;color:rgba(255,255,255,.5);font-size:${story ? 20 : 15}px;font-weight:700}
 </style></head><body>
-<div class="top"><div class="bell">${ICON_BELL}</div><b>URGENTE:</b></div>
-<div class="card">
- <div class="hrow"><h1>${headline}</h1><div class="chart">${ICON_CHART}</div></div>
- <div class="res"><p>Com a análise e a estratégia corretas,<br><b>é possível reduzir para</b></p>
-  <div class="pill"><span>${valor}</span><div class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div></div></div>
- <div class="tag">EXEMPLO ILUSTRATIVO · REDUÇÃO DE ${pct}</div>
- <p class="disc">Exemplo ilustrativo. Cada contrato é analisado individualmente e não há garantia de redução. O percentual varia conforme o contrato, o tempo de atraso e a negociação.</p>
- <div class="alert">${ICON_WARN}<p>${alerta}</p></div>
- <div class="btn">${ICON_BOX}${cta}</div>
+<div class="foto"></div><div class="vig"></div><div class="fade"></div>
+<div class="tag">DÍVIDA NO BANCO ACIMA DE R$ 40 MIL</div>
+<div class="bloco">
+ <div class="hook"><div class="a">${pre}</div><span class="w">${palavra}</span><div class="c">${pos}</div></div>
+ <div class="lst">${bullets.map((t, i) => `<div class="li">${dot(['r', 'y', 'g'][i])}<span>${t}</span></div>`).join('')}</div>
+ <div class="cta">${cta}</div>
 </div>
-<div class="foot"><b>RC ADVOCACIA · DIREITO BANCÁRIO</b><span>Cada caso é analisado individualmente. Não há garantia de resultado.</span></div>
+<div class="leg">Dr. Rodolfo Pino Clivatti · Advogado · Conteúdo informativo, cada caso é analisado individualmente</div>
 </body></html>`;
+};
