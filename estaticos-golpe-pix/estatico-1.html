@@ -1,36 +1,38 @@
 <!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><style>
-body{background:radial-gradient(circle at 50% 30%,#3a0a0a 0%,#140404 55%,#0a0202 100%);color:#fff;position:relative}
-.tag{position:absolute;top:70px;left:70px;background:#ff2d2d;color:#fff;font-weight:800;font-size:26px;padding:12px 22px;border-radius:8px;letter-spacing:1px}
-.phone{position:absolute;top:170px;left:50%;transform:translateX(-50%) rotate(-3deg);width:760px;background:rgba(255,255,255,.96);color:#111;border-radius:34px;padding:34px 38px;box-shadow:0 30px 80px rgba(255,0,0,.35),0 0 0 3px rgba(255,45,45,.6)}
-.ph-top{display:flex;align-items:center;gap:18px;font-size:24px;color:#555}
-.ico{width:58px;height:58px;border-radius:14px;background:#1a1a1a;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:26px}
-.ph-title{font-weight:800;font-size:34px;color:#111;margin-top:22px}
-.ph-val{font-family:'Inter Display';font-weight:900;font-size:96px;letter-spacing:-3px;color:#111;margin-top:4px}
-.ph-sub{font-size:24px;color:#666;margin-top:6px}
-.ph-st{margin-top:22px;display:inline-block;background:#e8f7ee;color:#0a7a3b;font-weight:700;font-size:22px;padding:8px 16px;border-radius:30px}
-.stamp{position:absolute;top:500px;right:80px;transform:rotate(12deg);border:8px solid #ff2d2d;color:#ff2d2d;font-weight:900;font-size:58px;padding:6px 22px;border-radius:14px;background:rgba(10,2,2,.85);letter-spacing:2px}
-.h{position:absolute;top:670px;left:70px;right:70px}
-.h1{font-weight:900;font-size:82px;line-height:1;letter-spacing:-2.5px}
-.h1 em{font-style:normal;color:#ff3b3b}
-.h2{margin-top:22px;font-size:33px;line-height:1.3;font-weight:500;color:#f1d6d6}
-.h2 b{color:#fff}
-.cta{position:absolute;left:70px;right:70px;bottom:110px;background:#fff;color:#140404;border-radius:18px;padding:30px;text-align:center;font-weight:900;font-size:38px}
-.cta span{color:#d11}
-.foot{color:#e9c8c8}
+.ph{position:absolute;inset:0;background:url(fotos/7699315.jpg) center 18%/cover;filter:saturate(.75) contrast(1.08) brightness(.82)}
+.tint{position:absolute;inset:0;background:
+ linear-gradient(180deg,rgba(8,6,6,.55) 0%,rgba(8,6,6,0) 22%,rgba(8,6,6,0) 38%,rgba(8,6,6,.85) 58%,#0a0707 74%),
+ radial-gradient(ellipse at 70% 30%,rgba(255,60,40,.0),rgba(120,10,10,.25))}
+.top{position:absolute;top:58px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;z-index:5}
+.pill{background:rgba(255,255,255,.12);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.22);padding:12px 22px;border-radius:999px;font-size:20px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
+.pill b{color:#ff5a47}
+.notif{position:absolute;top:350px;left:72px;width:600px;z-index:6;background:rgba(245,245,247,.82);backdrop-filter:blur(24px) saturate(1.6);
+ color:#111;border-radius:30px;padding:24px 28px;box-shadow:0 30px 70px rgba(0,0,0,.45);transform:rotate(-2.5deg)}
+.nh{display:flex;align-items:center;gap:12px;font-size:19px;color:#6b6b70;font-weight:500}
+.nh .ic{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#1c1c1e,#3a3a3c);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px}
+.nh span{margin-left:auto}
+.nt{margin-top:12px;font-weight:700;font-size:25px}
+.nv{font-size:23px;color:#333;margin-top:3px}
+.nv b{color:#111}
+.flag{position:absolute;top:505px;left:96px;z-index:7;background:#ff3b2f;color:#fff;font-weight:800;font-family:'Bricolage Grotesque';font-size:30px;letter-spacing:.02em;padding:12px 24px;border-radius:14px;transform:rotate(-5deg);box-shadow:0 14px 30px rgba(255,40,30,.45)}
+.txt{position:absolute;left:72px;right:72px;top:770px;z-index:5}
+.h{font-size:96px}
+.h .serif{font-size:106px;color:#ff6a55;letter-spacing:-.02em}
+.sub{margin-top:26px;font-size:30px;line-height:1.38;color:rgba(255,255,255,.82);max-width:880px}
+.sub b{color:#fff;font-weight:600}
+.cta{position:absolute;left:72px;bottom:96px;z-index:5;background:#fff;color:#0a0707}
+.cta i{background:#ff3b2f;color:#fff}
 </style></head><body>
-<div class="tag">⚠ GOLPE DO PIX</div>
-<div class="phone">
-  <div class="ph-top"><div class="ico">$</div>Banco · agora</div>
-  <div class="ph-title">Pix enviado com sucesso</div>
-  <div class="ph-val">R$ 47.300,00</div>
-  <div class="ph-sub">Para: conta desconhecida · 23:41</div>
-  <div class="ph-st">✓ Transferência concluída</div>
+<div class="ph"></div><div class="tint"></div>
+<div class="top"><div class="pill"><b>●</b>&nbsp; Golpe do PIX</div></div>
+<div class="notif"><div class="nh"><div class="ic">$</div>BANCO<span>agora</span></div>
+<div class="nt">Pix enviado · R$ 38.900,00</div><div class="nv">Para <b>conta desconhecida</b> · 23:47</div></div>
+<div class="flag">ERA GOLPE.</div>
+<div class="txt">
+ <div class="h disp">Perdeu mais de<br><span class="serif">R$ 30 mil</span> no PIX?</div>
+ <div class="sub">Se o banco deixou passar uma transação <b>totalmente fora do seu padrão</b>, ele pode ser responsabilizado.</div>
 </div>
-<div class="stamp">GOLPE</div>
-<div class="h">
-  <div class="h1 disp">Caiu em um golpe<br>e perdeu <em>mais de<br>R$ 30 mil</em> no PIX?</div>
-  <div class="h2">O banco tem o dever de <b>barrar transações fora do seu perfil</b>. Se ele falhou, você pode ter direito de buscar a devolução.</div>
-</div>
-<div class="cta">Fale agora com um advogado <span>→</span></div>
-<div class="foot">Conteúdo informativo. Cada caso é analisado individualmente. Imagem ilustrativa.</div>
+<div class="cta">Fale com um advogado <i>→</i></div>
+<div class="foot">Conteúdo informativo · Análise individual de cada caso · Imagem ilustrativa</div>
+<div class="grain"></div>
 </body></html>
