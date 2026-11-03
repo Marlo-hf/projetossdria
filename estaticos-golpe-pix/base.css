@@ -1,0 +1,5 @@
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1350px;overflow:hidden}
+body{font-family:'Inter','Inter Display',sans-serif;-webkit-font-smoothing:antialiased}
+.disp{font-family:'Inter Display','Inter',sans-serif}
+.foot{position:absolute;left:0;right:0;bottom:0;padding:26px 70px;font-size:20px;letter-spacing:.3px;opacity:.75}
