@@ -4,8 +4,8 @@ Vídeo de tour gerado a partir das 14 fotos do imóvel (WhatsApp, 04/11/2026).
 
 | Arquivo | Uso |
 |---|---|
-| `tour-casa_reels_9x16.mp4` | Reels, Stories, TikTok, anúncio Meta vertical (1080x1920, 65s) |
-| `tour-casa_feed_16x9.mp4` | YouTube, portais de imóveis, feed horizontal (1920x1080, 65s) |
+| `tour-casa_reels_9x16.mp4` | Reels, Stories, TikTok, anúncio Meta vertical (1080x1920, 69s) |
+| `tour-casa_feed_16x9.mp4` | YouTube, portais de imóveis, feed horizontal (1920x1080, 69s) |
 | `legendas.srt` | Legenda da narração (para subir como legenda fechada) |
 
 ## O que foi usado de IA
@@ -19,3 +19,9 @@ Vídeo de tour gerado a partir das 14 fotos do imóvel (WhatsApp, 04/11/2026).
 2. `scripts/tts.py` — uma narração por linha de `scripts/lines.txt` (`vo/lN.wav`)
 3. `scripts/render2.py` (v2, caminhada) ou `scripts/render.py <fotos> <vo> <saida.mp4> vertical|horizontal`
 4. `scripts/audio.py <saida.mp4.json> <vo> mix.wav` e juntar com ffmpeg (`loudnorm=I=-14`).
+
+## v3 — estilo "fotos que ganham vida" (sem custo de IA generativa)
+`scripts/render3.py` reconstrói cada foto em 3D a partir da profundidade e move uma câmera virtual
+de verdade (ray-marching por pixel): dolly, órbita, grua e pan. Também anima a água da piscina,
+acende as luzes no gancho, aplica bloom nas fitas de LED, grade de cor cinematográfica, grão fino
+e transições em chicote com motion blur. Trilha: `scripts/audio3.py` (timeline via `scripts/tl3.py`).

@@ -1,44 +1,44 @@
 1
-00:00:00,500 --> 00:00:06,892
+00:00:03,550 --> 00:00:09,942
 Vem comigo conhecer essa casa! Logo na entrada, uma sala ampla, com iluminação em LED no teto.
 
 2
-00:00:08,150 --> 00:00:12,355
+00:00:11,550 --> 00:00:15,755
 Tudo integrado, com portas de vidro que se abrem para a área da piscina.
 
 3
-00:00:15,950 --> 00:00:21,623
+00:00:19,550 --> 00:00:25,223
 E olha que espaço gostoso: a piscina iluminada, perfeita para relaxar no fim do dia.
 
 4
-00:00:22,323 --> 00:00:27,905
+00:00:25,973 --> 00:00:31,555
 Voltando para dentro, a cozinha planejada, com ilha central e muito espaço para receber.
 
 5
-00:00:30,123 --> 00:00:34,823
+00:00:33,973 --> 00:00:38,673
 Agora, vamos para os quartos. Esse aqui é amplo e bem iluminado.
 
 6
-00:00:35,523 --> 00:00:38,918
+00:00:39,423 --> 00:00:42,818
 Esse outro também tem ótimo espaço e janela grande.
 
 7
-00:00:39,618 --> 00:00:43,057
+00:00:43,568 --> 00:00:47,007
 O banheiro tem box de vidro e acabamento moderno.
 
 8
-00:00:43,757 --> 00:00:46,859
+00:00:47,757 --> 00:00:50,859
 E mais um quarto, com o mesmo padrão de acabamento.
 
 9
-00:00:47,657 --> 00:00:50,265
+00:00:51,757 --> 00:00:54,365
 Mais um banheiro, também todo moderno.
 
 10
-00:00:51,557 --> 00:00:57,189
+00:00:55,757 --> 00:01:01,389
 Na lateral, um corredor externo com muro alto e concertina, garantindo mais segurança.
 
 11
-00:00:57,889 --> 00:01:02,672
+00:01:02,139 --> 00:01:06,922
 Gostou da casa? Agende sua visita! Toque no botão abaixo e fale com a gente.
 
