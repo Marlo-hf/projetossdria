@@ -1,12 +1,14 @@
-# Estáticos: Gestão de Passivo (Schemes & Remonti), v2
+# Estáticos: Gestão de Passivo (Schemes & Remonti), v3
 
 Conta: **Schemes & Remonti Advogados Associados** (act 1714063692823828)
 Público: empresário com dívida bancária acima de R$ 100 mil, já decidindo procurar advogado.
 
 | Arquivo | Formato |
 |---|---|
-| `gregory-feed-4x5.png` / `gregory-stories-9x16.png` | Dr. Gregory: conversa no WhatsApp |
-| `andiara-feed-4x5.png` / `andiara-stories-9x16.png` | Dra. Andiara: proposta do banco circulada |
+| `gregory-feed-4x5.png` / `gregory-stories-9x16.png` | "A dívida passou de R$ 100 mil? Hora do advogado." (empresário no escritório à noite) |
+| `andiara-feed-4x5.png` / `andiara-stories-9x16.png` | "O banco te deu prazo pra assinar? Não assine sozinho." (mão prestes a assinar o contrato) |
+
+Fotos de fundo geradas no Canva (assets/foto-*.png); sem fotos dos advogados.
 
 Editar: `estatico.html` · gerar PNGs: `node render.js`
 
@@ -14,7 +16,7 @@ Editar: `estatico.html` · gerar PNGs: `node render.js`
 
 ## Dr. Gregory
 
-**Título:** Deve mais de R$ 100 mil ao banco? Fale com o Dr. Gregory
+**Título:** A dívida passou de R$ 100 mil? Fale com o Dr. Gregory
 
 **Texto:**
 
@@ -32,7 +34,7 @@ Eu sou o Dr. Gregory Remonti, sócio da Schemes & Remonti. Analiso pessoalmente 
 
 ## Dra. Andiara
 
-**Título:** O banco te mandou uma proposta pra assinar?
+**Título:** O banco te deu prazo pra assinar? Não assine sozinho
 
 **Texto:**
 
@@ -48,4 +50,4 @@ Eu sou a Dra. Andiara Schemes, sócia da Schemes & Remonti. Me mostre a proposta
 
 ---
 
-CTA: **Enviar mensagem** (WhatsApp). Valores e conversa são ilustrativos (está escrito na peça). Sem promessa de resultado nem preço (Provimento 205/2021).
+CTA: **Enviar mensagem** (WhatsApp). Sem promessa de resultado nem preço (Provimento 205/2021).

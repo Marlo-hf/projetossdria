@@ -11,7 +11,7 @@ const path = require('path');
       await page.goto(`${file}?p=${p}&f=${f}`);
       await page.waitForSelector('body[data-ready]');
       const out = path.join(__dirname, `${p}-${name}.png`);
-      await page.locator('#canvas').screenshot({ path: out });
+      await page.locator('#ad').screenshot({ path: out });
       console.log('ok', out);
     }
   }
