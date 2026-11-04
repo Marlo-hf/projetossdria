@@ -1,36 +1,44 @@
 1
-00:00:00,250 --> 00:00:03,942
-Imagine chegar em casa e ser recebido por essa piscina iluminada.
+00:00:00,500 --> 00:00:06,892
+Vem comigo conhecer essa casa! Logo na entrada, uma sala ampla, com iluminação em LED no teto.
 
 2
-00:00:04,062 --> 00:00:07,082
-Uma casa nova, moderna e pensada em cada detalhe.
+00:00:08,150 --> 00:00:12,355
+Tudo integrado, com portas de vidro que se abrem para a área da piscina.
 
 3
-00:00:07,202 --> 00:00:10,501
-A área social é ampla e integrada, com vista para a piscina.
+00:00:15,950 --> 00:00:21,623
+E olha que espaço gostoso: a piscina iluminada, perfeita para relaxar no fim do dia.
 
 4
-00:00:10,621 --> 00:00:14,188
-A cozinha planejada tem ilha central e acabamento sofisticado.
+00:00:22,323 --> 00:00:27,905
+Voltando para dentro, a cozinha planejada, com ilha central e muito espaço para receber.
 
 5
-00:00:14,308 --> 00:00:17,354
-A iluminação em LED embutida valoriza cada ambiente.
+00:00:30,123 --> 00:00:34,823
+Agora, vamos para os quartos. Esse aqui é amplo e bem iluminado.
 
 6
-00:00:17,474 --> 00:00:20,245
-Os quartos são espaçosos e bem iluminados,
+00:00:35,523 --> 00:00:38,918
+Esse outro também tem ótimo espaço e janela grande.
 
 7
-00:00:20,365 --> 00:00:23,406
-e os banheiros têm box de vidro e acabamento moderno.
+00:00:39,618 --> 00:00:43,057
+O banheiro tem box de vidro e acabamento moderno.
 
 8
-00:00:23,526 --> 00:00:26,600
-Tudo isso com segurança e privacidade para a sua família.
+00:00:43,757 --> 00:00:46,859
+E mais um quarto, com o mesmo padrão de acabamento.
 
 9
-00:00:26,720 --> 00:00:31,732
-Gostou? Agende sua visita! Toque no botão abaixo e fale com a gente agora mesmo.
+00:00:47,657 --> 00:00:50,265
+Mais um banheiro, também todo moderno.
+
+10
+00:00:51,557 --> 00:00:57,189
+Na lateral, um corredor externo com muro alto e concertina, garantindo mais segurança.
+
+11
+00:00:57,889 --> 00:01:02,672
+Gostou da casa? Agende sua visita! Toque no botão abaixo e fale com a gente.
 

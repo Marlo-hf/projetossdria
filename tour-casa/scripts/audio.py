@@ -38,7 +38,7 @@ try:
 except ImportError:
     raise SystemExit("instale scipy")
 
-BPM = 96
+BPM = 86
 beat = 60 / BPM
 bar = beat * 4
 # progressão: Fmaj9 - Am7 - Dm9 - Bbmaj7(#11)
