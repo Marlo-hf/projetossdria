@@ -10,7 +10,7 @@ const [,,dir,mode,out]=process.argv;
    const ts=process.argv[5]?process.argv[5].split(',').map(Number):[1.5,4.8,7.3,8.3,11.6,14.4,16.3,19.0,21.5,23.5];
    for(const t of ts){await p.evaluate(t=>renderAt(t),t);await p.screenshot({path:`${out}/p_${t}.png`});}
  } else {
-   const fps=30,N=Math.round(25.5*fps);
+   const fps=30,N=Math.round(27.0*fps);
    const ff=spawn('ffmpeg',['-y','-v','error','-f','image2pipe','-framerate',''+fps,'-c:v','mjpeg','-i','-','-c:v','libx264','-pix_fmt','yuv420p','-crf','16','-preset','medium',out],{stdio:['pipe','inherit','inherit']});
    for(let i=0;i<N;i++){await p.evaluate(t=>renderAt(t),i/fps);const buf=await p.screenshot({type:'jpeg',quality:94});if(!ff.stdin.write(buf))await new Promise(r=>ff.stdin.once('drain',r));if(i%150==0)console.log('frame',i);}
    ff.stdin.end(); await new Promise(r=>ff.on('close',r));

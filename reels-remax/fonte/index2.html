@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<style>
+@font-face{font-family:M;font-weight:600;src:url(fonts/m600.woff2)}
+@font-face{font-family:M;font-weight:800;src:url(fonts/m800.woff2)}
+@font-face{font-family:M;font-weight:900;src:url(fonts/m900.woff2)}
+:root{--red:#DC1C2E;--blue:#003DA5;--navy:#001A4D;--sky:#7FA6FF}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000;font-family:M,sans-serif;color:#fff}
+.scene{position:absolute;inset:0;overflow:hidden;visibility:hidden}
+.full{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.blurbg{position:absolute;inset:-60px;width:calc(100% + 120px);height:calc(100% + 120px);object-fit:cover;filter:blur(28px) brightness(.45) saturate(1.2)}
+.frame{position:absolute;left:0;top:380px;width:1080px;height:912px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.frame img,.frame svg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tag{display:inline-block;background:var(--red);padding:12px 26px;font-weight:900;font-size:36px;letter-spacing:5px;text-transform:uppercase}
+.title{font-weight:900;font-size:96px;letter-spacing:-2px;line-height:1;text-transform:uppercase}
+.line{display:block;overflow:hidden}.line>span{display:inline-block}
+#progress{position:absolute;left:0;top:0;height:10px;width:0;background:var(--red);z-index:60}
+/* captions */
+#cap{position:absolute;left:60px;right:120px;top:1345px;z-index:50;text-align:center;font-weight:900;font-size:76px;line-height:1.12;text-transform:uppercase;letter-spacing:-1px}
+#cap .w{display:inline-block;margin:0 10px 8px;padding:2px 14px;border-radius:14px;text-shadow:0 6px 18px rgba(0,0,0,.85),0 0 3px rgba(0,0,0,.9);transform-origin:50% 70%}
+#cap .w.act{background:var(--red);text-shadow:none;box-shadow:0 10px 30px rgba(220,28,46,.5)}
+.chip{position:absolute;display:flex;align-items:center;gap:16px;background:#fff;color:var(--navy);font-weight:900;font-size:44px;padding:20px 34px;border-radius:999px;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+.chip i{display:inline-flex;width:56px;height:56px;border-radius:50%;background:var(--red);color:#fff;align-items:center;justify-content:center;font-style:normal;font-size:34px}
+.check{display:flex;align-items:center;gap:26px;background:rgba(255,255,255,.96);color:var(--navy);border-radius:28px;padding:30px 36px;margin-bottom:26px;font-weight:900;font-size:50px;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.check b{flex:none;width:76px;height:76px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center}
+.small{font-weight:600;font-size:26px;opacity:.75;letter-spacing:2px;text-transform:uppercase}
+.wipe{position:absolute;top:-20%;height:140%;width:170%;left:-35%}
+</style></head><body>
+<div id="progress"></div>
+
+<!-- R: AI drone -->
+<div class="scene" id="sR">
+  <img class="full" id="vR" src="drone/fr/d0001.jpg">
+  <svg viewBox="0 0 1080 1920" width="1080" height="1920" style="position:absolute;inset:0" id="rSvg">
+    <polygon id="rFill" points="240,244 736,236 916,1770 330,1790" fill="#DC1C2E" opacity="0"/>
+    <polygon id="rLine" points="240,244 736,236 916,1770 330,1790 240,244" fill="none" stroke="#fff" stroke-width="10" stroke-linejoin="round" filter="url(#glow)" pathLength="1000" stroke-dasharray="1000" stroke-dashoffset="1000"/>
+    <g id="rCorners" opacity="0" fill="#DC1C2E" stroke="#fff" stroke-width="6">
+      <circle cx="240" cy="244" r="16"/><circle cx="736" cy="236" r="16"/><circle cx="916" cy="1770" r="16"/><circle cx="330" cy="1790" r="16"/>
+    </g>
+    <g fill="rgba(220,28,46,.55)" stroke="#fff" stroke-width="6" stroke-linejoin="round">
+      <polygon class="rwall" opacity="0" points="196,200 244,244 330,1790 276,1800"/>
+      <polygon class="rwall" opacity="0" points="200,90 750,80 736,236 240,244"/>
+      <polygon class="rwall" opacity="0" points="736,236 768,196 952,1758 916,1770"/>
+    </g>
+  </svg>
+  <div id="rShade" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,15,50,.7),rgba(0,15,50,0) 28%,rgba(0,15,50,0) 62%,rgba(0,15,50,.45))"></div>
+  <div id="rHook" style="position:absolute;left:70px;top:230px">
+    <div class="tag" id="rTag">Lote à venda</div>
+    <div class="title" style="font-size:120px;margin-top:26px"><span class="line"><span>Jardim</span></span><span class="line"><span>Peluzzo</span></span></div>
+  </div>
+  <div class="chip" id="rLoc" style="left:70px;top:230px;font-size:42px"><i>●</i>Jardim Peluzzo</div>
+  <div id="rArea" style="position:absolute;left:0;right:0;top:880px;text-align:center;opacity:0">
+    <div style="display:inline-block;background:rgba(0,26,77,.9);border:5px solid #fff;border-radius:30px;padding:18px 46px;box-shadow:0 20px 60px rgba(0,0,0,.5)">
+      <span id="rAreaNum" style="font-weight:900;font-size:130px;letter-spacing:-4px">0</span><span style="font-weight:900;font-size:74px"> m²</span>
+    </div>
+  </div>
+  <div class="chip" id="rMur" style="left:70px;top:230px;font-size:42px;opacity:0"><i>✓</i>Todo murado</div>
+  <div class="small" style="position:absolute;left:70px;top:1830px;font-size:22px;opacity:.7">Imagem aérea ilustrativa gerada por IA</div>
+</div>
+
+<!-- A: HOOK video -->
+<div class="scene" id="sA">
+  <img class="full vid" id="vA" src="frames/f0067.jpg">
+  <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,15,50,.75),rgba(0,15,50,0) 30%,rgba(0,15,50,0) 55%,rgba(0,15,50,.55))"></div>
+  <div style="position:absolute;left:70px;top:230px">
+    <div class="tag" id="aTag">Lote à venda</div>
+    <div class="title" style="font-size:120px;margin-top:26px"><span class="line"><span>Jardim</span></span><span class="line"><span style="color:#fff">Peluzzo</span></span></div>
+  </div>
+</div>
+
+<!-- B+C: hero photo, pin, lot marking -->
+<div class="scene" id="sB">
+  <img class="blurbg" src="img/sol.jpg">
+  <div style="position:absolute;left:70px;top:200px;right:70px">
+    <div class="small" id="bSmall">RE/MAX Realizações apresenta</div>
+    <div class="title" id="bTitle" style="font-size:92px;margin-top:10px"><span class="line"><span>Jardim <span style="color:var(--red)">Peluzzo</span></span></span></div>
+  </div>
+  <div class="frame" id="bFrame">
+    <img id="bImg" src="img/sol.jpg">
+    <svg viewBox="0 0 1080 912" preserveAspectRatio="xMidYMid slice" id="bSvg">
+      <defs><filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <polygon id="lotFill" points="398,522 702,526 1080,622 1080,748 0,748 0,560" fill="#DC1C2E" opacity="0"/>
+      <polygon id="lotLine" points="398,522 702,526 1080,622 1080,748 0,748 0,560 398,522" fill="none" stroke="#fff" stroke-width="9" stroke-linejoin="round" filter="url(#glow)" pathLength="1000" stroke-dasharray="1000" stroke-dashoffset="1000"/>
+      <g id="corners" opacity="0">
+        <circle cx="398" cy="522" r="13" fill="#DC1C2E" stroke="#fff" stroke-width="5"/><circle cx="702" cy="526" r="13" fill="#DC1C2E" stroke="#fff" stroke-width="5"/>
+      </g>
+      <g id="pin" transform="translate(550,560)">
+        <g id="pinInner"><path d="M0,0 C-10,-30 -46,-52 -46,-92 A46,46 0 1 1 46,-92 C46,-52 10,-30 0,0Z" fill="#DC1C2E" stroke="#fff" stroke-width="6"/><circle cx="0" cy="-92" r="17" fill="#fff"/></g>
+        <ellipse id="pinShadow" cx="0" cy="2" rx="26" ry="8" fill="rgba(0,0,0,.45)"/>
+      </g>
+    </svg>
+    <div id="areaLbl" style="position:absolute;left:0;right:0;top:560px;text-align:center;opacity:0">
+      <div style="display:inline-block;background:rgba(0,26,77,.88);border:4px solid #fff;border-radius:26px;padding:16px 40px">
+        <span id="areaNum" style="font-weight:900;font-size:110px;letter-spacing:-3px">0</span><span style="font-weight:900;font-size:64px"> m²</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- D: walls (murado) -->
+<div class="scene" id="sD">
+  <img class="blurbg" src="img/nublado.jpg">
+  <div style="position:absolute;left:70px;top:210px"><div class="tag" style="font-size:40px">✓ Lote 100% murado</div></div>
+  <div class="frame">
+    <img id="dImg" src="img/nublado.jpg">
+    <svg viewBox="0 0 1280 960" preserveAspectRatio="xMidYMid slice">
+      <g fill="rgba(220,28,46,.28)" stroke="#fff" stroke-width="8" stroke-linejoin="round" filter="url(#glow)">
+        <polygon class="wall" pathLength="1000" stroke-dasharray="1000" stroke-dashoffset="1000" points="0,128 500,398 500,478 0,505"/>
+        <polygon class="wall" pathLength="1000" stroke-dasharray="1000" stroke-dashoffset="1000" points="500,398 890,404 890,486 500,478"/>
+        <polygon class="wall" pathLength="1000" stroke-dasharray="1000" stroke-dashoffset="1000" points="890,420 1180,342 1180,288 1280,288 1280,600 1180,592 890,486"/>
+      </g>
+    </svg>
+  </div>
+</div>
+
+<!-- E: checklist over video -->
+<div class="scene" id="sE">
+  <img class="full vid" id="vE" src="frames/f0170.jpg" style="filter:brightness(.55) saturate(1.1)">
+  <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,26,77,.55),rgba(0,26,77,.15) 60%,rgba(0,26,77,.6))"></div>
+  <div style="position:absolute;left:70px;right:150px;top:260px">
+    <div class="small" style="opacity:.9;margin-bottom:24px">O que você leva</div>
+    <div class="check" id="c1"><b><svg width="44" height="44" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></b>300 m² de área</div>
+    <div class="check" id="c2"><b><svg width="44" height="44" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></b>Lote murado</div>
+    <div class="check" id="c3"><b><svg width="44" height="44" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></b>Documentação regularizada</div>
+    <div class="check" id="c4"><b><svg width="44" height="44" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></b>Aceita financiamento</div>
+  </div>
+</div>
+
+<!-- F: aerial-style illustrative map -->
+<div class="scene" id="sF" style="background:#0B1F45">
+  <svg id="map" viewBox="0 0 1080 1920" width="1080" height="1920" style="position:absolute;inset:0">
+    <defs>
+      <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M60 0H0V60" fill="none" stroke="rgba(127,166,255,.08)" stroke-width="2"/></pattern>
+    </defs>
+    <rect width="1080" height="1920" fill="url(#grid)"/>
+    <g id="mapWorld">
+      <!-- streets -->
+      <g stroke="#27457F" stroke-width="54" stroke-linecap="round" fill="none" class="streets">
+        <path d="M-100 980 H1180"/><path d="M-100 1460 H1180"/><path d="M-100 500 H1180"/>
+        <path d="M260 300 V1700"/><path d="M820 300 V1700"/>
+      </g>
+      <!-- blocks / houses -->
+      <g fill="#16305F">
+        <rect x="300" y="540" width="480" height="400" rx="14"/><rect x="300" y="1020" width="480" height="400" rx="14"/>
+        <rect x="-40" y="540" width="260" height="400" rx="14"/><rect x="860" y="540" width="260" height="400" rx="14"/>
+        <rect x="-40" y="1020" width="260" height="400" rx="14"/><rect x="860" y="1020" width="260" height="400" rx="14"/>
+      </g>
+      <g fill="#1E3B73">
+        <rect x="320" y="1040" width="90" height="170" rx="8"/><rect x="420" y="1040" width="90" height="170" rx="8"/>
+        <rect x="620" y="1040" width="70" height="170" rx="8"/><rect x="700" y="1040" width="60" height="170" rx="8"/>
+        <rect x="320" y="1230" width="140" height="170" rx="8"/><rect x="480" y="1230" width="140" height="170" rx="8"/><rect x="640" y="1230" width="120" height="170" rx="8"/>
+      </g>
+      <!-- the lot -->
+      <rect id="mLotFill" x="520" y="1040" width="90" height="170" fill="#DC1C2E" opacity=".0"/>
+      <rect id="mLot" x="520" y="1040" width="90" height="170" fill="none" stroke="#fff" stroke-width="7" pathLength="1000" stroke-dasharray="1000" stroke-dashoffset="1000"/>
+      <circle id="ring" cx="565" cy="1125" r="60" fill="none" stroke="#DC1C2E" stroke-width="6" opacity="0"/>
+      <!-- POIs -->
+      <path id="route1" d="M565 1040 V980 H260 V700" fill="none" stroke="#fff" stroke-width="7" stroke-dasharray="4 18" stroke-linecap="round" opacity="0"/>
+      <path id="route2" d="M565 1210 V1460 H820 V1600" fill="none" stroke="#fff" stroke-width="7" stroke-dasharray="4 18" stroke-linecap="round" opacity="0"/>
+    </g>
+  </svg>
+  <div class="chip" id="poi1" style="left:90px;top:560px"><i>★</i>Batalhão</div>
+  <div class="chip" id="poi2" style="left:640px;top:1560px;font-size:44px"><i>+</i>UPA</div>
+  <div id="mLabel" style="position:absolute;left:640px;top:1060px;font-weight:900;font-size:40px;line-height:1.05;text-shadow:0 4px 14px rgba(0,0,0,.6)">SEU LOTE<br><span style="color:var(--sky)">300 m²</span></div>
+  <div style="position:absolute;left:70px;top:200px;right:70px">
+    <div class="small" style="opacity:.85">Localização</div>
+    <div class="title" id="fTitle" style="font-size:84px;margin-top:8px"><span class="line"><span>Tudo pertinho</span></span></div>
+  </div>
+  <div id="valor" style="position:absolute;left:70px;right:150px;top:390px;display:flex;align-items:center;gap:22px;background:var(--red);border-radius:24px;padding:22px 30px;box-shadow:0 20px 50px rgba(0,0,0,.4)">
+    <svg width="120" height="70" viewBox="0 0 120 70"><polyline id="spark" points="4,62 34,46 56,52 84,24 116,8" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/></svg>
+    <div style="font-weight:900;font-size:40px;line-height:1.1">Bairro em constante<br>valorização</div>
+  </div>
+  <div class="small" style="position:absolute;right:140px;top:1700px;font-size:22px;opacity:.55">Mapa ilustrativo</div>
+</div>
+
+<!-- G: price -->
+<div class="scene" id="sG">
+  <img class="blurbg" src="img/sol.jpg">
+  <div class="frame" style="top:230px"><img id="gImg" src="img/sol.jpg"></div>
+  <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,26,77,0) 40%,rgba(0,26,77,.55) 62%,rgba(0,26,77,.0) 80%)"></div>
+  <div style="position:absolute;left:70px;right:70px;top:840px">
+    <div class="tag" id="gTag">Lote · Jardim Peluzzo</div>
+    <div id="priceBox" style="margin-top:22px;display:inline-block;background:var(--red);border-radius:28px;padding:18px 44px 26px;box-shadow:0 30px 70px rgba(0,0,0,.5)">
+      <span style="font-weight:800;font-size:64px;vertical-align:top;line-height:1.6">R$ </span><span id="price" style="font-weight:900;font-size:170px;letter-spacing:-6px">0</span>
+    </div>
+    <div style="margin-top:24px"><div class="chip" id="gChip" style="position:static;display:inline-flex;font-size:40px"><i>✓</i>Aceita financiamento</div></div>
+  </div>
+</div>
+
+<!-- H: end card -->
+<div class="scene" id="sH" style="background:var(--blue)">
+  <div id="stripes" style="position:absolute;left:-10%;right:-10%;top:0;height:100%;transform:skewY(-12deg)">
+    <div class="st" style="position:absolute;left:0;right:0;top:1150px;height:64px;background:#fff"></div>
+    <div class="st" style="position:absolute;left:0;right:0;top:1214px;height:64px;background:var(--red)"></div>
+    <div class="st" style="position:absolute;left:0;right:0;top:1278px;height:900px;background:var(--navy)"></div>
+  </div>
+  <div style="position:absolute;left:0;right:0;top:250px;text-align:center">
+    <div id="brand" style="font-weight:900;font-size:180px;letter-spacing:-4px;line-height:1">RE/MAX</div>
+    <div id="brand2" style="font-weight:800;font-size:60px;letter-spacing:20px;padding-left:20px;margin-top:4px">REALIZAÇÕES</div>
+    <div id="endline" style="width:0;height:8px;background:var(--red);margin:40px auto"></div>
+    <div id="phone" style="display:inline-flex;align-items:center;gap:20px;background:#fff;color:var(--blue);font-weight:900;font-size:66px;padding:26px 56px;border-radius:999px;box-shadow:0 20px 60px rgba(0,0,0,.35)">
+      <svg width="58" height="58" viewBox="0 0 24 24"><path fill="#DC1C2E" d="M6.6 10.8a15.1 15.1 0 006.6 6.6l2.2-2.2a1 1 0 011-.25 11.4 11.4 0 003.6.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1z"/></svg>(34) 3822-2838</div>
+    <div id="handle" style="font-weight:800;font-size:50px;margin-top:44px">@remaxrealizacoes</div>
+  </div>
+</div>
+
+<div class="wipe" id="w1" style="background:var(--red);z-index:40"></div>
+<div class="wipe" id="w2" style="background:var(--blue);z-index:41"></div>
+<div id="flash" style="position:absolute;inset:0;background:#fff;opacity:0;z-index:45"></div>
+<div id="cap"></div>
+
+<script src="gsap.min.js"></script>
+<script>
+const T=27.0, FPS=30;
+const WORDS=__WORDS__;
+const _w=i=>WORDS.find(w=>w.i===i).t;
+const SC={R:[0,_w(18)-.05],E:[_w(18)-.05,_w(24)-.13],F:[_w(24)-.13,_w(36)-.1],G:[_w(36)-.1,_w(41)-.13],H:[_w(41)-.13,T]};
+const DR_SPEED=1.45, DR_END=10.0;
+const tl=gsap.timeline({paused:true});
+const q=s=>document.querySelectorAll(s);
+for(const [k,[a,b]] of Object.entries(SC)){tl.set('#s'+k,{visibility:'visible'},a);if(b<T)tl.set('#s'+k,{visibility:'hidden'},b)}
+function lines(sel,at,st=.12,d=.6){tl.from(q(sel+' .line>span'),{yPercent:115,duration:d,ease:'power4.out',stagger:st},at)}
+function wipe(at){tl.fromTo('#w1',{xPercent:110},{xPercent:-110,duration:.5,ease:'power3.inOut',immediateRender:false},at-.27).fromTo('#w2',{xPercent:110},{xPercent:-110,duration:.5,ease:'power3.inOut',immediateRender:false},at-.21)}
+function flash(at,o=.8){tl.fromTo('#flash',{opacity:o},{opacity:0,duration:.35,ease:'power2.out',immediateRender:false},at)}
+gsap.set('#w1,#w2',{x:0,xPercent:110,skewX:-14});
+const W=i=>WORDS.find(w=>w.i===i).t;
+tl.to('#progress',{width:'100%',duration:T,ease:'none'},0);
+
+// R drone (AI) + marking
+tl.from('#rTag',{xPercent:-130,duration:.5,ease:'power3.out'},.1);
+lines('#rHook',.3,.12,.55);
+tl.to('#rHook',{opacity:0,y:-40,duration:.4,ease:'power2.in'},2.5);
+tl.from('#rLoc',{scale:0,duration:.45,ease:'back.out(2)',transformOrigin:'0% 50%'},W(11)-.15);
+tl.to('#rLoc',{opacity:0,duration:.3},W(13)-.3);
+const mk=W(13)-.1;
+tl.to('#rLine',{attr:{'stroke-dashoffset':0},duration:1.1,ease:'power2.inOut'},mk);
+tl.to('#rCorners',{opacity:1,duration:.25},mk+.4);
+tl.to('#rFill',{opacity:.38,duration:.4},mk+.9);
+tl.to('#rFill',{opacity:.2,duration:.35,yoyo:true,repeat:3},mk+1.3);
+tl.to('#rArea',{opacity:1,duration:.3},W(14)-.05);
+tl.from('#rArea>div',{scale:.4,duration:.5,ease:'back.out(2)'},W(14)-.05);
+const area={v:0};tl.to(area,{v:300,duration:.9,ease:'power2.out',onUpdate:()=>document.getElementById('rAreaNum').textContent=Math.round(area.v)},W(14));
+tl.fromTo('#vR,#rSvg',{scale:1},{scale:1.06,duration:3.2,ease:'sine.inOut',transformOrigin:'50% 52%',immediateRender:false},DR_END/DR_SPEED);
+tl.to('.rwall',{opacity:1,duration:.3,stagger:.12},W(16)-.1);
+tl.to('#rFill',{opacity:.12,duration:.3},W(16)-.1);
+tl.from('#rMur',{scale:0,duration:.4,ease:'back.out(2)',transformOrigin:'0% 50%'},W(16)-.05);
+tl.to('#rMur',{opacity:1,duration:.01},W(16)-.05);
+wipe(SC.E[0]);
+
+// E checklist
+tl.from('#c1',{x:-900,duration:.45,ease:'power3.out'},SC.E[0]+.1);
+tl.from('#c2',{x:-900,duration:.45,ease:'power3.out'},SC.E[0]+.25);
+tl.from('#c3',{x:-900,duration:.45,ease:'power3.out'},W(19)-.1);
+tl.from('#c3 b',{scale:0,duration:.4,ease:'back.out(3)'},W(19)+.2);
+tl.from('#c4',{x:-900,duration:.45,ease:'power3.out'},W(22)-.1);
+tl.from('#c4 b',{scale:0,duration:.4,ease:'back.out(3)'},W(22)+.2);
+wipe(SC.F[0]);
+
+// F map (top-down, drone-like push)
+tl.fromTo('#mapWorld',{scale:1.6,rotation:-8,svgOrigin:'565 1125'},{scale:1.0,rotation:0,svgOrigin:'565 1125',duration:2.2,ease:'power3.inOut'},SC.F[0]);
+lines('#sF',SC.F[0]+.1);
+tl.to('#mLot',{attr:{'stroke-dashoffset':0},duration:.7,ease:'power2.out'},SC.F[0]+.3);
+tl.to('#mLotFill',{opacity:.9,duration:.4},SC.F[0]+.8);
+tl.fromTo('#ring',{attr:{r:30},opacity:1},{attr:{r:130},opacity:0,duration:1.2,repeat:2,ease:'power1.out'},SC.F[0]+.8);
+tl.from('#mLabel',{opacity:0,x:-30,duration:.4},SC.F[0]+.9);
+tl.to('#route1',{opacity:1,duration:.3},W(27)-.2);
+tl.from('#poi1',{scale:0,duration:.45,ease:'back.out(2.4)'},W(27)-.1);
+tl.to('#route2',{opacity:1,duration:.3},W(30)-.3);
+tl.from('#poi2',{scale:0,duration:.45,ease:'back.out(2.4)'},W(30)-.15);
+tl.to('#route1,#route2',{strokeDashoffset:-110,duration:3,ease:'none'},W(27));
+tl.from('#valor',{y:-60,opacity:0,duration:.5,ease:'power3.out'},W(32)-.1);
+tl.to('#spark',{attr:{'stroke-dashoffset':0},duration:.8,ease:'power2.out'},W(34));
+flash(SC.G[0],.8);
+
+// G price
+tl.fromTo('#gImg',{scale:1.15},{scale:1.0,duration:3.4,ease:'power2.out'},SC.G[0]);
+tl.from('#gTag',{xPercent:-130,duration:.45,ease:'power3.out'},SC.G[0]+.1);
+tl.from('#priceBox',{scale:0,duration:.55,ease:'back.out(1.8)',transformOrigin:'0% 50%'},W(38)-.15);
+const pr={v:0};tl.to(pr,{v:265000,duration:1.2,ease:'power3.out',onUpdate:()=>document.getElementById('price').textContent=Math.round(pr.v/1000).toLocaleString('pt-BR')+'.000'},W(39));
+tl.from('#gChip',{scale:0,duration:.45,ease:'back.out(2)',transformOrigin:'0% 50%'},W(40)+.1);
+wipe(SC.H[0]);
+
+// H end
+tl.from('#stripes .st',{xPercent:-110,duration:.7,ease:'power3.out',stagger:.08},SC.H[0]);
+tl.from('#brand',{scale:.6,opacity:0,duration:.6,ease:'back.out(1.7)'},SC.H[0]+.1);
+tl.from('#brand2',{letterSpacing:'60px',opacity:0,duration:.8,ease:'power3.out'},SC.H[0]+.25);
+tl.to('#endline',{width:220,duration:.5,ease:'power3.out'},SC.H[0]+.5);
+tl.from('#phone',{scale:0,duration:.55,ease:'back.out(2)'},SC.H[0]+.7);
+tl.to('#phone',{scale:1.05,duration:.3,yoyo:true,repeat:5,ease:'sine.inOut'},SC.H[0]+1.5);
+tl.from('#handle',{y:30,opacity:0,duration:.5,ease:'power3.out'},SC.H[0]+1.0);
+
+// ---- captions (word-by-word, synced to the voice) ----
+const DISP={'300 metros':'300 METROS','265 mil':'265 MIL','Remax':'RE/MAX'};
+const CH=[[0,2],[3,5],[6,9],[10,12],[13,15],[16,17],[18,20],[21,23],[24,27],[28,30],[31,33],[34,35],[36,38],[39,40],[41,44],[45,49]];
+const PUNCT={5:'?',9:',',12:'.',15:',',17:',',23:'.',30:',',35:'.',40:'.',49:'!'};
+const cap=document.getElementById('cap');
+const chunks=CH.map(([a,b],k)=>{const ws=WORDS.filter(w=>w.i>=a&&w.i<=b);const start=ws[0].t-.04;
+  const next=CH[k+1]?WORDS.find(w=>w.i===CH[k+1][0]).t-.04:T;const last=ws[ws.length-1];const end=Math.min(next,last.t+last.d+.7);return {ws,start,end}});
+let curChunk=-1;
+function captions(t){
+  const k=chunks.findIndex(c=>t>=c.start&&t<c.end);
+  if(k!==curChunk){curChunk=k;cap.innerHTML='';if(k>=0)chunks[k].ws.forEach(w=>{const s=document.createElement('span');s.className='w';s.textContent=(DISP[w.w]||w.w)+(PUNCT[w.i]||'');s.dataset.t=w.t;s.dataset.d=w.d;cap.appendChild(s)})}
+  if(k<0)return;
+  const spans=[...cap.children];let act=-1;spans.forEach((s,j)=>{if(t>=+s.dataset.t-.02)act=j});
+  spans.forEach((s,j)=>{const st=+s.dataset.t;const p=Math.min(1,Math.max(0,(t-st+.02)/.14));
+    if(j<=act){s.style.opacity=1;const sc=.75+.25*(1-Math.pow(1-p,3))+(j===act?.06*Math.sin(Math.min(1,p)*Math.PI):0);s.style.transform=`scale(${sc.toFixed(3)}) translateY(${((1-p)*18).toFixed(1)}px)`}
+    else{s.style.opacity=0;s.style.transform='scale(.75)'}
+    s.classList.toggle('act',j===act)});
+}
+// ---- video frames ----
+function vidFrame(t){
+  let img=null,want=null;
+  if(t<SC.R[1]){const src=Math.min(t*DR_SPEED,DR_END);const n=Math.min(241,Math.max(1,Math.round(src*24)+1));img=document.getElementById('vR');want='drone/fr/d'+String(n).padStart(4,'0')+'.jpg'}
+  else if(t>=SC.E[0]&&t<SC.E[1]){const src=5.4+(t-SC.E[0]);const n=Math.min(358,Math.max(1,Math.round(src*30)+1));img=document.getElementById('vE');want='frames/f'+String(n).padStart(4,'0')+'.jpg'}
+  if(!img)return null;
+  if(!img.src.endsWith(want)){img.src=want;return img.decode().catch(()=>{})}
+  return null;
+}
+window.renderAt=async t=>{tl.seek(t,false);captions(t);const p=vidFrame(t);if(p)await p;};
+window.T=T;
+window.READY=Promise.race([Promise.all([document.fonts.ready,...[...document.images].map(i=>i.decode().catch(()=>{}))]),new Promise(r=>setTimeout(r,15000))]);
+</script>
+</body></html>
