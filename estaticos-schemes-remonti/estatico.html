@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Estático Schemes & Remonti</title>
+<style>
+  @font-face { font-family: Anton; src: url(assets/anton-400.woff2) format("woff2"); }
+  @font-face { font-family: Mont; font-weight: 500; src: url(assets/montserrat-500.woff2) format("woff2"); }
+  @font-face { font-family: Mont; font-weight: 600; src: url(assets/montserrat-600.woff2) format("woff2"); }
+  @font-face { font-family: Mont; font-weight: 700; src: url(assets/montserrat-700.woff2) format("woff2"); }
+  @font-face { font-family: Mont; font-weight: 800; src: url(assets/montserrat-800.woff2) format("woff2"); }
+
+  :root {
+    --navy-0: #060d14;
+    --navy-1: #0b1824;
+    --navy-2: #11212e;
+    --gold: #ffe1a4;
+    --gold-2: #e8b65c;
+    --white: #ffffff;
+    --muted: #b9c4cf;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--navy-0); }
+  .ad {
+    position: relative; overflow: hidden;
+    width: 1080px; height: 1350px;
+    font-family: Mont, sans-serif; color: var(--white);
+    background:
+      radial-gradient(900px 700px at 85% 8%, rgba(232,182,92,.20), transparent 60%),
+      radial-gradient(700px 600px at 0% 100%, rgba(40,80,120,.35), transparent 65%),
+      linear-gradient(180deg, var(--navy-1), var(--navy-0));
+    display: flex; flex-direction: column;
+    padding: 64px 72px 60px;
+  }
+  .story { height: 1920px; padding: 200px 72px 300px; }
+
+  /* atmosfera */
+  .bg-photo {
+    position: absolute; right: -120px; top: -40px; width: 900px; height: 730px;
+    background: url(assets/fundo-balanca.png) center/cover;
+    filter: blur(3px) saturate(.8) brightness(.45);
+    -webkit-mask-image: radial-gradient(closest-side, #000 35%, transparent 100%);
+            mask-image: radial-gradient(closest-side, #000 35%, transparent 100%);
+    opacity: .75;
+  }
+  .story .bg-photo { top: 60px; width: 1000px; height: 900px; }
+  .lines {
+    position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(115deg, rgba(255,225,164,.035) 0 2px, transparent 2px 46px);
+  }
+  .ghost {
+    position: absolute; right: -30px; bottom: 150px;
+    font-family: Anton; font-size: 330px; line-height: .8; letter-spacing: -4px;
+    color: transparent; -webkit-text-stroke: 2px rgba(255,225,164,.10);
+    white-space: nowrap;
+  }
+  .story .ghost { bottom: 520px; font-size: 360px; }
+  .z { position: relative; z-index: 2; }
+
+  /* topo */
+  .top { display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 16px; }
+  .brand img { width: 58px; height: 56px; }
+  .brand b { display: block; font-weight: 700; font-size: 25px; letter-spacing: .3px; }
+  .brand small { display: block; font-size: 12.5px; letter-spacing: 4.2px; color: var(--gold); font-weight: 600; margin-top: 3px; }
+  .tag {
+    border: 1.5px solid rgba(255,225,164,.55); color: var(--gold);
+    font-weight: 700; font-size: 15px; letter-spacing: 2.4px;
+    padding: 11px 18px; border-radius: 40px; background: rgba(6,13,20,.45);
+  }
+
+  /* chamada */
+  .kicker {
+    margin-top: 48px; align-self: flex-start;
+    display: inline-flex; align-items: center; gap: 12px;
+    background: #c0392b; color: #fff;
+    font-weight: 800; font-size: 25px; letter-spacing: 1px; text-transform: uppercase;
+    padding: 12px 20px 12px 16px; border-radius: 6px;
+    box-shadow: 0 10px 30px rgba(192,57,43,.35);
+  }
+  .kicker .dot { width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px rgba(255,255,255,.25); }
+  .headline {
+    margin-top: 26px;
+    font-family: Anton; text-transform: uppercase; font-weight: 400;
+    font-size: 106px; line-height: 1.04; letter-spacing: .5px;
+    text-shadow: 0 6px 28px rgba(0,0,0,.45);
+  }
+  .story .headline { font-size: 124px; margin-top: 34px; }
+  .headline .gold { color: var(--gold); }
+  .headline .band {
+    display: inline-block; margin-top: 10px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-2));
+    color: var(--navy-1); padding: 4px 18px 0; transform: rotate(-1.2deg); white-space: nowrap;
+    box-shadow: 0 14px 34px rgba(232,182,92,.28);
+    text-shadow: none;
+  }
+  .sub {
+    margin-top: 26px; max-width: 920px;
+    font-size: 27.5px; line-height: 1.38; font-weight: 500; color: #dfe6ec;
+  }
+  .sub strong { color: var(--white); font-weight: 700; }
+  .story .sub { font-size: 33px; margin-top: 34px; }
+
+  /* cartão de perfil */
+  .card {
+    margin-top: auto; flex: none;
+    display: grid; grid-template-columns: 250px 1fr; gap: 34px; align-items: center;
+    padding: 26px 30px 26px 26px; border-radius: 26px;
+    background: linear-gradient(135deg, rgba(17,33,46,.92), rgba(6,13,20,.92));
+    border: 1.5px solid rgba(255,225,164,.45);
+    box-shadow: 0 30px 70px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  .story .card { grid-template-columns: 300px 1fr; padding: 32px; margin-top: 70px; }
+  .photo {
+    position: relative; width: 100%; aspect-ratio: 278/290; border-radius: 18px;
+    background-size: cover; background-position: center top;
+    box-shadow: 0 0 0 4px var(--navy-1), 0 0 0 7px var(--gold);
+  }
+  .verified {
+    position: absolute; left: 50%; bottom: -16px; transform: translateX(-50%);
+    background: var(--gold); color: var(--navy-1); white-space: nowrap;
+    font-weight: 800; font-size: 13px; letter-spacing: 1.6px;
+    padding: 7px 12px; border-radius: 30px;
+  }
+  .who small { display: block; color: var(--gold); font-weight: 700; font-size: 15px; letter-spacing: 3px; }
+  .who h2 { font-weight: 800; font-size: 41px; line-height: 1.08; margin-top: 8px; letter-spacing: -.3px; }
+  .story .who h2 { font-size: 46px; }
+  .who .oab { margin-top: 6px; font-size: 19px; color: var(--muted); font-weight: 600; }
+  .who ul { list-style: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,225,164,.22); }
+  .who li { display: flex; gap: 12px; align-items: flex-start; font-size: 20.5px; line-height: 1.3; font-weight: 600; color: #e9eef2; }
+  .story .who li { font-size: 22.5px; }
+  .who li + li { margin-top: 9px; }
+  .who li i {
+    flex: none; width: 24px; height: 24px; border-radius: 50%; margin-top: 1px;
+    background: var(--gold); position: relative;
+  }
+  .who li i::after {
+    content: ""; position: absolute; left: 8px; top: 4.5px; width: 6px; height: 11px;
+    border: solid var(--navy-1); border-width: 0 3px 3px 0; transform: rotate(45deg);
+  }
+
+  /* CTA */
+  .cta {
+    margin-top: 30px; display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(90deg, var(--gold), var(--gold-2));
+    color: var(--navy-1); border-radius: 16px; padding: 24px 30px;
+    font-weight: 800; font-size: 30px; letter-spacing: .4px; text-transform: uppercase;
+    box-shadow: 0 16px 40px rgba(232,182,92,.30);
+  }
+  .story .cta { font-size: 32px; padding: 28px 32px; margin-top: 36px; }
+  .cta .arrow {
+    width: 54px; height: 54px; border-radius: 50%; background: var(--navy-1);
+    display: grid; place-items: center; color: var(--gold); font-size: 30px;
+  }
+  .foot { margin-top: 16px; text-align: center; font-size: 17px; color: var(--muted); font-weight: 500; letter-spacing: .3px; }
+  .story .foot { font-size: 19px; }
+</style>
+</head>
+<body>
+<div class="ad" id="ad">
+  <div class="bg-photo"></div>
+  <div class="lines"></div>
+  <div class="ghost">R$ 100 MIL+</div>
+
+  <div class="top z">
+    <div class="brand">
+      <img src="assets/logo.svg" alt="">
+      <div><b>Schemes &amp; Remonti</b><small>ADVOGADOS ASSOCIADOS</small></div>
+    </div>
+    <div class="tag">PASSIVO BANCÁRIO PJ</div>
+  </div>
+
+  <div class="kicker z"><span class="dot"></span><span id="kicker"></span></div>
+  <h1 class="headline z" id="headline"></h1>
+  <p class="sub z" id="sub"></p>
+
+  <div class="card z">
+    <div class="photo" id="photo"><span class="verified">SÓCIO FUNDADOR</span></div>
+    <div class="who">
+      <small id="role"></small>
+      <h2 id="name"></h2>
+      <div class="oab" id="oab"></div>
+      <ul id="bullets"></ul>
+    </div>
+  </div>
+
+  <div class="cta z"><span id="cta"></span><span class="arrow">➜</span></div>
+  <div class="foot z" id="foot"></div>
+</div>
+
+<script>
+const PEOPLE = {
+  gregory: {
+    photo: "assets/gregory.jpg",
+    badge: "SÓCIO FUNDADOR",
+    kicker: "Dívida bancária acima de R$ 100 mil",
+    headline: 'Não assine o<br>próximo acordo<br>com o banco<br><span class="band">sem um advogado.</span>',
+    sub: 'O acordo do gerente alonga o prazo e aumenta o custo. <strong>Antes de decidir, coloque seus contratos na mesa de quem vai defender a sua empresa.</strong>',
+    role: "O ADVOGADO DO SEU CASO",
+    name: "Dr. Gregory Remonti",
+    oab: "OAB/RS 128.236 · Sócio da Schemes &amp; Remonti",
+    bullets: [
+      "Revisão técnica dos contratos bancários",
+      "Defesa em execução, bloqueio e penhora",
+      "Renegociação do passivo com estratégia"
+    ],
+    cta: "Falar com o Dr. Gregory",
+    foot: "Atendimento exclusivo para empresas · análise individual do seu caso"
+  },
+  andiara: {
+    photo: "assets/andiara.jpg",
+    badge: "SÓCIA FUNDADORA",
+    kicker: "Dívida bancária acima de R$ 100 mil",
+    headline: 'O banco tem<br>advogados.<br><span class="band">E a sua empresa?</span>',
+    sub: 'Com mais de R$ 100 mil em jogo, negociar sozinho é jogar contra um time inteiro. <strong>Tenha uma advogada especialista do seu lado antes do próximo passo do banco.</strong>',
+    hsize: { feed: 128, story: 140 },
+    role: "A ADVOGADA DO SEU CASO",
+    name: "Dra. Andiara Schemes",
+    oab: "OAB/RS 91.691 · Sócia da Schemes &amp; Remonti",
+    bullets: [
+      "Análise completa do passivo bancário da empresa",
+      "Proteção do patrimônio dos sócios e avalistas",
+      "Estratégia jurídica para cada contrato"
+    ],
+    cta: "Falar com a Dra. Andiara",
+    foot: "Atendimento exclusivo para empresas · análise individual do seu caso"
+  }
+};
+const q = new URLSearchParams(location.search);
+const p = PEOPLE[q.get("p") || "gregory"];
+const ad = document.getElementById("ad");
+if (q.get("f") === "story") ad.classList.add("story");
+document.getElementById("photo").style.backgroundImage = `url(${p.photo})`;
+document.querySelector(".verified").textContent = p.badge;
+for (const k of ["kicker","headline","sub","role","name","oab","cta","foot"]) document.getElementById(k).innerHTML = p[k];
+if (p.hsize) document.getElementById('headline').style.fontSize = p.hsize[q.get('f')==='story'?'story':'feed'] + 'px';
+document.fonts.ready.then(()=>{const h=document.getElementById('headline');let fs=parseFloat(getComputedStyle(h).fontSize);while(h.scrollWidth>h.clientWidth+2&&fs>60){fs-=2;h.style.fontSize=fs+'px';}document.body.dataset.ready=1;});
+document.getElementById("bullets").innerHTML = p.bullets.map(b => `<li><i></i><span>${b}</span></li>`).join("");
+</script>
+</body>
+</html>
