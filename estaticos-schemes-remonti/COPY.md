@@ -1,66 +1,51 @@
-# Estáticos: Gestão de Passivo (Schemes & Remonti)
+# Estáticos: Gestão de Passivo (Schemes & Remonti), v2
 
-Conta de anúncios: **Schemes & Remonti Advogados Associados** (act 1714063692823828)
-Público: empresário (PJ) com dívida bancária acima de R$ 100 mil. Fundo de funil: quem vê já está decidindo **contratar o advogado**.
+Conta: **Schemes & Remonti Advogados Associados** (act 1714063692823828)
+Público: empresário com dívida bancária acima de R$ 100 mil, já decidindo procurar advogado.
 
-| Arquivo | Formato | Advogado |
-|---|---|---|
-| `gregory-feed-4x5.png` | 1080x1350 (Feed) | Dr. Gregory Remonti |
-| `gregory-stories-9x16.png` | 1080x1920 (Stories/Reels) | Dr. Gregory Remonti |
-| `andiara-feed-4x5.png` | 1080x1350 (Feed) | Dra. Andiara Schemes |
-| `andiara-stories-9x16.png` | 1080x1920 (Stories/Reels) | Dra. Andiara Schemes |
+| Arquivo | Formato |
+|---|---|
+| `gregory-feed-4x5.png` / `gregory-stories-9x16.png` | Dr. Gregory: conversa no WhatsApp |
+| `andiara-feed-4x5.png` / `andiara-stories-9x16.png` | Dra. Andiara: proposta do banco circulada |
 
-Para editar o texto ou trocar a foto: altere `estatico.html` (objeto `PEOPLE`) ou `assets/*.jpg` e rode `node render.js`.
+Editar: `estatico.html` · gerar PNGs: `node render.js`
 
 ---
 
-## Anúncio 1: Dr. Gregory
+## Dr. Gregory
 
-**Título:** Dívida com banco acima de R$ 100 mil? Fale com o Dr. Gregory
+**Título:** Deve mais de R$ 100 mil ao banco? Fale com o Dr. Gregory
 
-**Texto principal:**
+**Texto:**
 
-Empresário, antes de assinar mais um acordo com o banco, leia isto. ⚠️
+Empresário, antes de assinar mais um acordo com o banco, fale com um advogado. ⚠️
 
-Quando a dívida passa de R$ 100 mil, a proposta do gerente quase sempre faz a mesma coisa: alonga o prazo e aumenta o custo total. E o patrimônio de quem assinou como avalista continua exposto.
+Quando a dívida passa de R$ 100 mil, a proposta do gerente costuma alongar o prazo e aumentar o custo total. E o patrimônio de quem assinou como avalista continua exposto.
 
-Eu sou o Dr. Gregory Remonti, sócio da Schemes & Remonti, e atuo na defesa de empresas com passivo bancário:
+Eu sou o Dr. Gregory Remonti, sócio da Schemes & Remonti. Analiso pessoalmente os contratos da sua empresa (capital de giro, cheque especial, empréstimos) e monto a estratégia antes do próximo passo do banco.
 
-✔️ revisão técnica dos contratos de capital de giro, cheque especial e empréstimos
-✔️ defesa em execução, bloqueio de contas e penhora
-✔️ renegociação com estratégia, e não com pressa
-
-Cada caso é analisado individualmente, contrato por contrato.
-
-📲 Toque em "Enviar mensagem" e fale direto com o meu time para agendar a análise do seu caso.
+📲 Toque em "Enviar mensagem" e fale direto comigo.
 
 ⚖️ Dr. Gregory Remonti · OAB/RS 128.236
 
 ---
 
-## Anúncio 2: Dra. Andiara
+## Dra. Andiara
 
-**Título:** O banco tem advogados. E a sua empresa?
+**Título:** O banco te mandou uma proposta pra assinar?
 
-**Texto principal:**
+**Texto:**
 
-O banco nunca negocia sozinho. Tem jurídico, tem cobrança, tem especialista em recuperação de crédito. 🏦
+O banco mandou uma proposta de renegociação e deu prazo pra assinar? 🏦
 
-Do outro lado da mesa está você, com mais de R$ 100 mil em dívida, o caixa apertado e uma proposta que parece a única saída.
+Antes de assinar, olhe a última linha: o total a pagar. Muitas vezes ele passa do dobro da dívida, e ainda vem com aval dos sócios e imóvel em garantia.
 
-Eu sou a Dra. Andiara Schemes, sócia da Schemes & Remonti. Meu trabalho é colocar a sua empresa em pé de igualdade com o banco:
+Eu sou a Dra. Andiara Schemes, sócia da Schemes & Remonti. Me mostre a proposta e os contratos da sua empresa. Eu analiso cada cláusula e te digo o caminho antes de você assinar qualquer coisa.
 
-✔️ análise completa do passivo bancário da empresa
-✔️ proteção do patrimônio dos sócios e avalistas
-✔️ estratégia jurídica para cada contrato
-
-Não decida no desespero. Decida com uma advogada do seu lado.
-
-📲 Toque em "Enviar mensagem" e agende uma conversa com o meu time.
+📲 Toque em "Enviar mensagem" e fale comigo.
 
 ⚖️ Dra. Andiara Schemes · OAB/RS 91.691
 
 ---
 
-**CTA sugerido:** Enviar mensagem (WhatsApp)
-**OAB (Provimento 205/2021):** sem promessa de resultado, sem preço e sem "desconto garantido". Só informação e identificação do profissional.
+CTA: **Enviar mensagem** (WhatsApp). Valores e conversa são ilustrativos (está escrito na peça). Sem promessa de resultado nem preço (Provimento 205/2021).
