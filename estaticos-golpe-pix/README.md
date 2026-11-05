@@ -4,16 +4,16 @@ Criativos estáticos para anúncios (Meta Ads) de escritório de direito bancár
 
 ## Arquivos prontos (`png/`)
 
-Tom sério e urgente: preto, vermelho e tipografia serifada. Logos do Santander e do Itaú ao fundo e em selos nítidos.
-CTA em todos: "Preencha o formulário · Fale com um advogado ainda hoje".
+Linha "feito à mão", para não parecer peça de IA: papel com textura, marca-texto, caneta, caderno pautado e texto nativo de Stories sobre foto real de objetos (sem pessoas).
+CTA em todos: "Preencha o formulário abaixo".
 
-| Conceito | Gatilho | Feed 4:5 (1080×1350) | Stories 9:16 (1080×1920) |
-|---|---|---|---|
-| 01 · Prazo 80 dias | Urgência: o MED tem prazo de 80 dias (Banco Central) | `01-prazo-80-dias-feed.png` | `01-prazo-80-dias-stories.png` |
-| 02 · O banco negou? | Autoridade: Súmula 479 do STJ (texto literal) | `02-banco-negou-feed.png` | `02-banco-negou-stories.png` |
-| 03 · Dinheiro sumiu | Perda: comprovante de PIX "concluído" + carimbo GOLPE | `03-dinheiro-sumiu-feed.png` | `03-dinheiro-sumiu-stories.png` |
+| Conceito | Feed 4:5 (1080×1350) | Stories 9:16 (1080×1920) |
+|---|---|---|
+| 01 · Marca-texto: logos recortados e circulados à caneta, "foi em um desses?", prazo de 80 dias do MED | `01-marca-texto-feed.png` | `01-marca-texto-stories.png` |
+| 02 · Stories nativo: foto da mesa à noite (extrato, comprovantes), texto e adesivos no estilo do Instagram | `02-stories-nativo-feed.png` | `02-stories-nativo-stories.png` |
+| 03 · Caderno: checklist manuscrito, só falta "falar com um advogado" (circulado) | `03-caderno-feed.png` | `03-caderno-stories.png` |
 
-Fontes dos dados: bcb.gov.br (MED: pedido em até 80 dias após o Pix) e STJ (Súmula 479).
+Foto de fundo (`assets/foto/mesa.jpg`): gerada por IA, só objetos. Prazo de 80 dias do MED verificado em bcb.gov.br.
 `node build.js` avisa se algum texto estourar a área segura.
 
 ## Como editar e gerar de novo
