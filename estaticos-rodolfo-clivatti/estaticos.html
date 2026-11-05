@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Estáticos Passivos</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0b1726; --navy2: #12233a; --navy3: #1b3150;
+  --gold: #c9a24a; --gold2: #e6c477; --cream: #f6f1e7; --paper: #fffdf8;
+  --ink: #0f1b2b; --muted: #5a6577; --red: #c0392b; --line: #e4dccb;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #555; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; gap: 40px; padding: 40px; align-items: center; }
+.ad { width: 1080px; height: 1350px; position: relative; overflow: hidden; }
+.serif { font-family: 'Fraunces', serif; }
+.brand { display: flex; align-items: center; gap: 18px; }
+.brand .mark { width: 64px; height: 64px; border-radius: 14px; display: grid; place-items: center; font-family: 'Fraunces', serif; font-weight: 800; font-size: 30px; letter-spacing: -1px; }
+.brand .name { font-weight: 800; font-size: 20px; letter-spacing: .22em; line-height: 1.25; }
+.brand .name small { display: block; font-weight: 600; font-size: 14px; letter-spacing: .3em; opacity: .75; }
+
+/* ============ ESTÁTICO 1 — notificações do banco ============ */
+.a1 { background: radial-gradient(1200px 900px at 80% 0%, #1d3556 0%, var(--navy) 55%, #070f1a 100%); color: #fff; }
+.a1 .grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 54px 54px; mask-image: linear-gradient(180deg, #000 0%, transparent 70%); }
+.a1 .top { position: absolute; left: 80px; right: 80px; top: 72px; display: flex; justify-content: space-between; align-items: center; }
+.a1 .brand .mark { background: var(--gold); color: var(--navy); }
+.a1 .brand .name { color: #fff; }
+.a1 .tag { border: 2px solid rgba(201,162,74,.55); color: var(--gold2); border-radius: 99px; padding: 12px 22px; font-size: 17px; font-weight: 700; letter-spacing: .16em; }
+
+.notifs { position: absolute; left: 80px; right: 80px; top: 212px; display: flex; flex-direction: column; gap: 22px; }
+.n { background: rgba(240,244,250,.94); color: #111; border-radius: 30px; padding: 26px 30px; display: grid; grid-template-columns: 74px 1fr; gap: 22px; align-items: center; box-shadow: 0 24px 50px rgba(0,0,0,.35); }
+.n .ic { width: 74px; height: 74px; border-radius: 18px; background: linear-gradient(160deg, #2d4466, #142338); display: grid; place-items: center; }
+.n .ic svg { width: 40px; height: 40px; }
+.n .h { display: flex; justify-content: space-between; font-size: 21px; color: #6b7280; font-weight: 600; letter-spacing: .02em; }
+.n .h b { color: #111827; font-weight: 800; letter-spacing: .06em; }
+.n .t { margin-top: 6px; font-size: 27px; line-height: 1.3; font-weight: 500; color: #1f2937; }
+.n .t strong { font-weight: 800; color: #111; }
+.n .t .red { color: var(--red); font-weight: 800; }
+.n.n2 { margin: 0 26px; opacity: .93; transform: scale(.985); }
+.n.n3 { margin: 0 52px; opacity: .86; transform: scale(.97); }
+
+.a1 .copy { position: absolute; left: 80px; right: 80px; top: 748px; }
+.a1 h1 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 74px; line-height: 1.04; letter-spacing: -.015em; }
+.a1 h1 em { font-style: normal; color: var(--gold2); }
+.a1 .sub { margin-top: 28px; font-size: 29px; line-height: 1.45; color: #cfd8e6; max-width: 880px; }
+.a1 .sub b { color: #fff; font-weight: 700; }
+
+.a1 .bottom { position: absolute; left: 80px; right: 80px; bottom: 72px; display: flex; justify-content: space-between; align-items: center; }
+.cta { display: inline-flex; align-items: center; gap: 18px; background: var(--gold); color: var(--navy); font-weight: 800; font-size: 28px; padding: 26px 40px; border-radius: 16px; letter-spacing: .01em; }
+.cta svg { width: 30px; height: 30px; }
+.sign { text-align: right; font-size: 20px; line-height: 1.5; color: #aab6c8; }
+.sign b { color: #fff; font-size: 23px; font-weight: 700; }
+
+/* ============ ESTÁTICO 2 — checklist ============ */
+.a2 { background: var(--cream); color: var(--ink); }
+.a2 .band { position: absolute; left: 0; right: 0; top: 0; height: 530px; background: linear-gradient(165deg, var(--navy3) 0%, var(--navy) 70%); overflow: hidden; }
+.a2 .band::after { content: ''; position: absolute; right: -180px; top: -180px; width: 640px; height: 640px; border-radius: 50%; border: 2px solid rgba(201,162,74,.25); box-shadow: 0 0 0 70px rgba(201,162,74,.05), 0 0 0 140px rgba(201,162,74,.03); }
+.a2 .top { position: absolute; left: 80px; right: 80px; top: 72px; display: flex; justify-content: space-between; align-items: center; z-index: 2; }
+.a2 .brand .mark { background: var(--gold); color: var(--navy); }
+.a2 .brand .name { color: #fff; }
+.a2 .kicker { position: absolute; left: 80px; top: 200px; z-index: 2; color: var(--gold2); font-weight: 800; font-size: 22px; letter-spacing: .2em; }
+.a2 h1 { position: absolute; left: 80px; right: 80px; top: 244px; z-index: 2; color: #fff; font-family: 'Fraunces', serif; font-weight: 700; font-size: 72px; line-height: 1.03; letter-spacing: -.02em; }
+.a2 h1 em { font-style: normal; color: var(--gold2); white-space: nowrap; }
+
+.card { position: absolute; left: 60px; right: 60px; top: 448px; background: var(--paper); border-radius: 28px; box-shadow: 0 30px 70px rgba(11,23,38,.22); padding: 46px 54px 40px; z-index: 3; }
+.card .ct { font-size: 22px; font-weight: 800; letter-spacing: .16em; color: var(--muted); }
+.chk { margin-top: 18px; display: flex; flex-direction: column; }
+.chk div { display: grid; grid-template-columns: 54px 1fr; gap: 22px; align-items: center; padding: 26px 0; border-bottom: 2px dashed var(--line); font-size: 31px; line-height: 1.3; font-weight: 500; color: #24324a; }
+.chk div:last-child { border-bottom: 0; }
+.chk div b { font-weight: 800; color: var(--ink); }
+.box { width: 54px; height: 54px; border-radius: 12px; background: var(--navy); display: grid; place-items: center; }
+.box svg { width: 32px; height: 32px; }
+
+.a2 .foot { position: absolute; left: 80px; right: 80px; bottom: 70px; }
+.a2 .msg { font-family: 'Fraunces', serif; font-size: 42px; line-height: 1.18; font-weight: 700; color: var(--ink); letter-spacing: -.01em; }
+.a2 .msg em { font-style: normal; color: #9a7425; }
+.a2 .row { margin-top: 34px; display: flex; justify-content: space-between; align-items: center; }
+.a2 .cta { background: var(--navy); color: #fff; }
+.a2 .cta span { color: var(--gold2); }
+.a2 .sign { color: var(--muted); }
+.a2 .sign b { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<!-- ESTÁTICO 1 -->
+<section class="ad a1" id="ad1">
+  <div class="grid"></div>
+  <div class="top">
+    <div class="brand"><div class="mark">RC</div><div class="name">RC ADVOCACIA<small>E CONSULTORIA JURÍDICA</small></div></div>
+    <div class="tag">EMPRESAS · PJ</div>
+  </div>
+
+  <div class="notifs">
+    <div class="n">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#e6c477" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-6 9 6"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8"/><path d="M3 21h18"/></svg></div>
+      <div><div class="h"><b>BANCO</b><span>agora</span></div>
+        <div class="t">Parcela do <strong>capital de giro</strong> em atraso. Saldo devedor atualizado: <span class="red">R$ 238.417,90</span></div></div>
+    </div>
+    <div class="n n2">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#e6c477" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-6 9 6"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8"/><path d="M3 21h18"/></svg></div>
+      <div><div class="h"><b>BANCO</b><span>há 2 h</span></div>
+        <div class="t">Seu limite de <strong>cheque especial PJ</strong> foi reduzido.</div></div>
+    </div>
+    <div class="n n3">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#e6c477" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-6 9 6"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8"/><path d="M3 21h18"/></svg></div>
+      <div><div class="h"><b>BANCO</b><span>ontem</span></div>
+        <div class="t">Proposta de <strong>renegociação</strong> disponível. Assine até sexta.</div></div>
+    </div>
+  </div>
+
+  <div class="copy">
+    <h1>Antes de assinar a renegociação do banco, <em>fale com um advogado.</em></h1>
+    <p class="sub">Dívida bancária da empresa <b>acima de R$ 100 mil</b> — capital de giro, cheque especial, cartão ou empréstimo — pede análise do contrato antes de qualquer acordo.</p>
+  </div>
+
+  <div class="bottom">
+    <div class="cta">Entenda as alternativas <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="sign"><b>Dr. Rodolfo Clivatti</b><br>Gestão de passivos empresariais</div>
+  </div>
+</section>
+
+<!-- ESTÁTICO 2 -->
+<section class="ad a2" id="ad2">
+  <div class="band"></div>
+  <div class="top">
+    <div class="brand"><div class="mark">RC</div><div class="name">RC ADVOCACIA<small>E CONSULTORIA JURÍDICA</small></div></div>
+  </div>
+  <div class="kicker">PARA EMPRESÁRIOS</div>
+  <h1><span style="white-space:nowrap">Dívida bancária da empresa</span><br><em>acima de R$ 100 mil?</em></h1>
+
+  <div class="card">
+    <div class="ct">A SUA EMPRESA ESTÁ ASSIM?</div>
+    <div class="chk">
+      <div><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#e6c477" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>Capital de giro</b> atrasado ou prestes a atrasar</span></div>
+      <div><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#e6c477" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>Cheque especial e cartão PJ</b> pagando o mês</span></div>
+      <div><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#e6c477" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>Renegociou com o banco e <b>a dívida só cresceu</b></span></div>
+      <div><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#e6c477" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>Medo de <b>bloqueio de contas</b> ou de perder garantias</span></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <p class="msg">A gestão jurídica do passivo busca organizar a dívida <em>sem parar a operação da empresa.</em></p>
+    <div class="row">
+      <div class="cta">Responda 4 perguntas <span>→</span></div>
+      <div class="sign"><b>Dr. Rodolfo Clivatti</b><br>Advocacia empresarial e bancária</div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
