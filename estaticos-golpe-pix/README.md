@@ -6,11 +6,12 @@ Criativos estáticos para anúncios (Meta Ads) de escritório de direito bancár
 
 | Conceito | Feed 4:5 (1080×1350) | Stories/Reels 9:16 (1080×1920) |
 |---|---|---|
-| 01 · Split: metade Santander, metade Itaú + painel escuro com bullets | `01-split-feed.png` | `01-split-stories.png` |
-| 02 · Marca d'água: logos gigantes ao fundo, chamada grande e selos | `02-marca-dagua-feed.png` | `02-marca-dagua-stories.png` |
-| 03 · Notificação: padrão de logos claro + card de PIX não reconhecido | `03-notificacao-feed.png` | `03-notificacao-stories.png` |
+| 01 · Noturno: fundo escuro, logos iluminados atrás da pessoa + notificação de PIX | `01-noturno-feed.png` | `01-noturno-stories.png` |
+| 02 · Alerta: fundo amarelo de alerta, logos como adesivos, faixa preta com CTA | `02-alerta-feed.png` | `02-alerta-stories.png` |
+| 03 · Split: metade vermelha Santander / metade laranja Itaú, pessoa no centro | `03-split-feed.png` | `03-split-stories.png` |
 
-Nos Stories o conteúdo fica dentro das zonas seguras (250 px em cima, 300 px embaixo livres).
+A foto (`assets/foto/pessoa.png`) foi gerada por IA (pessoa fictícia) e recortada do fundo.
+Nos Stories, título e CTA ficam dentro das zonas seguras.
 
 ## Como editar e gerar de novo
 
