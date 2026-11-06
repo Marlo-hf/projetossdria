@@ -2,213 +2,165 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<title>Andrade Advogados — Dívidas Bancárias</title>
+<title>Andrade Advogados — Recuperação Judicial</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,800;8..60,900&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  /* ---------- Formatos ---------- */
+  /* Formato padrão 4:5 (1080x1350); ?f=916 gera 1080x1920 */
   :root {
-    --w: 1080px; --h: 1920px;
-    --accent: #D3121B;           /* vermelho (padrão) */
-    --accent-dark: #A50D14;
-    --paper: #F5F3EE;
-    --ink: #0E0E0F;
+    --w: 1080px; --h: 1350px;
+    --navy: #0E1B2E; --navy-2: #16273F;
+    --gold: #C9A46A; --gold-2: #E2C48E;
+    --cream: #F4EFE6; --ink: #13202F; --muted: #5B6573;
     --serif: 'Source Serif 4', Georgia, serif;
     --sans: 'Manrope', 'Inter', sans-serif;
 
-    --logo-top: 92px; --logo-gap: 70px;
-    --card-x: 58px; --card-pad: 62px 54px 58px;
-    --kicker: 24px; --h1: 96px; --sub: 34px;
-    --sec-x: 72px; --sec-pad: 46px 58px 0 44px;
-    --h2: 50px; --body: 34px;
-    --icon: 64px; --icon-txt: 27px;
-    --note: 21px; --cta: 36px; --cta-h: 104px;
+    --pad: 64px;
+    --top-h: 830px;
+    --logo: 44px; --tag: 17px;
+    --kicker: 20px; --num: 370px; --num-side: 66px; --num-small: 24px;
+    --lead: 33px;
+    --item-n: 26px; --item-t: 30px; --item-d: 22px;
+    --cta: 28px; --cta-h: 92px; --note: 16px;
   }
-  body.f45 {
-    --h: 1350px;
-    --logo-top: 52px; --logo-gap: 40px;
-    --card-x: 52px; --card-pad: 40px 46px 38px;
-    --kicker: 19px; --h1: 76px; --sub: 27px;
-    --sec-x: 64px; --sec-pad: 30px 50px 0 38px;
-    --h2: 38px; --body: 26px;
-    --icon: 46px; --icon-txt: 20px;
-    --note: 16px; --cta: 28px; --cta-h: 78px;
+  body.f916 {
+    --h: 1920px;
+    --pad: 76px;
+    --top-h: 980px;
+    --logo: 54px; --tag: 20px;
+    --kicker: 24px; --num: 430px; --num-side: 76px; --num-small: 28px;
+    --lead: 40px;
+    --item-n: 28px; --item-t: 34px; --item-d: 25px;
+    --cta: 34px; --cta-h: 112px; --note: 19px;
   }
-  body.dourado { --accent: #B8935A; --accent-dark: #8F6F3F; }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { width: var(--w); height: var(--h); background: #0b0b0c; overflow: hidden; }
-  body { font-family: var(--sans); color: #fff; -webkit-font-smoothing: antialiased; }
+  html, body { width: var(--w); height: var(--h); overflow: hidden; background: var(--navy); }
+  body { font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  .ad { width: var(--w); height: var(--h); display: flex; flex-direction: column; }
 
-  .ad { position: relative; width: var(--w); height: var(--h); overflow: hidden; background: #0b0b0c; }
-
-  /* ---------- Fundo arquitetônico (CSS puro) ---------- */
-  .bg { position: absolute; inset: 0; z-index: 0; }
-  .bg .sky { position: absolute; inset: 0;
+  /* ---------- Parte superior (azul-marinho) ---------- */
+  .top { position: relative; height: var(--top-h); flex: none; overflow: hidden; color: #fff;
+    padding: var(--pad) var(--pad) 0; display: flex; flex-direction: column;
     background:
-      radial-gradient(120% 60% at 85% 18%, rgba(120,120,128,.28), transparent 60%),
-      linear-gradient(180deg, #1a1a1d 0%, #121214 45%, #0a0a0b 100%); }
-  /* bloco do prédio à direita */
-  .bg .building { position: absolute; right: -40px; top: 6%; width: 46%; height: 70%;
-    background:
-      repeating-linear-gradient(90deg, rgba(255,255,255,.07) 0 3px, transparent 3px 92px),
-      repeating-linear-gradient(180deg, rgba(255,255,255,.06) 0 3px, transparent 3px 118px),
-      linear-gradient(100deg, #2a2a2e 0%, #3b3b40 45%, #1d1d20 100%);
-    transform: perspective(1400px) rotateY(-24deg); transform-origin: right center;
-    box-shadow: inset 0 0 120px rgba(0,0,0,.55); }
-  .bg .glass { position: absolute; right: 3%; top: 14%; width: 15%; height: 40%;
-    background: linear-gradient(160deg, rgba(150,165,180,.35), rgba(40,48,58,.15) 55%, rgba(0,0,0,.2));
-    border: 0; opacity: .6;
-    transform: perspective(1400px) rotateY(-24deg); }
-  /* colunata */
-  .bg .cols { position: absolute; right: 0; top: 52%; width: 62%; height: 26%;
-    background:
-      repeating-linear-gradient(90deg,
-        transparent 0 40px,
-        rgba(60,60,64,.95) 40px 52px, rgba(120,120,126,.9) 52px 70px, rgba(52,52,56,.95) 70px 96px,
-        transparent 96px 168px);
-    -webkit-mask: linear-gradient(90deg, transparent 0%, #000 35%);
-            mask: linear-gradient(90deg, transparent 0%, #000 35%); opacity: .4; }
-  .bg .cols::before { content: ""; position: absolute; left: 0; right: 0; top: -22px; height: 26px;
-    background: linear-gradient(180deg, #4a4a4f, #2a2a2d); }
-  /* piso reflexivo */
-  .bg .floor { position: absolute; left: 0; right: 0; bottom: 0; height: 24%;
-    -webkit-mask: linear-gradient(180deg, transparent 0%, #000 30%); mask: linear-gradient(180deg, transparent 0%, #000 30%);
-    background:
-      linear-gradient(180deg, rgba(0,0,0,.0) 0%, rgba(0,0,0,.55) 100%),
-      repeating-linear-gradient(90deg, rgba(255,255,255,.035) 0 2px, transparent 2px 180px),
-      linear-gradient(180deg, #2b2b2f 0%, #161618 60%, #0d0d0e 100%); }
-  .bg .floor::after { content: ""; position: absolute; left: 30%; right: 0; top: 0; height: 60%;
-    background: radial-gradient(60% 50% at 70% 10%, rgba(255,255,255,.12), transparent 70%); }
-  .bg .vignette { position: absolute; inset: 0;
-    background: radial-gradient(130% 90% at 50% 40%, transparent 45%, rgba(0,0,0,.75) 100%),
-                linear-gradient(90deg, rgba(10,10,11,.85) 0%, rgba(10,10,11,.35) 45%, transparent 70%); }
-  .bg .grain { position: absolute; inset: 0; opacity: .12; mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+      radial-gradient(90% 70% at 100% 0%, rgba(201,164,106,.16), transparent 60%),
+      linear-gradient(160deg, var(--navy-2) 0%, var(--navy) 70%); }
+  /* linhas finas tipo colunata */
+  .top::before { content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,.035) 0 1px, transparent 1px 90px);
+    -webkit-mask: linear-gradient(180deg, transparent 0%, #000 40%, #000 100%); mask: linear-gradient(180deg, transparent 0%, #000 40%, #000 100%); }
+  /* marca d'água § */
+  .top .para { position: absolute; right: -0.12em; bottom: -0.32em; font-family: var(--serif); font-weight: 400;
+    font-size: calc(var(--num) * 2.1); line-height: 1; color: rgba(201,164,106,.05); pointer-events: none; }
 
-  .content { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; }
+  .bar { position: relative; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 18px; }
+  .logo .mark { font-family: var(--serif); font-weight: 700; font-size: var(--logo); line-height: 1; }
+  .logo .mark span { color: var(--gold); }
+  .logo .rule { width: 1.5px; height: calc(var(--logo) * .95); background: rgba(255,255,255,.5); }
+  .logo .name { font-weight: 600; font-size: calc(var(--logo) * .33); letter-spacing: .2em; line-height: 1.35; text-transform: uppercase; }
+  .tag { font-weight: 700; font-size: var(--tag); letter-spacing: .14em; text-transform: uppercase;
+    color: var(--gold-2); border: 1.5px solid rgba(201,164,106,.6); padding: .55em 1em .5em; border-radius: 100px; }
 
-  /* ---------- Logo ---------- */
-  .logo { display: flex; align-items: center; justify-content: center; gap: 30px;
-    padding-top: var(--logo-top); margin-bottom: var(--logo-gap); }
-  .logo .mark { font-family: var(--serif); font-weight: 800; font-size: calc(var(--h1) * .9);
-    letter-spacing: -0.04em; line-height: 1; display: flex; align-items: baseline; }
-  .logo .mark span { color: var(--accent); }
-  .logo .rule { width: 2px; align-self: stretch; background: rgba(255,255,255,.75); }
-  .logo .name { font-family: var(--sans); font-weight: 500; font-size: calc(var(--sub) * .78);
-    letter-spacing: .18em; line-height: 1.35; text-transform: uppercase; }
+  .hero { position: relative; margin-top: auto; padding-bottom: calc(var(--pad) * .85); }
+  .kicker { font-weight: 700; font-size: var(--kicker); letter-spacing: .12em; text-transform: uppercase; color: var(--gold-2);
+    display: flex; align-items: center; gap: 16px; }
+  .kicker::before { content: ""; width: 46px; height: 2px; background: var(--gold); }
 
-  /* ---------- Card branco ---------- */
-  .card { margin: 0 var(--card-x); background: var(--paper); color: var(--ink);
-    padding: var(--card-pad); box-shadow: 0 30px 80px rgba(0,0,0,.45); }
-  .kicker { font-weight: 700; font-size: var(--kicker); letter-spacing: .16em; color: var(--accent);
-    text-transform: uppercase; margin-bottom: calc(var(--kicker) * .7); }
-  h1 { font-family: var(--serif); font-weight: 900; font-size: var(--h1); line-height: .99;
-    letter-spacing: -0.035em; font-variation-settings: "opsz" 60; }
-  h1 em { font-style: normal; color: var(--accent); }
-  .sub { margin-top: calc(var(--sub) * .8); font-weight: 400; font-size: var(--sub); line-height: 1.32;
-    color: #57575c; }
+  .big { display: flex; align-items: center; gap: calc(var(--num) * .08); margin-top: calc(var(--num) * .02); }
+  .big .n { font-family: var(--serif); font-weight: 700; font-size: var(--num); line-height: .82; letter-spacing: -0.05em;
+    color: var(--gold); background: linear-gradient(180deg, var(--gold-2), var(--gold) 70%, #A9844C);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; padding-top: .06em; }
+  .big .side { display: flex; flex-direction: column; }
+  .big .side strong { font-family: var(--serif); font-weight: 600; font-size: var(--num-side); line-height: 1.02; letter-spacing: -0.02em; }
+  .big .side strong i { font-style: italic; font-weight: 400; color: var(--gold-2); }
+  .big .side small { margin-top: calc(var(--num-small) * .8); font-size: var(--num-small); font-weight: 500; color: rgba(255,255,255,.75);
+    display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; }
+  .big .side small b { color: var(--navy); background: var(--gold); font-weight: 800; padding: .15em .5em; border-radius: 4px; }
 
-  /* ---------- Seção escura ---------- */
-  .sec { position: relative; margin: calc(var(--h2) * .55) var(--sec-x) 0 calc(var(--sec-x) - 6px);
-    padding: var(--sec-pad); border-left: 9px solid var(--accent); padding-bottom: 0; }
-  h2 { font-family: var(--sans); font-weight: 700; font-size: var(--h2); line-height: 1.12; letter-spacing: -0.01em; }
-  .body { margin-top: calc(var(--body) * .75); font-weight: 400; font-size: var(--body); line-height: 1.3; color: rgba(255,255,255,.9); }
+  .lead { margin-top: calc(var(--lead) * .9); max-width: 22em; font-family: var(--serif); font-weight: 400; font-size: var(--lead);
+    line-height: 1.28; color: rgba(255,255,255,.92); }
+  .lead strong { font-weight: 700; color: #fff; }
 
-  .icons { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: calc(var(--body) * 1.25); }
-  .icons > div { display: flex; flex-direction: column; align-items: center; text-align: center;
-    padding: 0 8px; border-left: 1.5px solid rgba(255,255,255,.35); }
-  .icons > div:first-child { border-left: 0; }
-  .icons svg { width: var(--icon); height: var(--icon); stroke: var(--accent); fill: none; stroke-width: 2.4;
-    stroke-linecap: round; stroke-linejoin: round; margin-bottom: calc(var(--icon) * .22); }
-  .icons p { font-size: var(--icon-txt); line-height: 1.22; font-weight: 500; color: rgba(255,255,255,.92); }
+  /* 9:16: respeita as áreas cobertas pela interface do Stories/Reels (topo e rodapé) */
+  body.f916 .top { padding-top: 150px; }
+  body.f916 .bottom { padding-top: 52px; padding-bottom: 200px; gap: 40px; }
+  body.f916 .hero { margin: auto 0; padding-bottom: 0; }
+  body.f916 .list { grid-template-columns: 1fr; row-gap: calc(var(--item-t) * .6); }
 
-  .note { margin-top: calc(var(--body) * 1.1); padding-top: calc(var(--note) * 1); border-top: 1.5px solid rgba(255,255,255,.35);
-    font-size: var(--note); color: rgba(255,255,255,.78); font-weight: 400; }
+  /* ---------- Parte inferior (creme) ---------- */
+  .bottom { flex: 1; background: var(--cream); color: var(--ink); padding: calc(var(--pad) * .8) var(--pad) calc(var(--pad) * .75);
+    display: flex; flex-direction: column; justify-content: space-between; }
+  .list { display: grid; grid-template-columns: 1fr 1fr; column-gap: calc(var(--pad) * .7); row-gap: calc(var(--item-t) * 1.3); }
+  .item { display: flex; gap: 18px; align-items: flex-start; border-top: 2px solid var(--ink); padding-top: calc(var(--item-t) * .6); }
+  .item .k { font-family: var(--serif); font-style: italic; font-weight: 600; font-size: var(--item-n); color: #A9844C; line-height: 1.25; min-width: 1.6em; }
+  .item h3 { font-weight: 800; font-size: var(--item-t); line-height: 1.15; letter-spacing: -0.01em; }
+  .item p { margin-top: 4px; font-size: var(--item-d); line-height: 1.3; color: var(--muted); font-weight: 500; }
 
-  .cta { margin: calc(var(--note) * 1.6) 0 0 -14px; width: 76%; height: var(--cta-h);
-    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-dark) 100%);
-    display: flex; align-items: center; justify-content: space-between; padding: 0 calc(var(--cta) * 1.1);
-    font-weight: 700; font-size: var(--cta); letter-spacing: .01em; box-shadow: 0 18px 40px rgba(0,0,0,.45); }
-  .cta svg { width: calc(var(--cta) * 1.15); height: calc(var(--cta) * 1.15); stroke: #fff; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-
+  .foot { display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+  .cta { flex: 1; height: var(--cta-h); background: var(--navy); color: #fff; border-radius: 100px;
+    display: flex; align-items: center; justify-content: space-between; padding: 0 12px 0 calc(var(--cta) * 1.3);
+    font-weight: 700; font-size: var(--cta); }
+  .cta .arrow { width: calc(var(--cta-h) - 24px); height: calc(var(--cta-h) - 24px); border-radius: 50%; background: var(--gold);
+    display: grid; place-items: center; }
+  .cta svg { width: 46%; height: 46%; stroke: var(--navy); fill: none; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+  .note { font-size: var(--note); line-height: 1.35; color: var(--muted); font-weight: 500; text-align: right; max-width: 11em; }
 </style>
 </head>
 <body>
 <div class="ad">
-  <div class="bg">
-    <div class="sky"></div>
-    <div class="building"></div>
-    <div class="glass"></div>
-    <div class="cols"></div>
-    <div class="floor"></div>
-    <div class="vignette"></div>
-    <div class="grain"></div>
-  </div>
+  <section class="top">
+    <div class="para">§</div>
 
-  <div class="content">
-    <div class="logo">
-      <div class="mark">A<span>.</span></div>
-      <div class="rule"></div>
-      <div class="name">Andrade<br>Advogados</div>
+    <div class="bar">
+      <div class="logo">
+        <div class="mark">A<span>.</span></div>
+        <div class="rule"></div>
+        <div class="name">Andrade<br>Advogados</div>
+      </div>
+      <div class="tag">Recuperação Judicial</div>
     </div>
 
-    <div class="card">
-      <div class="kicker">Dívidas bancárias empresariais</div>
-      <h1>Juros abusivos e encargos indevidos nas dívidas da sua empresa com bancos podem ser revistos na&nbsp;Justiça.</h1>
-      <p class="sub">Capital de giro, cheque especial, cartão e empréstimos podem ser analisados e renegociados para proteger o caixa e o patrimônio dos sócios.</p>
-    </div>
-
-    <div class="sec">
-      <h2>Reorganize as dívidas<br>sem parar a sua operação.</h2>
-      <p class="body">Analisamos cada contrato bancário da sua empresa e buscamos condições compatíveis com a realidade do seu caixa.</p>
-
-      <div class="icons">
-        <div>
-          <svg viewBox="0 0 48 48"><line x1="36" y1="10" x2="12" y2="38"/><circle cx="14" cy="14" r="5"/><circle cx="34" cy="34" r="5"/></svg>
-          <p>Revisão de<br>juros<br>abusivos</p>
-        </div>
-        <div>
-          <svg viewBox="0 0 48 48"><path d="M30 42H10V6h20l8 8v8"/><path d="M30 6v8h8"/><line x1="16" y1="18" x2="26" y2="18"/><line x1="16" y1="25" x2="28" y2="25"/><path d="M27 41l2-6 10-10 4 4-10 10z"/></svg>
-          <p>Renegociação<br>dos contratos</p>
-        </div>
-        <div>
-          <svg viewBox="0 0 48 48"><path d="M24 5l15 6v11c0 10-6.5 17-15 21C15.5 39 9 32 9 22V11z"/><polyline points="17,24 22,29 31,19"/></svg>
-          <p>Proteção do<br>patrimônio<br>dos sócios</p>
-        </div>
-        <div>
-          <svg viewBox="0 0 48 48"><rect x="6" y="13" width="36" height="26" rx="3"/><path d="M6 20h36"/><path d="M12 13l20-7 3 7"/><circle cx="34" cy="30" r="3"/></svg>
-          <p>Preservação<br>do caixa<br>da empresa</p>
+    <div class="hero">
+      <div class="kicker">Empresas com dívidas acima de R$&nbsp;4&nbsp;milhões</div>
+      <div class="big">
+        <div class="n">180</div>
+        <div class="side">
+          <strong>dias sem<br><i>cobranças.</i></strong>
+          <small><b>+180</b> dias prorrogáveis</small>
         </div>
       </div>
+      <p class="lead">A Recuperação Judicial <strong>suspende todas as cobranças</strong> contra a sua empresa e dá fôlego para reestruturar o negócio sem parar a operação.</p>
+    </div>
+  </section>
 
-      <p class="note">Atendimento exclusivo para empresas. Cada caso depende de análise individual.</p>
+  <section class="bottom">
+    <div class="list">
+      <div class="item"><span class="k">01</span><div><h3>Cobranças suspensas</h3><p>Execuções e bloqueios param.</p></div></div>
+      <div class="item"><span class="k">02</span><div><h3>Juros paralisados</h3><p>A dívida para de crescer.</p></div></div>
+      <div class="item"><span class="k">03</span><div><h3>CNPJ protegido</h3><p>Suspensão da negativação.</p></div></div>
+      <div class="item"><span class="k">04</span><div><h3>Caixa preservado</h3><p>Tempo para negociar com credores.</p></div></div>
+    </div>
 
+    <div class="foot">
       <div class="cta">
         <span>Fale com um especialista</span>
-        <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="20" y2="12"/><polyline points="13,5 20,12 13,19"/></svg>
+        <span class="arrow"><svg viewBox="0 0 24 24"><line x1="4" y1="12" x2="19" y2="12"/><polyline points="13,6 19,12 13,18"/></svg></span>
       </div>
-
+      <p class="note">Art. 6º, § 4º, da Lei nº&nbsp;11.101/2005.</p>
     </div>
-  </div>
+  </section>
 </div>
 <script>
-  // ?f=45 (1080x1350) | padrão 9:16 (1080x1920) · ?tema=dourado
   const q = new URLSearchParams(location.search);
-  if (q.get('f') === '45') document.body.classList.add('f45');
-  if (q.get('tema') === 'dourado') document.body.classList.add('dourado');
-  // Ajuste automático: reduz o título até o CTA caber com respiro no rodapé
-  window.fit = () => {
-    const root = document.body, H = window.innerHeight, margem = H * 0.06;
-    let h1 = parseFloat(getComputedStyle(root).getPropertyValue('--h1'));
-    const cta = document.querySelector('.cta');
-    while (cta.getBoundingClientRect().bottom > H - margem && h1 > 40) {
-      h1 -= 1; root.style.setProperty('--h1', h1 + 'px');
-    }
-    return h1;
+  if (q.get('f') === '916') document.body.classList.add('f916');
+  // Confere se nada transbordou (usado pelo render.js)
+  window.check = () => {
+    const ad = document.querySelector('.ad');
+    const over = [...document.querySelectorAll('.top, .bottom')].map(el => el.scrollHeight - el.clientHeight);
+    return { overflow: over, h: ad.scrollHeight };
   };
-  document.fonts.ready.then(window.fit);
 </script>
 </body>
 </html>
