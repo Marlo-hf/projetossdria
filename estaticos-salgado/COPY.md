@@ -1,13 +1,17 @@
 # Estáticos – Dr. Cláudio Salgado (RCPCC + Golpe Pix)
 
-Formato: 1080×1350 (4:5, feed). Conta: CA03 - Salgado Advogados Associados.
-Objetivo: lead **qualificado**. Cada arte filtra quem não serve (valor mínimo, tipo de dívida/golpe, comprovantes) antes do clique.
+Feitos no Canva (editáveis). PNGs prontos para subir em `canva/`, já cortados em 1080×1350 (4:5, feed).
+Conta: CA03 - Salgado Advogados Associados. As artes terminam em **LEIA A LEGENDA**: a legenda abaixo é que faz o filtro (valor mínimo, tipo de dívida/golpe, comprovantes).
 
-Regenerar os PNGs depois de editar algum HTML: `node render.js` (dentro desta pasta).
+Links de edição no Canva (o design está em 1080×1440; o PNG daqui é o corte 4:5 dele):
+- RCPCC 01: https://canva.link/lv7l2pito8fuvu4
+- RCPCC 02: https://canva.link/ssbp3jq9ytdt2dt
+- GPIX 01: https://canva.link/orjoge9mwbkde1x
+- GPIX 02: https://canva.link/ujcpx369n7j7nec
 
 ---
 
-## RCPCC 01 – Extrato (`png/rcpcc-01-extrato.png`)
+## RCPCC 01 – Extrato (`canva/rcpcc-01.png`)
 **Público:** quem já sabe que deve mais de R$ 50 mil e está com a dívida atrasada.
 
 **Título:** Sua dívida no banco passou de R$ 50 mil?
@@ -23,7 +27,7 @@ Regenerar os PNGs depois de editar algum HTML: `node render.js` (dentro desta pa
 >
 > Sem promessa, mas com análise séria. Preencha o formulário e nossa equipe te chama no WhatsApp.
 
-## RCPCC 02 – Proposta de acordo (`png/rcpcc-02-proposta.png`)
+## RCPCC 02 – Proposta de acordo (`canva/rcpcc-02.png`)
 **Público:** quem está **negociando agora** com o banco (lead mais quente, decisão próxima).
 
 **Título:** Recebeu proposta do banco? Não assine ainda
@@ -43,7 +47,7 @@ Regenerar os PNGs depois de editar algum HTML: `node render.js` (dentro desta pa
 
 ---
 
-## GPIX 01 – Notificação (`png/gpix-01-notificacao.png`)
+## GPIX 01 – Notificação (`canva/gpix-01.png`)
 **Público:** vítima de golpe por ligação ou falso atendente, com valor alto saindo de uma vez.
 
 **Título:** O banco percebeu esse Pix de R$ 48 mil?
@@ -61,7 +65,7 @@ Regenerar os PNGs depois de editar algum HTML: `node render.js` (dentro desta pa
 >
 > Sem promessa, sem garantia. Preencha o formulário e nossa equipe te chama no WhatsApp.
 
-## GPIX 02 – Golpe de investimento (`png/gpix-02-investimento.png`)
+## GPIX 02 – Golpe de investimento (`canva/gpix-02.png`)
 **Público:** golpe de investimento ou falso trader (o tipo que o escritório prefere, segundo a reunião de 03/11).
 Filtra pelo valor que **saiu do bolso**, não pelo “lucro” da tela, e exclui golpe de tarefas.
 
