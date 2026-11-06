@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=block');
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1350px;overflow:hidden}
+body{font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;position:relative;background:#0b0b0c;color:#fff}
+.disp{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-0.035em;line-height:.95}
+.serif{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;letter-spacing:-0.01em}
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.13;mix-blend-mode:overlay;z-index:50;
+ background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.foot{position:absolute;left:72px;right:72px;bottom:34px;font-size:17px;letter-spacing:.2px;color:rgba(255,255,255,.55);z-index:20}
+.cta{display:inline-flex;align-items:center;gap:18px;font-family:'Inter';font-weight:700;font-size:32px;padding:26px 30px 26px 40px;border-radius:999px}
+.cta i{font-style:normal;width:54px;height:54px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:28px}
+.eyebrow{font-family:'Inter';font-weight:600;font-size:22px;letter-spacing:.22em;text-transform:uppercase}
