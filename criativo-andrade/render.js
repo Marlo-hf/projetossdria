@@ -2,10 +2,10 @@
 const { chromium } = require('playwright');
 const path = require('path');
 const VARIANTES = [
-  { out: 'andrade-rj-1080x1920.png', q: '', h: 1920 },
-  { out: 'andrade-rj-1080x1350.png', q: '?f=45', h: 1350 },
-  { out: 'andrade-rj-dourado-1080x1920.png', q: '?tema=dourado', h: 1920 },
-  { out: 'andrade-rj-dourado-1080x1350.png', q: '?f=45&tema=dourado', h: 1350 },
+  { out: 'andrade-passivos-1080x1920.png', q: '', h: 1920 },
+  { out: 'andrade-passivos-1080x1350.png', q: '?f=45', h: 1350 },
+  { out: 'andrade-passivos-dourado-1080x1920.png', q: '?tema=dourado', h: 1920 },
+  { out: 'andrade-passivos-dourado-1080x1350.png', q: '?f=45&tema=dourado', h: 1350 },
 ];
 (async () => {
   const b = await chromium.launch();
