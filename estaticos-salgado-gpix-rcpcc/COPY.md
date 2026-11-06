@@ -18,7 +18,7 @@ Regras seguidas:
 
 ---
 
-## GPIX — "Avisou do café. E do Pix de R$ 40 mil?"
+## GPIX — "Caiu no golpe do Pix?"
 
 ### Texto curto (principal recomendado)
 > O banco manda alerta por uma compra de R$ 12.
@@ -51,17 +51,17 @@ Regras seguidas:
 > 👉 Preencha o formulário. Nossa equipe chama no WhatsApp.
 
 ### Títulos (até 5 variações)
-1. O banco percebeu esse Pix?
-2. Avisou do café. E do Pix de R$ 40 mil?
+1. Caiu no golpe do Pix? O banco pode responder
+2. O banco percebeu esse Pix?
 3. Golpe Pix acima de R$ 40 mil: o banco pode responder
-4. Pix fora do padrão e nenhum alerta do banco?
+4. Avisou do café. E do Pix de R$ 40 mil?
 
 ### Descrição
 Analisamos o que o banco fez
 
 ---
 
-## RCPCC — "Não são só duas saídas. Existe uma terceira."
+## RCPCC — "Dívidas no banco acima de R$ 50 mil?"
 
 ### Texto curto (principal recomendado)
 > Dívida no banco acima de R$ 50 mil?
@@ -94,8 +94,8 @@ Analisamos o que o banco fez
 > 👉 Preencha o formulário. Nossa equipe chama no WhatsApp.
 
 ### Títulos (até 5 variações)
-1. Existe uma terceira saída
-2. Não são só duas saídas para a dívida no banco
+1. Dívidas no banco acima de R$ 50 mil?
+2. Existe uma terceira saída
 3. Dívida acima de R$ 50 mil? Negocie com estratégia
 4. Cartão e cheque especial: existe outro caminho
 
