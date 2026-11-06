@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Estático 01 — A única conta que ninguém negocia</title>
+<link rel="stylesheet" href="base.css">
+<style>
+  :root { --bg:#121212; --ink:#fff; --muted:#9a9a9a; --y:#FFD93B; --r:#FF3B30; --g:#2ECC71; --card:#1E1E1E; }
+  body { background: var(--bg); color: var(--ink); }
+  .ad { padding: 56px 66px 44px; display: flex; flex-direction: column; }
+  .topbar { color: #cfcfcf; }
+  .topbar .dot::before { background: var(--y); }
+
+  .chip {
+    align-self: flex-start; margin-top: 46px;
+    background: var(--y); color: #111; font-weight: 900; font-size: 22px; letter-spacing: 2px;
+    padding: 10px 20px; border-radius: 8px; text-transform: uppercase;
+  }
+  h1 { margin-top: 22px; font-size: 136px; }
+  h1 .hl { color: var(--y); }
+
+  .compare { margin-top: 34px; display: flex; flex-direction: column; gap: 16px; }
+  .row {
+    display: grid; grid-template-columns: 76px 1fr auto; align-items: center; gap: 22px;
+    background: #fff; color: #111; border-radius: 22px; padding: 22px 28px;
+  }
+  .row.debt { background: var(--card); color: #fff; border: 2px solid var(--r); }
+  .ico { width: 76px; height: 76px; border-radius: 18px; display: flex; align-items: center; justify-content: center; }
+  .row .ico { background: #F1F1F1; }
+  .row.debt .ico { background: rgba(255,59,48,.16); }
+  .what { font-size: 18px; font-weight: 800; letter-spacing: 1.8px; text-transform: uppercase; color: #8a8a8a; }
+  .row.debt .what { color: #ff8c84; }
+  .title { font-size: 31px; font-weight: 800; margin-top: 4px; }
+  .badge { text-align: right; }
+  .badge .n { font-family: 'Bebas Neue', sans-serif; font-size: 78px; line-height: .9; }
+  .badge .t { font-size: 18px; font-weight: 700; color: #777; }
+  .row .badge .n { color: #19a35a; }
+  .row.debt .badge .n { color: var(--r); }
+  .row.debt .badge .t { color: #ff8c84; }
+
+  .lines { margin-top: 30px; font-size: 32px; font-weight: 700; line-height: 1.35; color: #e9e9e9; }
+  .lines b { color: var(--y); }
+
+  .simple { margin-top: 30px; background: #1C1C1C; border: 2px solid #3a3a3a; }
+  .simple .label { color: var(--y); }
+  .simple p { color: #f2f2f2; }
+  .simple p em { font-style: normal; color: var(--y); font-weight: 800; }
+
+  .spacer { flex: 1; }
+  .cta { background: var(--y); color: #111; }
+  .cta .arrow { background: #111; }
+  .foot { margin-top: 18px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="ad">
+  <div class="topbar"><span class="dot">Gestão de passivo empresarial</span><span>RC Advocacia</span></div>
+
+  <div class="chip">Black Friday · 27/11</div>
+  <h1 class="display">A única conta que<br><span class="hl">ninguém negocia.</span></h1>
+
+  <div class="compare">
+    <div class="row">
+      <div class="ico">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </div>
+      <div><div class="what">A televisão nova</div><div class="title">Preço comparado em:</div></div>
+      <div class="badge"><div class="n">5 sites</div><div class="t">e ainda pediu cupom</div></div>
+    </div>
+    <div class="row debt">
+      <div class="ico">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#FF3B30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V10M19 21V10M9 21V10M15 21V10M2 10l10-6 10 6"/></svg>
+      </div>
+      <div><div class="what">Dívida da empresa no banco</div><div class="title">Acima de R$ 200 mil. Negociada:</div></div>
+      <div class="badge"><div class="n">0 vezes</div><div class="t">só paga e torce</div></div>
+    </div>
+  </div>
+
+  <div class="lines">Prazo se conversa. Parcela se conversa.<br><b>Até o que já atrasou se conversa.</b></div>
+
+  <div class="simple">
+    <div class="label">Empresário, é simples:</div>
+    <p>Se a sua empresa deve <em>mais de R$ 200 mil ao banco</em> e está atrasando ou vai atrasar, preencha o formulário. <em>A&nbsp;nossa equipe analisa o seu caso.</em></p>
+  </div>
+
+  <div class="spacer"></div>
+  <div class="cta">Preencha o formulário
+    <span class="arrow"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#FFD93B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+  </div>
+  <div class="foot">Leva menos de 1 minuto • Cada caso é analisado individualmente</div>
+</div>
+</body>
+</html>
