@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Andrade Advogados — Recuperação Judicial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,800;8..60,900&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ---------- Formatos ---------- */
+  :root {
+    --w: 1080px; --h: 1920px;
+    --accent: #D3121B;           /* vermelho (padrão) */
+    --accent-dark: #A50D14;
+    --paper: #F5F3EE;
+    --ink: #0E0E0F;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --sans: 'Manrope', 'Inter', sans-serif;
+
+    --logo-top: 92px; --logo-gap: 70px;
+    --card-x: 58px; --card-pad: 62px 54px 58px;
+    --kicker: 24px; --h1: 96px; --sub: 34px;
+    --sec-x: 72px; --sec-pad: 46px 58px 0 44px;
+    --h2: 50px; --body: 34px;
+    --icon: 64px; --icon-txt: 27px;
+    --note: 21px; --cta: 36px; --cta-h: 104px;
+  }
+  body.f45 {
+    --h: 1350px;
+    --logo-top: 52px; --logo-gap: 40px;
+    --card-x: 52px; --card-pad: 40px 46px 38px;
+    --kicker: 19px; --h1: 76px; --sub: 27px;
+    --sec-x: 64px; --sec-pad: 30px 50px 0 38px;
+    --h2: 38px; --body: 26px;
+    --icon: 46px; --icon-txt: 20px;
+    --note: 16px; --cta: 28px; --cta-h: 78px;
+  }
+  body.dourado { --accent: #B8935A; --accent-dark: #8F6F3F; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: var(--w); height: var(--h); background: #0b0b0c; overflow: hidden; }
+  body { font-family: var(--sans); color: #fff; -webkit-font-smoothing: antialiased; }
+
+  .ad { position: relative; width: var(--w); height: var(--h); overflow: hidden; background: #0b0b0c; }
+
+  /* ---------- Fundo arquitetônico (CSS puro) ---------- */
+  .bg { position: absolute; inset: 0; z-index: 0; }
+  .bg .sky { position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 60% at 85% 18%, rgba(120,120,128,.28), transparent 60%),
+      linear-gradient(180deg, #1a1a1d 0%, #121214 45%, #0a0a0b 100%); }
+  /* bloco do prédio à direita */
+  .bg .building { position: absolute; right: -40px; top: 6%; width: 46%; height: 70%;
+    background:
+      repeating-linear-gradient(90deg, rgba(255,255,255,.07) 0 3px, transparent 3px 92px),
+      repeating-linear-gradient(180deg, rgba(255,255,255,.06) 0 3px, transparent 3px 118px),
+      linear-gradient(100deg, #2a2a2e 0%, #3b3b40 45%, #1d1d20 100%);
+    transform: perspective(1400px) rotateY(-24deg); transform-origin: right center;
+    box-shadow: inset 0 0 120px rgba(0,0,0,.55); }
+  .bg .glass { position: absolute; right: 3%; top: 14%; width: 15%; height: 40%;
+    background: linear-gradient(160deg, rgba(150,165,180,.35), rgba(40,48,58,.15) 55%, rgba(0,0,0,.2));
+    border: 0; opacity: .6;
+    transform: perspective(1400px) rotateY(-24deg); }
+  /* colunata */
+  .bg .cols { position: absolute; right: 0; top: 52%; width: 62%; height: 26%;
+    background:
+      repeating-linear-gradient(90deg,
+        transparent 0 40px,
+        rgba(60,60,64,.95) 40px 52px, rgba(120,120,126,.9) 52px 70px, rgba(52,52,56,.95) 70px 96px,
+        transparent 96px 168px);
+    -webkit-mask: linear-gradient(90deg, transparent 0%, #000 35%);
+            mask: linear-gradient(90deg, transparent 0%, #000 35%); opacity: .4; }
+  .bg .cols::before { content: ""; position: absolute; left: 0; right: 0; top: -22px; height: 26px;
+    background: linear-gradient(180deg, #4a4a4f, #2a2a2d); }
+  /* piso reflexivo */
+  .bg .floor { position: absolute; left: 0; right: 0; bottom: 0; height: 24%;
+    -webkit-mask: linear-gradient(180deg, transparent 0%, #000 30%); mask: linear-gradient(180deg, transparent 0%, #000 30%);
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.0) 0%, rgba(0,0,0,.55) 100%),
+      repeating-linear-gradient(90deg, rgba(255,255,255,.035) 0 2px, transparent 2px 180px),
+      linear-gradient(180deg, #2b2b2f 0%, #161618 60%, #0d0d0e 100%); }
+  .bg .floor::after { content: ""; position: absolute; left: 30%; right: 0; top: 0; height: 60%;
+    background: radial-gradient(60% 50% at 70% 10%, rgba(255,255,255,.12), transparent 70%); }
+  .bg .vignette { position: absolute; inset: 0;
+    background: radial-gradient(130% 90% at 50% 40%, transparent 45%, rgba(0,0,0,.75) 100%),
+                linear-gradient(90deg, rgba(10,10,11,.85) 0%, rgba(10,10,11,.35) 45%, transparent 70%); }
+  .bg .grain { position: absolute; inset: 0; opacity: .12; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+
+  .content { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; }
+
+  /* ---------- Logo ---------- */
+  .logo { display: flex; align-items: center; justify-content: center; gap: 30px;
+    padding-top: var(--logo-top); margin-bottom: var(--logo-gap); }
+  .logo .mark { font-family: var(--serif); font-weight: 800; font-size: calc(var(--h1) * .9);
+    letter-spacing: -0.04em; line-height: 1; display: flex; align-items: baseline; }
+  .logo .mark span { color: var(--accent); }
+  .logo .rule { width: 2px; align-self: stretch; background: rgba(255,255,255,.75); }
+  .logo .name { font-family: var(--sans); font-weight: 500; font-size: calc(var(--sub) * .78);
+    letter-spacing: .18em; line-height: 1.35; text-transform: uppercase; }
+
+  /* ---------- Card branco ---------- */
+  .card { margin: 0 var(--card-x); background: var(--paper); color: var(--ink);
+    padding: var(--card-pad); box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+  .kicker { font-weight: 700; font-size: var(--kicker); letter-spacing: .16em; color: var(--accent);
+    text-transform: uppercase; margin-bottom: calc(var(--kicker) * .7); }
+  h1 { font-family: var(--serif); font-weight: 900; font-size: var(--h1); line-height: .99;
+    letter-spacing: -0.035em; font-variation-settings: "opsz" 60; }
+  h1 em { font-style: normal; color: var(--accent); }
+  .sub { margin-top: calc(var(--sub) * .8); font-weight: 400; font-size: var(--sub); line-height: 1.32;
+    color: #57575c; }
+
+  /* ---------- Seção escura ---------- */
+  .sec { position: relative; margin: calc(var(--h2) * .55) var(--sec-x) 0 calc(var(--sec-x) - 6px);
+    padding: var(--sec-pad); border-left: 9px solid var(--accent); padding-bottom: 0; }
+  h2 { font-family: var(--sans); font-weight: 700; font-size: var(--h2); line-height: 1.12; letter-spacing: -0.01em; }
+  .body { margin-top: calc(var(--body) * .75); font-weight: 400; font-size: var(--body); line-height: 1.3; color: rgba(255,255,255,.9); }
+
+  .icons { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: calc(var(--body) * 1.25); }
+  .icons > div { display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 0 8px; border-left: 1.5px solid rgba(255,255,255,.35); }
+  .icons > div:first-child { border-left: 0; }
+  .icons svg { width: var(--icon); height: var(--icon); stroke: var(--accent); fill: none; stroke-width: 2.4;
+    stroke-linecap: round; stroke-linejoin: round; margin-bottom: calc(var(--icon) * .22); }
+  .icons p { font-size: var(--icon-txt); line-height: 1.22; font-weight: 500; color: rgba(255,255,255,.92); }
+
+  .note { margin-top: calc(var(--body) * 1.1); padding-top: calc(var(--note) * 1); border-top: 1.5px solid rgba(255,255,255,.35);
+    font-size: var(--note); color: rgba(255,255,255,.78); font-weight: 400; }
+
+  .cta { margin: calc(var(--note) * 1.6) 0 0 -14px; width: 76%; height: var(--cta-h);
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-dark) 100%);
+    display: flex; align-items: center; justify-content: space-between; padding: 0 calc(var(--cta) * 1.1);
+    font-weight: 700; font-size: var(--cta); letter-spacing: .01em; box-shadow: 0 18px 40px rgba(0,0,0,.45); }
+  .cta svg { width: calc(var(--cta) * 1.15); height: calc(var(--cta) * 1.15); stroke: #fff; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+</style>
+</head>
+<body>
+<div class="ad">
+  <div class="bg">
+    <div class="sky"></div>
+    <div class="building"></div>
+    <div class="glass"></div>
+    <div class="cols"></div>
+    <div class="floor"></div>
+    <div class="vignette"></div>
+    <div class="grain"></div>
+  </div>
+
+  <div class="content">
+    <div class="logo">
+      <div class="mark">A<span>.</span></div>
+      <div class="rule"></div>
+      <div class="name">Andrade<br>Advogados</div>
+    </div>
+
+    <div class="card">
+      <div class="kicker">Recuperação Judicial</div>
+      <h1>Empresas com dívidas acima de R$&nbsp;4&nbsp;milhões podem suspender todas as cobranças por até 180&nbsp;dias, prorrogável por mais 180&nbsp;dias.</h1>
+      <p class="sub">Medida legal garante proteção imediata, paralisa juros, evita a negativação e dá fôlego para a reestruturação do seu negócio.</p>
+    </div>
+
+    <div class="sec">
+      <h2>Proteção imediata para<br>preservar o caixa da sua empresa.</h2>
+      <p class="body">A Recuperação Judicial permite que sua empresa ganhe tempo, negocie com os credores e mantenha as operações.</p>
+
+      <div class="icons">
+        <div>
+          <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="18"/><line x1="11.3" y1="36.7" x2="36.7" y2="11.3"/></svg>
+          <p>Suspensão<br>de todas<br>as cobranças</p>
+        </div>
+        <div>
+          <svg viewBox="0 0 48 48"><line x1="36" y1="10" x2="12" y2="38"/><circle cx="14" cy="14" r="5"/><circle cx="34" cy="34" r="5"/></svg>
+          <p>Paralisação<br>dos juros</p>
+        </div>
+        <div>
+          <svg viewBox="0 0 48 48"><path d="M30 42H10V6h20l8 8v12"/><path d="M30 6v8h8"/><line x1="16" y1="18" x2="26" y2="18"/><line x1="16" y1="25" x2="30" y2="25"/><circle cx="36" cy="37" r="7"/><line x1="33.2" y1="34.2" x2="38.8" y2="39.8"/><line x1="38.8" y1="34.2" x2="33.2" y2="39.8"/></svg>
+          <p>Suspensão da<br>negativação<br>do CNPJ</p>
+        </div>
+        <div>
+          <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="18"/><polyline points="24,13 24,24 31,29"/></svg>
+          <p>Até 180 dias,<br>prorrogável<br>por mais 180</p>
+        </div>
+      </div>
+
+      <p class="note">Previsto no artigo 6º, § 4º, da Lei nº 11.101/2005.</p>
+
+      <div class="cta">
+        <span>Fale com um especialista</span>
+        <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="20" y2="12"/><polyline points="13,5 20,12 13,19"/></svg>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+  // ?f=45 (1080x1350) | padrão 9:16 (1080x1920) · ?tema=dourado
+  const q = new URLSearchParams(location.search);
+  if (q.get('f') === '45') document.body.classList.add('f45');
+  if (q.get('tema') === 'dourado') document.body.classList.add('dourado');
+  // Ajuste automático: reduz o título até o CTA caber com respiro no rodapé
+  window.fit = () => {
+    const root = document.body, H = window.innerHeight, margem = H * 0.06;
+    let h1 = parseFloat(getComputedStyle(root).getPropertyValue('--h1'));
+    const cta = document.querySelector('.cta');
+    while (cta.getBoundingClientRect().bottom > H - margem && h1 > 40) {
+      h1 -= 1; root.style.setProperty('--h1', h1 + 'px');
+    }
+    return h1;
+  };
+  document.fonts.ready.then(window.fit);
+</script>
+</body>
+</html>
