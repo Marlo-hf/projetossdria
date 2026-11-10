@@ -23,7 +23,7 @@ endobj
 /Type /Group
 /S /Transparency
 /I true
-/CS /DeviceRGB
+/CS /DeviceCMYK
 >>
 /Resources 5 0 R
 /StructParents 0
@@ -269,7 +269,7 @@ endobj
 6 0 obj
 <<
 /Producer (cairo 1\05618\0560 \050https\072\057\057cairographics\056org\051)
-/CreationDate (D\07220261110154141Z)
+/CreationDate (D\07220261110155410Z)
 /Title (unlockify\055logo\055fundo\055claro\056pdf)
 /Creator (Unlockify \057 gerar\056py)
 >>
@@ -280,9 +280,9 @@ xref
 0000000015 00000 n 
 0000000064 00000 n 
 0000000123 00000 n 
-0000000326 00000 n 
-0000006088 00000 n 
-0000006148 00000 n 
+0000000327 00000 n 
+0000006089 00000 n 
+0000006149 00000 n 
 trailer
 <<
 /Size 7
@@ -290,5 +290,5 @@ trailer
 /Info 6 0 R
 >>
 startxref
-6373
+6374
 %%EOF

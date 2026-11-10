@@ -4,7 +4,7 @@ Tudo é vetor, e os textos são convertidos em curvas, então a gráfica não
 precisa ter a fonte instalada. Os PDFs e EPS saem em CMYK para impressão.
 
 Uso:  python3 gerar.py
-Precisa de: cairosvg, fonttools, uharfbuzz, pypdf, numpy, Pillow, Ghostscript (gs)
+Precisa de: cairosvg, fonttools, uharfbuzz, pypdf, numpy, segno, Pillow, Ghostscript (gs)
 e da fonte Inter (Inter-Bold, Inter-SemiBold, Inter-Medium).
 """
 import itertools
@@ -281,6 +281,8 @@ def _funcao_cmyk(f):
     f = f.get_object()
     tipo = f["/FunctionType"]
     if tipo == 2:
+        if len(f["/C0"]) == 4:  # mesma função usada por outro degradê: já convertida
+            return
         for chave in ("/C0", "/C1"):
             f[NameObject(chave)] = ArrayObject(_num(v) for v in cmyk(*f[chave]))
         if "/Range" in f:
@@ -314,8 +316,20 @@ def _recursos_cmyk(res, leitor):
         if xo.get("/Subtype") == "/Image":
             raise ValueError("PDF tem imagem rasterizada; esperava só vetor")
         if xo.get("/Subtype") == "/Form":
+            _grupo_cmyk(xo)
             _recursos_cmyk(xo.get("/Resources"), leitor)
             _conteudo_cmyk(xo, leitor)
+    # As máscaras de transparência (/SMask em /ExtGState) ficam em tons de cinza
+    # de propósito: elas só dizem "quanto aparece", não têm cor.
+
+
+def _grupo_cmyk(obj):
+    """Grupo de transparência passa a misturar as cores em CMYK."""
+    grupo = obj.get("/Group")
+    if grupo is not None:
+        grupo = grupo.get_object()
+        if grupo.get("/CS") == "/DeviceRGB":
+            grupo[NameObject("/CS")] = NameObject("/DeviceCMYK")
 
 
 def _ops_cmyk(cs):
@@ -328,6 +342,8 @@ def _ops_cmyk(cs):
                 continue
             if args and args[0] == "/Pattern":
                 continue
+            if op in (b"scn", b"SCN") and len(args) == 1 and isinstance(args[0], NameObject):
+                continue  # pinta com um degradê (/Pattern), convertido nos recursos
             raise ValueError(f"operador de cor não tratado: {op}")
     return cs
 
@@ -342,6 +358,7 @@ def pdf_para_cmyk(entrada, saida):
     em vetor (o Ghostscript transformaria o degradê em imagem)."""
     w = PdfWriter(clone_from=entrada)
     for pag in w.pages:
+        _grupo_cmyk(pag)
         _recursos_cmyk(pag.get("/Resources"), w)
         cs = _ops_cmyk(ContentStream(pag.get_contents(), w))
         pag.replace_contents(cs)
@@ -399,89 +416,294 @@ def logos(pasta):
 
 # ---------------------------------------------------------------- backdrop
 LARG, ALT = 2000.0, 2500.0   # mm: 2,00 m de largura x 2,50 m de altura
-ALTURA_BALCAO = 1100.0       # mm a partir do chão (referência só na prévia)
+ALTURA_BALCAO = 1100.0       # mm a partir do chão: o que fica abaixo disso o balcão tende a cobrir
+LILAS_CLARO = "#C9C2FF"
+CINZA_TEXTO = "#C5C1E4"
+WHATSAPP = "5534996535202"
+MSG_WHATSAPP = "Olá! Vim pelo stand da Unlockify no evento."
 
 
-def backdrop(pasta):
-    os.makedirs(pasta, exist_ok=True)
-    s = 1.35       # mm por px da arte original -> assinatura com ~67 cm de largura
-    topo = 130.0   # mm do topo até o alto do símbolo
+def u_linha(cx, cy, r, y_esq, y_dir):
+    """Linha central de um "U" como o do logo: haste direita mais curta."""
+    return f"M{cx - r},{y_esq} L{cx - r},{cy} A{r},{r} 0 0 0 {cx + r},{cy} L{cx + r},{y_dir}"
 
-    def X(px):
-        return LARG / 2 + (px - CX) * s
 
-    def Y(py):
-        return topo + (py - ASS_TOPO) * s
+def qr_path(dado, x, y, lado):
+    """QR code como um único path (módulos escuros), dentro de um quadrado."""
+    import segno
+    qr = segno.make(dado, error="m")
+    linhas = [list(r) for r in qr.matrix]
+    n = len(linhas)
+    m = lado / n  # coordenadas em módulos inteiros quando lado == n
+    partes = []
+    for j, linha in enumerate(linhas):
+        i = 0
+        while i < n:
+            if linha[i]:
+                k = i
+                while k < n and linha[k]:
+                    k += 1
+                partes.append(f"M{x + i * m:g},{y + j * m:g}h{(k - i) * m:g}v{m:g}h{-(k - i) * m:g}z")
+                i = k
+            else:
+                i += 1
+    return "".join(partes), n
 
-    brilho_cx, brilho_cy, brilho_esc = X(CX), Y(400), s * 1.6
 
+ICONES = {
+    # desenhados numa caixa de 100 x 100 centrada em (0, 0), em traço
+    "grafico": '<path d="M-36,24 L-12,0 L6,16 L34,-14"/><path d="M14,-15 L35,-15 L35,6"/>'
+               '<path d="M-38,40 L38,40"/>',
+    "chat": '<path d="M-30,-34 H30 A12,12 0 0 1 42,-22 V14 A12,12 0 0 1 30,26 H-6 L-26,42 V26 H-30 '
+            'A12,12 0 0 1 -42,14 V-22 A12,12 0 0 1 -30,-34 Z"/>'
+            '<path stroke="none" fill="currentColor" d="M0,-24 C2,-12 6,-8 18,-5 C6,-2 2,2 0,14 '
+            'C-2,2 -6,-2 -18,-5 C-6,-8 -2,-12 0,-24 Z"/>',
+    "fluxo": '<circle cx="-26" cy="-22" r="12"/><circle cx="26" cy="-22" r="12"/><circle cx="0" cy="26" r="12"/>'
+             '<path d="M-14,-22 H14"/><path d="M-20,-11 L-6,15"/><path d="M20,-11 L6,15"/>',
+}
+
+
+def icone(nome, cx, cy, tam, cor):
+    k = tam / 100
+    return (f'<g transform="translate({cx:.2f},{cy:.2f}) scale({k:.4f})" fill="none" stroke="{cor}" '
+            f'color="{cor}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">'
+            f"{ICONES[nome].replace('currentColor', cor)}</g>")
+
+
+def fundo_backdrop():
+    """Fundo comum às duas opções: degradê, brilhos, pontos, piso em perspectiva
+    e a moldura gigante em "U" (a alça do cadeado aberto do logo)."""
+    defs = f"""
+<linearGradient id="base" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="{ALT}">
+  <stop offset="0" stop-color="#1A1B3A"/><stop offset="0.55" stop-color="#121329"/><stop offset="1" stop-color="#0C0D20"/></linearGradient>
+<radialGradient id="brilhoTopo" gradientUnits="userSpaceOnUse" cx="1000" cy="380" r="900">
+  <stop offset="0" stop-color="#8E80FF" stop-opacity="0.55"/><stop offset="0.45" stop-color="#7466E8" stop-opacity="0.22"/>
+  <stop offset="1" stop-color="#5E50D8" stop-opacity="0"/></radialGradient>
+<radialGradient id="brilhoMeio" gradientUnits="userSpaceOnUse" cx="1000" cy="900" r="1000"
+  gradientTransform="translate(0 900) scale(1 0.5) translate(0 -900)">
+  <stop offset="0" stop-color="#6F61F0" stop-opacity="0.30"/><stop offset="1" stop-color="#6F61F0" stop-opacity="0"/></radialGradient>
+<radialGradient id="brilhoBase" gradientUnits="userSpaceOnUse" cx="1000" cy="2050" r="1250"
+  gradientTransform="translate(0 2050) scale(1 0.55) translate(0 -2050)">
+  <stop offset="0" stop-color="#9A8CFF" stop-opacity="0.70"/><stop offset="0.35" stop-color="#7466E8" stop-opacity="0.35"/>
+  <stop offset="1" stop-color="#5E50D8" stop-opacity="0"/></radialGradient>
+<linearGradient id="linhaU" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="{ALT}">
+  <stop offset="0" stop-color="{LILAS_CLARO}" stop-opacity="0.05"/><stop offset="0.45" stop-color="{LILAS_CLARO}" stop-opacity="0.55"/>
+  <stop offset="1" stop-color="{LILAS_CLARO}" stop-opacity="1"/></linearGradient>
+<linearGradient id="piso" gradientUnits="userSpaceOnUse" x1="0" y1="1700" x2="0" y2="{ALT}">
+  <stop offset="0" stop-color="#A79BFF" stop-opacity="0"/><stop offset="1" stop-color="#A79BFF" stop-opacity="0.45"/></linearGradient>
+<clipPath id="dentroU"><path d="{u_linha(1000, 1500, 800, -10, -10)} Z"/></clipPath>
+"""
+    # piso em perspectiva (parte de baixo, atrás do balcão; dá profundidade)
+    fuga_x, fuga_y, y0 = 1000, 1350, 1720
+    linhas = [f"M{fuga_x + (x - fuga_x) * (y0 - fuga_y) / (ALT + 400 - fuga_y):.1f},{y0} L{x},{ALT + 400}"
+              for x in range(-2600, 4601, 240)]
+    y, passo = y0, 30.0
+    while y < ALT:
+        linhas.append(f"M0,{y:.1f} H{LARG}")
+        passo *= 1.32
+        y += passo
+    piso = (f'<g clip-path="url(#dentroU)"><path d="{" ".join(linhas)}" fill="none" '
+            f'stroke="url(#piso)" stroke-width="3"/></g>')
+
+    # pontos discretos
+    pontos = []
+    for j in range(int(ALT // 40) + 1):
+        for i in range(int(LARG // 40) + 1):
+            x, yy = 20 + i * 40, 20 + j * 40
+            pontos.append(f"M{x - 2},{yy}a2,2 0 1 0 4,0a2,2 0 1 0 -4,0z")
+    pontos = f'<path fill="#FFFFFF" fill-opacity="0.06" d="{"".join(pontos)}"/>'
+
+    # moldura: três "U" concêntricos; o de dentro tem o pingo do "i"
+    cy = 1500
+    moldura = "".join([
+        f'<path d="{u_linha(1000, cy, 920, -10, 380)}" fill="none" stroke="url(#linhaU)" stroke-width="3" stroke-opacity="0.45"/>',
+        f'<path d="{u_linha(1000, cy, 860, -10, 470)}" fill="none" stroke="url(#linhaU)" stroke-width="5" stroke-opacity="0.7"/>',
+        f'<path d="{u_linha(1000, cy, 800, -10, 560)}" fill="none" stroke="url(#linhaU)" stroke-width="10" stroke-linecap="round"/>',
+        f'<circle cx="1800" cy="478" r="26" fill="{LILAS_CLARO}" fill-opacity="0.75"/>',
+    ])
+    corpo = "\n".join([
+        f'<rect width="{LARG}" height="{ALT}" fill="url(#base)"/>',
+        f'<rect width="{LARG}" height="{ALT}" fill="url(#brilhoMeio)"/>',
+        f'<rect width="{LARG}" height="{ALT}" fill="url(#brilhoBase)"/>',
+        pontos, piso,
+        f'<rect width="{LARG}" height="{ALT}" fill="url(#brilhoTopo)"/>',
+        moldura,
+    ])
+    return defs, corpo
+
+
+def logo_em(x_centro, topo, s):
+    """Assinatura vertical posicionada: centro horizontal, topo do símbolo, escala (mm/px)."""
+    return (f'<g transform="translate({x_centro - CX * s:.3f},{topo - ASS_TOPO * s:.3f}) scale({s})">'
+            f"{assinatura()}</g>"), topo + (ASS_BASE - ASS_TOPO) * s
+
+
+def texto_degrade(id_, d, esq, dir_, c0, c1):
+    defs = (f'<linearGradient id="{id_}" gradientUnits="userSpaceOnUse" x1="{esq:.1f}" y1="0" x2="{dir_:.1f}" y2="0">'
+            f'<stop offset="0" stop-color="{c0}"/><stop offset="1" stop-color="{c1}"/></linearGradient>')
+    return defs, f'<path fill="url(#{id_})" d="{d}"/>'
+
+
+def backdrop_opcao_a():
+    """Chamada forte + serviços + QR do WhatsApp."""
+    defs, fundo = fundo_backdrop()
+    preto = Texto("InterDisplay-Black.otf")
     semi = Texto("Inter-SemiBold.otf")
     med = Texto("Inter-Medium.otf")
-    # Tudo o que importa fica acima de ALTURA_BALCAO, com folga.
-    y_div = Y(ASS_BASE) + 60
-    l1, _ = semi.contorno("Tráfego pago, automação e IA", 66, LARG / 2, y_div + 95)
-    l2, _ = semi.contorno("para escritórios de advocacia", 66, LARG / 2, y_div + 175)
-    y_site = y_div + 260
-    site, _ = med.contorno("unlockify.com.br", 42, LARG / 2, y_site, track=0.06)
-    assert ALT - (y_site + 12) > ALTURA_BALCAO + 40, "texto do backdrop muito baixo"
+    reg = Texto("Inter-Regular.otf")
+    logo, y = logo_em(1000, 80, 0.77)
 
-    corpo = "\n".join([
-        f'<rect width="{LARG}" height="{ALT}" fill="url(#brilho)"/>',
-        pontilhado(LARG, ALT, 38, 2.1, brilho_cx, brilho_cy, brilho_esc),
-        f'<g transform="translate({X(0):.3f},{Y(0):.3f}) scale({s})">{assinatura()}</g>',
-        f'<rect x="{LARG / 2 - 60}" y="{y_div - 2.5}" width="120" height="5" rx="2.5" fill="{ROXO}"/>',
-        f'<path fill="{BRANCO}" d="{l1}"/>',
-        f'<path fill="{ROXO}" d="{l2}"/>',
-        f'<path fill="{CINZA_SITE}" d="{site}"/>',
-    ])
-    defs = degrade("brilho", brilho_cx, brilho_cy, brilho_esc)
-    arte = svg(int(LARG), int(ALT), "mm", corpo, defs)
-    nome = os.path.join(pasta, "backdrop-unlockify-200x250cm")
-    rgb = exportar(arte, nome, eps=False)
+    h1, _ = preto.contorno("Destrave o crescimento", 126, 1000, y + 205, track=-0.02)
+    h2, (e2, d2) = preto.contorno("do seu escritório.", 126, 1000, y + 350, track=-0.02)
+    g2_defs, h2_el = texto_degrade("h2", h2, e2, d2, LILAS_CLARO, "#9A8CFF")
+    sub, _ = med.contorno("Tráfego pago, automação e IA para advocacia", 50, 1000, y + 445)
 
-    # JPG em tamanho real a 100 dpi, para gráficas que preferem imagem
-    gs("-sDEVICE=jpeg", "-r100", "-dJPEGQ=92", "-dTextAlphaBits=4", "-dGraphicsAlphaBits=4",
-       f"-sOutputFile={nome}-100dpi.jpg", rgb)
-    os.remove(rgb)
-    os.remove(nome + ".svg")  # o SVG de 2,5 m não é útil para a gráfica
+    # cartão com serviços + QR
+    cx0, cy0, cw, ch = 255, y + 495, 1490, 320
+    servicos = [("grafico", "Tráfego pago", "Meta Ads"),
+                ("chat", "IA de atendimento", "no WhatsApp"),
+                ("fluxo", "Automação + CRM", "parceiro oficial Kommo")]
+    col_w = 1150 / 3
+    itens = [f'<rect x="{cx0}" y="{cy0}" width="{cw}" height="{ch}" rx="44" fill="#FFFFFF" fill-opacity="0.06" '
+             f'stroke="{LILAS_CLARO}" stroke-opacity="0.45" stroke-width="3"/>']
+    for k, (ic, t1, t2) in enumerate(servicos):
+        x = cx0 + 30 + col_w * (k + 0.5)
+        itens.append(f'<circle cx="{x:.1f}" cy="{cy0 + 95}" r="56" fill="#9A8CFF" fill-opacity="0.22"/>')
+        itens.append(icone(ic, x, cy0 + 95, 66, LILAS_CLARO))
+        a, _ = semi.contorno(t1, 38, x, cy0 + 210)
+        b, _ = reg.contorno(t2, 30, x, cy0 + 258)
+        itens.append(f'<path fill="{BRANCO}" d="{a}"/><path fill="{CINZA_TEXTO}" d="{b}"/>')
+        if k:
+            xd = cx0 + 30 + col_w * k
+            itens.append(f'<rect x="{xd - 1.5:.1f}" y="{cy0 + 50}" width="3" height="{ch - 100}" fill="{LILAS_CLARO}" fill-opacity="0.25"/>')
+    # QR do WhatsApp
+    from urllib.parse import quote
+    url = f"https://wa.me/{WHATSAPP}?text={quote(MSG_WHATSAPP)}"
+    lado_tile, xq = 225, cx0 + cw - 35 - 225
+    yq = cy0 + 25
+    import segno
+    n = len(list(segno.make(url, error="m").matrix))
+    qd, _ = qr_path(url, 0, 0, n)  # em módulos inteiros, sem arredondamento
+    margem = 14
+    itens.append(f'<rect x="{xq}" y="{yq}" width="{lado_tile}" height="{lado_tile}" rx="22" fill="{BRANCO}"/>')
+    itens.append(f'<g transform="translate({xq + margem},{yq + margem}) scale({(lado_tile - 2 * margem) / n:.6f})">'
+                 f'<path fill="{MARINHO}" d="{qd}"/></g>')
+    cap, _ = semi.contorno("Fale no WhatsApp", 26, xq + lado_tile / 2, yq + lado_tile + 42)
+    itens.append(f'<path fill="{BRANCO}" d="{cap}"/>')
 
-    # Prévia pequena com a linha do balcão, só para conferência
-    larg_px = 900
-    k = larg_px / LARG
-    cairosvg.svg2png(bytestring=arte.encode(), write_to=nome + ".tmp.png", output_width=larg_px)
-    im = Image.open(nome + ".tmp.png").convert("RGB")
-    os.remove(nome + ".tmp.png")
-    sobre = Image.new("RGBA", im.size, (0, 0, 0, 0))
-    d = ImageDraw.Draw(sobre)
-    yb = (ALT - ALTURA_BALCAO) * k
-    d.rectangle([0, yb, im.width, im.height], fill=(255, 255, 255, 38))
-    for xx in range(0, im.width, 18):
-        d.line([xx, yb, xx + 9, yb], fill=(255, 210, 90, 255), width=2)
-    fonte = ImageFont.truetype(os.path.join(FONTES, "Inter-Medium.otf"), 18)
-    d.text((14, yb + 10), "↓ área que o balcão tende a cobrir (≈ 1,10 m do chão)",
-           font=fonte, fill=(255, 210, 90, 255))
-    d.text((14, im.height - 30), "PRÉVIA · não enviar para impressão", font=fonte,
-           fill=(255, 255, 255, 170))
-    Image.alpha_composite(im.convert("RGBA"), sobre).convert("RGB").save(
-        os.path.join(pasta, "previa-backdrop.png"))
+    corpo = "\n".join([fundo, logo, f'<path fill="{BRANCO}" d="{h1}"/>', h2_el,
+                       f'<path fill="{CINZA_TEXTO}" d="{sub}"/>', *itens])
+    fim = cy0 + ch
+    assert ALT - fim > ALTURA_BALCAO - 30, f"conteúdo desce demais: {ALT - fim:.0f} mm do chão"
+    return svg(int(LARG), int(ALT), "mm", corpo, defs + g2_defs)
+
+
+def backdrop_opcao_b():
+    """Logo gigante em destaque + frase curta + selo."""
+    defs, fundo = fundo_backdrop()
+    semi = Texto("Inter-SemiBold.otf")
+    med = Texto("Inter-Medium.otf")
+    logo, y = logo_em(1000, 150, 1.42)
+    frase1, _ = semi.contorno("Tráfego pago, automação e IA", 66, 1000, y + 125)
+    frase2, (e2, d2) = semi.contorno("para escritórios de advocacia", 66, 1000, y + 205)
+    g_defs, f2 = texto_degrade("f2", frase2, e2, d2, LILAS_CLARO, "#9A8CFF")
+    selo, (es, ds) = med.contorno("FEITA POR ADVOGADO, PARA ADVOGADO", 30, 1000, y + 293, track=0.16)
+    pw = ds - es + 90
+    pill = (f'<rect x="{1000 - pw / 2:.1f}" y="{y + 247}" width="{pw:.1f}" height="64" rx="32" '
+            f'fill="#9A8CFF" fill-opacity="0.18" stroke="{LILAS_CLARO}" stroke-opacity="0.6" stroke-width="3"/>')
+    fim = y + 311
+    assert ALT - fim > ALTURA_BALCAO - 30, f"conteúdo desce demais: {ALT - fim:.0f} mm do chão"
+    corpo = "\n".join([fundo, logo, f'<path fill="{BRANCO}" d="{frase1}"/>', f2, pill,
+                       f'<path fill="{LILAS_CLARO}" d="{selo}"/>'])
+    return svg(int(LARG), int(ALT), "mm", corpo, defs + g_defs)
+
+
+def mockup(arte_png, logo_png, destino):
+    """Simulação de frente do stand: backdrop + balcão com o logo."""
+    from PIL import ImageFilter
+    W, H, px_m = 1600, 1250, 400
+    cena = Image.new("RGB", (W, H))
+    d = ImageDraw.Draw(cena)
+    chao = 1120
+    for yy in range(H):  # parede clara e piso
+        if yy < chao:
+            t = yy / chao
+            c = tuple(int(a + (b - a) * t) for a, b in zip((236, 236, 241), (214, 215, 223)))
+        else:
+            t = (yy - chao) / (H - chao)
+            c = tuple(int(a + (b - a) * t) for a, b in zip((190, 191, 200), (170, 171, 181)))
+        d.line([(0, yy), (W, yy)], fill=c)
+    bw, bh = int(2.0 * px_m), int(2.5 * px_m)
+    bx, by = (W - bw) // 2, chao - bh
+    sombra = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(sombra).rectangle([bx + 18, by + 22, bx + bw + 18, chao + 6], fill=120)
+    cena.paste((40, 40, 60), (0, 0), sombra.filter(ImageFilter.GaussianBlur(28)))
+    arte = Image.open(arte_png).convert("RGB").resize((bw, bh), Image.LANCZOS)
+    cena.paste(arte, (bx, by))
+    # balcão 1,10 m x 1,00 m, um pouco à frente
+    cw, ch = int(1.1 * px_m), int(1.0 * px_m)
+    cxb, base = (W - cw) // 2, chao + 70
+    s2 = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(s2).ellipse([cxb - 40, base - 25, cxb + cw + 40, base + 30], fill=150)
+    cena.paste((30, 30, 45), (0, 0), s2.filter(ImageFilter.GaussianBlur(18)))
+    d = ImageDraw.Draw(cena)
+    d.rectangle([cxb, base - ch, cxb + cw, base], fill=(22, 24, 39))
+    d.rectangle([cxb - 14, base - ch - 26, cxb + cw + 14, base - ch], fill=(245, 245, 250))
+    d.rectangle([cxb, base - 14, cxb + cw, base], fill=(14, 15, 28))
+    lg = Image.open(logo_png).convert("RGBA")
+    lw = int(cw * 0.5)
+    lg = lg.resize((lw, int(lg.height * lw / lg.width)), Image.LANCZOS)
+    cena.paste(lg, (cxb + (cw - lw) // 2, base - ch + (ch - lg.height) // 2 - 5), lg)
+    f = ImageFont.truetype(os.path.join(FONTES, "Inter-Medium.otf"), 22)
+    d.text((24, H - 40), "Simulação do stand (medidas aproximadas: backdrop 2,00 x 2,50 m, balcão ~1,10 x 1,00 m)",
+           font=f, fill=(90, 90, 105))
+    cena.save(destino)
+
+
+def backdrop(pasta, pasta_logo):
+    os.makedirs(pasta, exist_ok=True)
+    for letra, gerar in (("A", backdrop_opcao_a), ("B", backdrop_opcao_b)):
+        arte = gerar()
+        nome = os.path.join(pasta, f"backdrop-unlockify-200x250cm-opcao-{letra}")
+        rgb = exportar(arte, nome, eps=False)
+        # JPG em tamanho real a 100 dpi, para gráficas que preferem imagem
+        gs("-sDEVICE=jpeg", "-r100", "-dJPEGQ=92", "-dTextAlphaBits=4", "-dGraphicsAlphaBits=4",
+           f"-sOutputFile={nome}-100dpi.jpg", rgb)
+        os.remove(rgb)
+        os.remove(nome + ".svg")
+        prev = os.path.join(pasta, f"previa-opcao-{letra}.png")
+        cairosvg.svg2png(bytestring=arte.encode(), write_to=prev, output_width=1000)
+        mockup(prev, os.path.join(pasta_logo, "unlockify-logo-fundo-escuro.png"),
+               os.path.join(pasta, f"simulacao-stand-opcao-{letra}.png"))
 
 
 # ---------------------------------------------------------------- pacote
-def pacote(pasta_logo, pasta_backdrop, destino):
-    """Zip só com o que a organização do evento pediu."""
+def pacote(pasta_logo, pasta_backdrop, letra, destino):
+    """Zip só com o que a organização do evento pediu (logo + uma opção de backdrop)."""
     with zipfile.ZipFile(destino, "w", zipfile.ZIP_DEFLATED) as z:
         for arq in sorted(os.listdir(pasta_logo)):
             if arq.endswith((".pdf", ".eps", ".png")):
                 z.write(os.path.join(pasta_logo, arq), f"logo/{arq}")
-        for arq in ("backdrop-unlockify-200x250cm.pdf", "backdrop-unlockify-200x250cm-100dpi.jpg"):
-            z.write(os.path.join(pasta_backdrop, arq), f"backdrop/{arq}")
+        for suf in (".pdf", "-100dpi.jpg"):
+            arq = f"backdrop-unlockify-200x250cm-opcao-{letra}{suf}"
+            z.write(os.path.join(pasta_backdrop, arq), f"backdrop/{arq.replace(f'-opcao-{letra}', '')}")
 
 
 if __name__ == "__main__":
+    import sys
+    so_previa = "--previa" in sys.argv
+    if so_previa:  # iteração rápida do layout: só PNGs
+        for letra, g in (("A", backdrop_opcao_a), ("B", backdrop_opcao_b)):
+            cairosvg.svg2png(bytestring=g().encode(), write_to=f"/tmp/previa-{letra}.png", output_width=800)
+        sys.exit()
     for p in ("logo", "backdrop"):
         shutil.rmtree(os.path.join(AQUI, p), ignore_errors=True)
+    for z in os.listdir(AQUI):
+        if z.endswith(".zip"):
+            os.remove(os.path.join(AQUI, z))
     logos(os.path.join(AQUI, "logo"))
-    backdrop(os.path.join(AQUI, "backdrop"))
-    pacote(os.path.join(AQUI, "logo"), os.path.join(AQUI, "backdrop"),
-           os.path.join(AQUI, "unlockify-arquivos-stand.zip"))
+    backdrop(os.path.join(AQUI, "backdrop"), os.path.join(AQUI, "logo"))
+    for letra in "AB":
+        pacote(os.path.join(AQUI, "logo"), os.path.join(AQUI, "backdrop"), letra,
+               os.path.join(AQUI, f"unlockify-arquivos-stand-opcao-{letra}.zip"))
     print("ok")

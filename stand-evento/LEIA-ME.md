@@ -4,9 +4,15 @@ Arquivos pedidos pela organização do evento (Andressa) para produzir o balcão
 
 ## O que mandar
 
-Envie o **`unlockify-arquivos-stand.zip`**. Ele já tem tudo o que foi pedido:
+Escolha uma opção de backdrop e envie o zip dela. Cada zip já tem tudo o que foi pedido:
 
-| Pedido | Arquivo |
+- **`unlockify-arquivos-stand-opcao-A.zip`**: chamada "Destrave o crescimento do seu escritório.",
+  serviços com ícones e QR code do WhatsApp (abre a conversa com "Olá! Vim pelo stand da Unlockify no evento.").
+- **`unlockify-arquivos-stand-opcao-B.zip`**: logo gigante, frase e selo "Feita por advogado, para advogado".
+
+Veja como fica no stand em `backdrop/simulacao-stand-opcao-A.png` e `-B.png`.
+
+| Pedido | Arquivo no zip |
 |---|---|
 | Logo em alta, em vetor (PDF, AI ou EPS) | `logo/unlockify-logo-fundo-escuro.pdf` / `.eps` (texto branco) |
 | | `logo/unlockify-logo-fundo-claro.pdf` / `.eps` (texto marinho, para balcão claro) |
@@ -22,11 +28,12 @@ Os PNG de 3000 px (fundo transparente) servem para redes sociais e apresentaçõ
 
 - **Medida do backdrop:** 2,00 m de largura x 2,50 m de altura (vertical), em tamanho real, sem sangria.
   Se for 2,50 m de largura x 2,00 m de altura, ou se a gráfica pedir sangria, é só ajustar `LARG`/`ALT` em `gerar.py`.
-- **Posição do conteúdo:** logo, frase e site ficam todos acima de ~1,15 m do chão, porque o balcão
-  na frente do backdrop costuma cobrir a parte de baixo. Veja `backdrop/previa-backdrop.png`.
+- **Posição do conteúdo:** todo o texto fica acima de ~1,10 m do chão, porque o balcão na frente do
+  backdrop costuma cobrir a parte de baixo. Ali embaixo fica só o fundo (moldura em "U", brilho e piso em perspectiva).
+- **QR code:** testado (lê no JPG e no PDF CMYK). Número e mensagem em `WHATSAPP` / `MSG_WHATSAPP` no `gerar.py`.
 - **Vetor de verdade:** os textos estão convertidos em curvas (a gráfica não precisa da fonte Inter) e o
   traço do símbolo virou forma preenchida (não deforma se ampliarem no Illustrator).
-- **Cor:** PDF e EPS estão em CMYK, com no máximo 280% de tinta. Lilás da marca ≈ C47 M50 Y0 K0.
+- **Cor:** PDF e EPS estão em CMYK, com no máximo 280% de tinta (os brilhos usam transparência, PDF 1.4+). Lilás da marca ≈ C47 M50 Y0 K0.
   O fundo marinho usa um preto composto azulado (≈ C100 M75 Y1 K89 nas bordas), escolhido para
   continuar azul na impressão. A conversão automática para CMYK deixaria o fundo cinza.
 - **Cores de tela (RGB):** lilás `#9084D8`, marinho `#161827`, branco `#FFFFFF`.
@@ -46,7 +53,7 @@ Os PNG de 3000 px (fundo transparente) servem para redes sociais e apresentaçõ
 ## Como gerar de novo
 
 ```bash
-pip install cairosvg fonttools uharfbuzz pypdf numpy pillow
+pip install cairosvg fonttools uharfbuzz pypdf numpy pillow segno
 ```
 
 ```bash
