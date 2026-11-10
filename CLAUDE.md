@@ -14,6 +14,7 @@ stands on its own. Content and file names are in Brazilian Portuguese.
 
 ## Brand
 
+- Wordmark spelled "Unlockfy" on the event stand (user request); `NOME_MARCA` in `stand-evento/gerar.py`.
 - Colors: lilac `#9084D8`, navy `#161827`, white. Font: Inter (Bold for "Unlockify", Medium wide-tracked for "DIGITAL").
 - Logo geometry is reconstructed in `stand-evento/gerar.py` (`simbolo_d`, `assinatura`); reuse it instead of redrawing.
 - Print files: outline text, expand strokes, export CMYK. Ghostscript's CMYK conversion rasterizes gradients and

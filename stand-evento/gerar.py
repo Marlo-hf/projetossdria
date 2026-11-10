@@ -116,27 +116,32 @@ def simbolo_d():
     )
 
 
+NOME_MARCA = "Unlockfy"  # grafia pedida para o stand (sem o "i" de Unlockify)
+
+
 def assinatura(cor_nome=BRANCO, cor_marca=ROXO, so_simbolo=False, so_nome=False):
     """Assinatura vertical nas coordenadas da arte original (1080 px).
     so_nome: só "Unlockify / DIGITAL", sem o símbolo "Ui"."""
     partes = [] if so_nome else [f'<path fill="{cor_marca}" d="{simbolo_d()}"/>']
     if not so_simbolo:
-        nome, _ = Texto("Inter-Bold.otf").contorno("Unlockify", 107.6, CX, 787.0)
+        nome, _ = Texto("Inter-Bold.otf").contorno(NOME_MARCA, 107.6, CX, 787.0)
         digital, _ = Texto("Inter-Medium.otf").contorno("DIGITAL", 45.4, CX, 869.0, track=0.49)
         partes.append(f'<path fill="{cor_nome}" d="{nome}"/>')
         partes.append(f'<path fill="{cor_marca}" d="{digital}"/>')
     return "\n".join(partes)
 
 
-NOME_TOPO = 704.0  # topo das ascendentes de "Unlockify" na arte original
+NOME_TOPO = 704.0  # topo das ascendentes do nome na arte original
 
 
 def caixa_assinatura(so_simbolo=False, so_nome=False):
     if so_nome:
-        return (295.0, NOME_TOPO, 791.0, ASS_BASE)
+        esq, dir_ = Texto("Inter-Bold.otf").contorno(NOME_MARCA, 107.6, CX, 787.0)[1]
+        return (min(esq, 389.0), NOME_TOPO, max(dir_, 691.0), ASS_BASE)  # 389-691: "DIGITAL"
     if so_simbolo:
         return (CX - R - HW, TOPO_ESQ - HW, CX + R + PINGO_R, CY + R + HW)
-    return (295.0, ASS_TOPO, 791.0, ASS_BASE)
+    esq, dir_ = Texto("Inter-Bold.otf").contorno(NOME_MARCA, 107.6, CX, 787.0)[1]
+    return (min(esq, CX - R - HW), ASS_TOPO, max(dir_, CX + R + PINGO_R), ASS_BASE)
 
 
 def degrade(id_, cx, cy, escala):
@@ -428,7 +433,7 @@ ALTURA_BALCAO = 1100.0       # mm a partir do chão: o que fica abaixo disso o b
 LILAS_CLARO = "#C9C2FF"
 CINZA_TEXTO = "#C5C1E4"
 WHATSAPP = "5534996535202"
-MSG_WHATSAPP = "Olá! Vim pelo stand da Unlockify no evento."
+MSG_WHATSAPP = "Olá! Vim pelo stand da Unlockfy no evento."
 
 
 def u_linha(cx, cy, r, y_esq, y_dir):
@@ -521,12 +526,13 @@ def fundo_backdrop():
             pontos.append(f"M{x - 2},{yy}a2,2 0 1 0 4,0a2,2 0 1 0 -4,0z")
     pontos = f'<path fill="#FFFFFF" fill-opacity="0.06" d="{"".join(pontos)}"/>'
 
-    # moldura: três "U" concêntricos
+    # moldura: três "U" concêntricos; o de dentro tem o pingo do "i" do símbolo
     cy = 1500
     moldura = "".join([
         f'<path d="{u_linha(1000, cy, 920, -10, 380)}" fill="none" stroke="url(#linhaU)" stroke-width="3" stroke-opacity="0.45"/>',
         f'<path d="{u_linha(1000, cy, 860, -10, 470)}" fill="none" stroke="url(#linhaU)" stroke-width="5" stroke-opacity="0.7"/>',
         f'<path d="{u_linha(1000, cy, 800, -10, 560)}" fill="none" stroke="url(#linhaU)" stroke-width="10" stroke-linecap="round"/>',
+        f'<circle cx="1800" cy="478" r="26" fill="{LILAS_CLARO}" fill-opacity="0.75"/>',  # pingo do "i"
     ])
     corpo = "\n".join([
         f'<rect width="{LARG}" height="{ALT}" fill="url(#base)"/>',
@@ -559,16 +565,15 @@ def backdrop_arte():
     semi = Texto("Inter-SemiBold.otf")
     med = Texto("Inter-Medium.otf")
     reg = Texto("Inter-Regular.otf")
-    # só o nome "Unlockify / DIGITAL", grande, sem o símbolo "Ui"
-    logo, y = logo_em(1000, 250, 1.55, so_nome=True)
+    logo, y = logo_em(1000, 80, 0.77)
 
-    h1, _ = preto.contorno("Destrave o crescimento", 126, 1000, y + 245, track=-0.02)
-    h2, (e2, d2) = preto.contorno("do seu escritório.", 126, 1000, y + 390, track=-0.02)
+    h1, _ = preto.contorno("Destrave o crescimento", 126, 1000, y + 205, track=-0.02)
+    h2, (e2, d2) = preto.contorno("do seu escritório.", 126, 1000, y + 350, track=-0.02)
     g2_defs, h2_el = texto_degrade("h2", h2, e2, d2, LILAS_CLARO, "#9A8CFF")
-    sub, _ = med.contorno("Tráfego pago, automação e IA para Direito Bancário", 50, 1000, y + 480)
+    sub, _ = med.contorno("Tráfego pago, automação e IA para Direito Bancário", 50, 1000, y + 440)
 
     # cartão com serviços + QR
-    cx0, cy0, cw, ch = 255, y + 535, 1490, 320
+    cx0, cy0, cw, ch = 255, y + 495, 1490, 320
     servicos = [("grafico", "Tráfego pago", "Meta Ads"),
                 ("chat", "IA de atendimento", "no WhatsApp"),
                 ("fluxo", "Automação + CRM", "parceiro oficial Kommo")]
@@ -662,7 +667,7 @@ def backdrop(pasta, pasta_logo):
         os.remove(nome + ".svg")
         prev = os.path.join(pasta, "previa-backdrop.png")
         cairosvg.svg2png(bytestring=arte.encode(), write_to=prev, output_width=1000)
-        mockup(prev, os.path.join(pasta_logo, "unlockify-nome-fundo-escuro.png"),
+        mockup(prev, os.path.join(pasta_logo, "unlockify-logo-fundo-escuro.png"),
                os.path.join(pasta, "simulacao-stand.png"))
 
 
@@ -671,7 +676,7 @@ def pacote(pasta_logo, pasta_backdrop, destino):
     """Zip só com o que a organização do evento pediu (logo + backdrop)."""
     with zipfile.ZipFile(destino, "w", zipfile.ZIP_DEFLATED) as z:
         for arq in sorted(os.listdir(pasta_logo)):
-            if arq.startswith("unlockify-nome-") and arq.endswith((".pdf", ".eps", ".png")):
+            if arq.startswith("unlockify-logo-fundo-") and arq.endswith((".pdf", ".eps", ".png")):
                 z.write(os.path.join(pasta_logo, arq), f"logo/{arq}")
         for suf in (".pdf", "-100dpi.jpg"):
             arq = f"backdrop-unlockify-200x250cm{suf}"

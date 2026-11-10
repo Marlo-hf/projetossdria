@@ -4,23 +4,23 @@ Arquivos pedidos pela organização do evento (Andressa) para produzir o balcão
 
 ## O que mandar
 
-Envie o **`unlockify-arquivos-stand.zip`**. Ele tem tudo o que foi pedido, com a marca **só com o nome**
-("Unlockify / DIGITAL", sem o símbolo "Ui"), como combinado para o stand:
+Envie o **`unlockify-arquivos-stand.zip`**. Ele tem tudo o que foi pedido. A marca está grafada
+**"Unlockfy"** (sem o "i"), como pedido para o stand; a grafia fica em `NOME_MARCA` no `gerar.py`.
 
 | Pedido | Arquivo no zip |
 |---|---|
-| Logo em alta, em vetor (PDF, AI ou EPS) | `logo/unlockify-nome-fundo-escuro.pdf` / `.eps` (texto branco, para balcão escuro) |
-| | `logo/unlockify-nome-fundo-claro.pdf` / `.eps` (texto marinho, para balcão claro) |
-| Arte do backdrop 2 x 2,50 m | `backdrop/backdrop-unlockify-200x250cm.pdf` (vetor, CMYK) |
-| | `backdrop/backdrop-unlockify-200x250cm-100dpi.jpg` (imagem em tamanho real, caso a gráfica prefira) |
+| Logo em alta, em vetor (PDF, AI ou EPS) | `logo/unlockify-logo-fundo-escuro.pdf` / `.eps` (texto branco, para balcão escuro) |
+| | `logo/unlockify-logo-fundo-claro.pdf` / `.eps` (texto marinho, para balcão claro) |
+| Arte do backdrop 2 x 2,50 m | `backdrop/backdrop-unlockify-200x250cm.pdf` (vetor, CMYK, 2000 x 2500 mm) |
+| | `backdrop/backdrop-unlockify-200x250cm-100dpi.jpg` (7874 x 9843 px a 100 dpi = 2000 x 2500 mm) |
 | Nome do representante | **precisa ser informado por você** |
 
-Backdrop: "Unlockify / DIGITAL" no topo, chamada "Destrave o crescimento do seu escritório.", linha
-"Tráfego pago, automação e IA para Direito Bancário", serviços com ícones e QR code do WhatsApp
-(abre a conversa com "Olá! Vim pelo stand da Unlockify no evento."). Veja `backdrop/simulacao-stand.png`.
+Backdrop: símbolo e "Unlockfy / DIGITAL" no topo, chamada "Destrave o crescimento do seu escritório.",
+linha "Tráfego pago, automação e IA para Direito Bancário", serviços com ícones e QR code do WhatsApp
+(abre a conversa com "Olá! Vim pelo stand da Unlockfy no evento."). Veja `backdrop/simulacao-stand.png`.
 
-A pasta `logo/` também guarda as versões com o símbolo "Ui" (`unlockify-logo-*`, `unlockify-simbolo`), para outros usos.
-Os PNG de 3000 px (fundo transparente) servem para redes sociais e apresentações, não para gráfica.
+A pasta `logo/` também tem o símbolo sozinho (`unlockify-simbolo`), só o nome (`unlockify-nome-*`) e a
+versão com fundo, para outros usos. Os PNG de 3000 px servem para redes sociais, não para gráfica.
 
 ## Especificações
 
