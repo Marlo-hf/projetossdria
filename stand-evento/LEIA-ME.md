@@ -4,24 +4,22 @@ Arquivos pedidos pela organização do evento (Andressa) para produzir o balcão
 
 ## O que mandar
 
-Escolha uma opção de backdrop e envie o zip dela. Cada zip já tem tudo o que foi pedido:
-
-- **`unlockify-arquivos-stand-opcao-A.zip`**: chamada "Destrave o crescimento do seu escritório." e a linha "Tráfego pago, automação e IA para Direito Bancário",
-  serviços com ícones e QR code do WhatsApp (abre a conversa com "Olá! Vim pelo stand da Unlockify no evento.").
-- **`unlockify-arquivos-stand-opcao-B.zip`**: logo gigante, frase "para escritórios de Direito Bancário" e selo "Feita por advogado, para advogado".
-
-Veja como fica no stand em `backdrop/simulacao-stand-opcao-A.png` e `-B.png`.
+Envie o **`unlockify-arquivos-stand.zip`**. Ele tem tudo o que foi pedido, com a marca **só com o nome**
+("Unlockify / DIGITAL", sem o símbolo "Ui"), como combinado para o stand:
 
 | Pedido | Arquivo no zip |
 |---|---|
-| Logo em alta, em vetor (PDF, AI ou EPS) | `logo/unlockify-logo-fundo-escuro.pdf` / `.eps` (texto branco) |
-| | `logo/unlockify-logo-fundo-claro.pdf` / `.eps` (texto marinho, para balcão claro) |
-| | `logo/unlockify-simbolo.pdf` / `.eps` (só o símbolo "Ui") |
-| | `logo/unlockify-logo-com-fundo.pdf` (igual ao post, com fundo escuro) |
+| Logo em alta, em vetor (PDF, AI ou EPS) | `logo/unlockify-nome-fundo-escuro.pdf` / `.eps` (texto branco, para balcão escuro) |
+| | `logo/unlockify-nome-fundo-claro.pdf` / `.eps` (texto marinho, para balcão claro) |
 | Arte do backdrop 2 x 2,50 m | `backdrop/backdrop-unlockify-200x250cm.pdf` (vetor, CMYK) |
 | | `backdrop/backdrop-unlockify-200x250cm-100dpi.jpg` (imagem em tamanho real, caso a gráfica prefira) |
 | Nome do representante | **precisa ser informado por você** |
 
+Backdrop: "Unlockify / DIGITAL" no topo, chamada "Destrave o crescimento do seu escritório.", linha
+"Tráfego pago, automação e IA para Direito Bancário", serviços com ícones e QR code do WhatsApp
+(abre a conversa com "Olá! Vim pelo stand da Unlockify no evento."). Veja `backdrop/simulacao-stand.png`.
+
+A pasta `logo/` também guarda as versões com o símbolo "Ui" (`unlockify-logo-*`, `unlockify-simbolo`), para outros usos.
 Os PNG de 3000 px (fundo transparente) servem para redes sociais e apresentações, não para gráfica.
 
 ## Especificações
@@ -44,7 +42,7 @@ Os PNG de 3000 px (fundo transparente) servem para redes sociais e apresentaçõ
 > Oi, Andressa! Tudo certo, vamos participar. 🙌
 >
 > Seguem os arquivos no zip:
-> • Logo em vetor (PDF e EPS): versão para fundo escuro, para fundo claro e o símbolo sozinho. Para o balcão, usem a que combinar com a cor dele.
+> • Logo em vetor (PDF e EPS): versão para fundo escuro e para fundo claro. Para o balcão, usem a que combinar com a cor dele.
 > • Arte do backdrop em 2,00 m de largura x 2,50 m de altura, em PDF vetorial CMYK (vai também um JPG em tamanho real, caso a gráfica prefira).
 > • Representante no stand: **[NOME]**
 >

@@ -116,9 +116,10 @@ def simbolo_d():
     )
 
 
-def assinatura(cor_nome=BRANCO, cor_marca=ROXO, so_simbolo=False):
-    """Assinatura vertical nas coordenadas da arte original (1080 px)."""
-    partes = [f'<path fill="{cor_marca}" d="{simbolo_d()}"/>']
+def assinatura(cor_nome=BRANCO, cor_marca=ROXO, so_simbolo=False, so_nome=False):
+    """Assinatura vertical nas coordenadas da arte original (1080 px).
+    so_nome: só "Unlockify / DIGITAL", sem o símbolo "Ui"."""
+    partes = [] if so_nome else [f'<path fill="{cor_marca}" d="{simbolo_d()}"/>']
     if not so_simbolo:
         nome, _ = Texto("Inter-Bold.otf").contorno("Unlockify", 107.6, CX, 787.0)
         digital, _ = Texto("Inter-Medium.otf").contorno("DIGITAL", 45.4, CX, 869.0, track=0.49)
@@ -127,7 +128,12 @@ def assinatura(cor_nome=BRANCO, cor_marca=ROXO, so_simbolo=False):
     return "\n".join(partes)
 
 
-def caixa_assinatura(so_simbolo=False):
+NOME_TOPO = 704.0  # topo das ascendentes de "Unlockify" na arte original
+
+
+def caixa_assinatura(so_simbolo=False, so_nome=False):
+    if so_nome:
+        return (295.0, NOME_TOPO, 791.0, ASS_BASE)
     if so_simbolo:
         return (CX - R - HW, TOPO_ESQ - HW, CX + R + PINGO_R, CY + R + HW)
     return (295.0, ASS_TOPO, 791.0, ASS_BASE)
@@ -390,9 +396,11 @@ def logos(pasta):
         "unlockify-logo-fundo-escuro": dict(cor_nome=BRANCO),
         "unlockify-logo-fundo-claro": dict(cor_nome=MARINHO),
         "unlockify-simbolo": dict(so_simbolo=True),
+        "unlockify-nome-fundo-escuro": dict(cor_nome=BRANCO, so_nome=True),
+        "unlockify-nome-fundo-claro": dict(cor_nome=MARINHO, so_nome=True),
     }
     for nome, kw in variantes.items():
-        x0, y0, x1, y1 = caixa_assinatura(kw.get("so_simbolo", False))
+        x0, y0, x1, y1 = caixa_assinatura(kw.get("so_simbolo", False), kw.get("so_nome", False))
         m = 0.08 * (x1 - x0)
         w, h = x1 - x0 + 2 * m, y1 - y0 + 2 * m
         esc = largura_mm / w
@@ -513,13 +521,12 @@ def fundo_backdrop():
             pontos.append(f"M{x - 2},{yy}a2,2 0 1 0 4,0a2,2 0 1 0 -4,0z")
     pontos = f'<path fill="#FFFFFF" fill-opacity="0.06" d="{"".join(pontos)}"/>'
 
-    # moldura: três "U" concêntricos; o de dentro tem o pingo do "i"
+    # moldura: três "U" concêntricos
     cy = 1500
     moldura = "".join([
         f'<path d="{u_linha(1000, cy, 920, -10, 380)}" fill="none" stroke="url(#linhaU)" stroke-width="3" stroke-opacity="0.45"/>',
         f'<path d="{u_linha(1000, cy, 860, -10, 470)}" fill="none" stroke="url(#linhaU)" stroke-width="5" stroke-opacity="0.7"/>',
         f'<path d="{u_linha(1000, cy, 800, -10, 560)}" fill="none" stroke="url(#linhaU)" stroke-width="10" stroke-linecap="round"/>',
-        f'<circle cx="1800" cy="478" r="26" fill="{LILAS_CLARO}" fill-opacity="0.75"/>',
     ])
     corpo = "\n".join([
         f'<rect width="{LARG}" height="{ALT}" fill="url(#base)"/>',
@@ -532,10 +539,11 @@ def fundo_backdrop():
     return defs, corpo
 
 
-def logo_em(x_centro, topo, s):
-    """Assinatura vertical posicionada: centro horizontal, topo do símbolo, escala (mm/px)."""
-    return (f'<g transform="translate({x_centro - CX * s:.3f},{topo - ASS_TOPO * s:.3f}) scale({s})">'
-            f"{assinatura()}</g>"), topo + (ASS_BASE - ASS_TOPO) * s
+def logo_em(x_centro, topo, s, so_nome=False):
+    """Assinatura posicionada: centro horizontal, topo da arte, escala (mm/px)."""
+    y0 = NOME_TOPO if so_nome else ASS_TOPO
+    return (f'<g transform="translate({x_centro - CX * s:.3f},{topo - y0 * s:.3f}) scale({s})">'
+            f"{assinatura(so_nome=so_nome)}</g>"), topo + (ASS_BASE - y0) * s
 
 
 def texto_degrade(id_, d, esq, dir_, c0, c1):
@@ -544,22 +552,23 @@ def texto_degrade(id_, d, esq, dir_, c0, c1):
     return defs, f'<path fill="url(#{id_})" d="{d}"/>'
 
 
-def backdrop_opcao_a():
+def backdrop_arte():
     """Chamada forte + serviços + QR do WhatsApp."""
     defs, fundo = fundo_backdrop()
     preto = Texto("InterDisplay-Black.otf")
     semi = Texto("Inter-SemiBold.otf")
     med = Texto("Inter-Medium.otf")
     reg = Texto("Inter-Regular.otf")
-    logo, y = logo_em(1000, 80, 0.77)
+    # só o nome "Unlockify / DIGITAL", grande, sem o símbolo "Ui"
+    logo, y = logo_em(1000, 250, 1.55, so_nome=True)
 
-    h1, _ = preto.contorno("Destrave o crescimento", 126, 1000, y + 205, track=-0.02)
-    h2, (e2, d2) = preto.contorno("do seu escritório.", 126, 1000, y + 350, track=-0.02)
+    h1, _ = preto.contorno("Destrave o crescimento", 126, 1000, y + 245, track=-0.02)
+    h2, (e2, d2) = preto.contorno("do seu escritório.", 126, 1000, y + 390, track=-0.02)
     g2_defs, h2_el = texto_degrade("h2", h2, e2, d2, LILAS_CLARO, "#9A8CFF")
-    sub, _ = med.contorno("Tráfego pago, automação e IA para Direito Bancário", 50, 1000, y + 440)
+    sub, _ = med.contorno("Tráfego pago, automação e IA para Direito Bancário", 50, 1000, y + 480)
 
     # cartão com serviços + QR
-    cx0, cy0, cw, ch = 255, y + 495, 1490, 320
+    cx0, cy0, cw, ch = 255, y + 535, 1490, 320
     servicos = [("grafico", "Tráfego pago", "Meta Ads"),
                 ("chat", "IA de atendimento", "no WhatsApp"),
                 ("fluxo", "Automação + CRM", "parceiro oficial Kommo")]
@@ -596,26 +605,6 @@ def backdrop_opcao_a():
     fim = cy0 + ch
     assert ALT - fim > ALTURA_BALCAO - 30, f"conteúdo desce demais: {ALT - fim:.0f} mm do chão"
     return svg(int(LARG), int(ALT), "mm", corpo, defs + g2_defs)
-
-
-def backdrop_opcao_b():
-    """Logo gigante em destaque + frase curta + selo."""
-    defs, fundo = fundo_backdrop()
-    semi = Texto("Inter-SemiBold.otf")
-    med = Texto("Inter-Medium.otf")
-    logo, y = logo_em(1000, 150, 1.42)
-    frase1, _ = semi.contorno("Tráfego pago, automação e IA", 66, 1000, y + 125)
-    frase2, (e2, d2) = semi.contorno("para escritórios de Direito Bancário", 66, 1000, y + 205)
-    g_defs, f2 = texto_degrade("f2", frase2, e2, d2, LILAS_CLARO, "#9A8CFF")
-    selo, (es, ds) = med.contorno("FEITA POR ADVOGADO, PARA ADVOGADO", 30, 1000, y + 293, track=0.16)
-    pw = ds - es + 90
-    pill = (f'<rect x="{1000 - pw / 2:.1f}" y="{y + 247}" width="{pw:.1f}" height="64" rx="32" '
-            f'fill="#9A8CFF" fill-opacity="0.18" stroke="{LILAS_CLARO}" stroke-opacity="0.6" stroke-width="3"/>')
-    fim = y + 311
-    assert ALT - fim > ALTURA_BALCAO - 30, f"conteúdo desce demais: {ALT - fim:.0f} mm do chão"
-    corpo = "\n".join([fundo, logo, f'<path fill="{BRANCO}" d="{frase1}"/>', f2, pill,
-                       f'<path fill="{LILAS_CLARO}" d="{selo}"/>'])
-    return svg(int(LARG), int(ALT), "mm", corpo, defs + g_defs)
 
 
 def mockup(arte_png, logo_png, destino):
@@ -662,39 +651,38 @@ def mockup(arte_png, logo_png, destino):
 
 def backdrop(pasta, pasta_logo):
     os.makedirs(pasta, exist_ok=True)
-    for letra, gerar in (("A", backdrop_opcao_a), ("B", backdrop_opcao_b)):
+    for gerar in (backdrop_arte,):
         arte = gerar()
-        nome = os.path.join(pasta, f"backdrop-unlockify-200x250cm-opcao-{letra}")
+        nome = os.path.join(pasta, "backdrop-unlockify-200x250cm")
         rgb = exportar(arte, nome, eps=False)
         # JPG em tamanho real a 100 dpi, para gráficas que preferem imagem
         gs("-sDEVICE=jpeg", "-r100", "-dJPEGQ=92", "-dTextAlphaBits=4", "-dGraphicsAlphaBits=4",
            f"-sOutputFile={nome}-100dpi.jpg", rgb)
         os.remove(rgb)
         os.remove(nome + ".svg")
-        prev = os.path.join(pasta, f"previa-opcao-{letra}.png")
+        prev = os.path.join(pasta, "previa-backdrop.png")
         cairosvg.svg2png(bytestring=arte.encode(), write_to=prev, output_width=1000)
-        mockup(prev, os.path.join(pasta_logo, "unlockify-logo-fundo-escuro.png"),
-               os.path.join(pasta, f"simulacao-stand-opcao-{letra}.png"))
+        mockup(prev, os.path.join(pasta_logo, "unlockify-nome-fundo-escuro.png"),
+               os.path.join(pasta, "simulacao-stand.png"))
 
 
 # ---------------------------------------------------------------- pacote
-def pacote(pasta_logo, pasta_backdrop, letra, destino):
-    """Zip só com o que a organização do evento pediu (logo + uma opção de backdrop)."""
+def pacote(pasta_logo, pasta_backdrop, destino):
+    """Zip só com o que a organização do evento pediu (logo + backdrop)."""
     with zipfile.ZipFile(destino, "w", zipfile.ZIP_DEFLATED) as z:
         for arq in sorted(os.listdir(pasta_logo)):
-            if arq.endswith((".pdf", ".eps", ".png")):
+            if arq.startswith("unlockify-nome-") and arq.endswith((".pdf", ".eps", ".png")):
                 z.write(os.path.join(pasta_logo, arq), f"logo/{arq}")
         for suf in (".pdf", "-100dpi.jpg"):
-            arq = f"backdrop-unlockify-200x250cm-opcao-{letra}{suf}"
-            z.write(os.path.join(pasta_backdrop, arq), f"backdrop/{arq.replace(f'-opcao-{letra}', '')}")
+            arq = f"backdrop-unlockify-200x250cm{suf}"
+            z.write(os.path.join(pasta_backdrop, arq), f"backdrop/{arq}")
 
 
 if __name__ == "__main__":
     import sys
     so_previa = "--previa" in sys.argv
     if so_previa:  # iteração rápida do layout: só PNGs
-        for letra, g in (("A", backdrop_opcao_a), ("B", backdrop_opcao_b)):
-            cairosvg.svg2png(bytestring=g().encode(), write_to=f"/tmp/previa-{letra}.png", output_width=800)
+        cairosvg.svg2png(bytestring=backdrop_arte().encode(), write_to="/tmp/previa-backdrop.png", output_width=800)
         sys.exit()
     for p in ("logo", "backdrop"):
         shutil.rmtree(os.path.join(AQUI, p), ignore_errors=True)
@@ -703,7 +691,6 @@ if __name__ == "__main__":
             os.remove(os.path.join(AQUI, z))
     logos(os.path.join(AQUI, "logo"))
     backdrop(os.path.join(AQUI, "backdrop"), os.path.join(AQUI, "logo"))
-    for letra in "AB":
-        pacote(os.path.join(AQUI, "logo"), os.path.join(AQUI, "backdrop"), letra,
-               os.path.join(AQUI, f"unlockify-arquivos-stand-opcao-{letra}.zip"))
+    pacote(os.path.join(AQUI, "logo"), os.path.join(AQUI, "backdrop"),
+           os.path.join(AQUI, "unlockify-arquivos-stand.zip"))
     print("ok")
