@@ -6,9 +6,9 @@ Arquivos pedidos pela organização do evento (Andressa) para produzir o balcão
 
 Escolha uma opção de backdrop e envie o zip dela. Cada zip já tem tudo o que foi pedido:
 
-- **`unlockify-arquivos-stand-opcao-A.zip`**: chamada "Destrave o crescimento da sua advocacia bancária." com os nichos (golpe do PIX, gestão de passivos, dívida rural),
+- **`unlockify-arquivos-stand-opcao-A.zip`**: chamada "Destrave o crescimento do seu escritório." e a linha "Tráfego pago, automação e IA para Direito Bancário",
   serviços com ícones e QR code do WhatsApp (abre a conversa com "Olá! Vim pelo stand da Unlockify no evento.").
-- **`unlockify-arquivos-stand-opcao-B.zip`**: logo gigante, frase "para advocacia bancária" e selo "Feita por advogado, para advogado".
+- **`unlockify-arquivos-stand-opcao-B.zip`**: logo gigante, frase "para escritórios de Direito Bancário" e selo "Feita por advogado, para advogado".
 
 Veja como fica no stand em `backdrop/simulacao-stand-opcao-A.png` e `-B.png`.
 

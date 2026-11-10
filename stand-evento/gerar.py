@@ -553,10 +553,10 @@ def backdrop_opcao_a():
     reg = Texto("Inter-Regular.otf")
     logo, y = logo_em(1000, 80, 0.77)
 
-    h1, _ = preto.contorno("Destrave o crescimento", 116, 1000, y + 200, track=-0.02)
-    h2, (e2, d2) = preto.contorno("da sua advocacia bancária.", 116, 1000, y + 335, track=-0.02)
+    h1, _ = preto.contorno("Destrave o crescimento", 126, 1000, y + 205, track=-0.02)
+    h2, (e2, d2) = preto.contorno("do seu escritório.", 126, 1000, y + 350, track=-0.02)
     g2_defs, h2_el = texto_degrade("h2", h2, e2, d2, LILAS_CLARO, "#9A8CFF")
-    sub, _ = med.contorno("Golpe do PIX  ·  Gestão de passivos  ·  Dívida rural", 50, 1000, y + 435)
+    sub, _ = med.contorno("Tráfego pago, automação e IA para Direito Bancário", 50, 1000, y + 440)
 
     # cartão com serviços + QR
     cx0, cy0, cw, ch = 255, y + 495, 1490, 320
@@ -605,7 +605,7 @@ def backdrop_opcao_b():
     med = Texto("Inter-Medium.otf")
     logo, y = logo_em(1000, 150, 1.42)
     frase1, _ = semi.contorno("Tráfego pago, automação e IA", 66, 1000, y + 125)
-    frase2, (e2, d2) = semi.contorno("para advocacia bancária", 66, 1000, y + 205)
+    frase2, (e2, d2) = semi.contorno("para escritórios de Direito Bancário", 66, 1000, y + 205)
     g_defs, f2 = texto_degrade("f2", frase2, e2, d2, LILAS_CLARO, "#9A8CFF")
     selo, (es, ds) = med.contorno("FEITA POR ADVOGADO, PARA ADVOGADO", 30, 1000, y + 293, track=0.16)
     pw = ds - es + 90
