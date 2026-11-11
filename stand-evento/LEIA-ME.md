@@ -13,6 +13,7 @@ Envie o **`unlockify-arquivos-stand.zip`**. Ele tem tudo o que foi pedido. A mar
 | | `logo/unlockify-logo-fundo-claro.pdf` / `.eps` (texto marinho, para balcão claro) |
 | Arte do backdrop 2 x 2,50 m | `backdrop/backdrop-unlockify-200x250cm.pdf` (vetor, CMYK, 2000 x 2500 mm) |
 | | `backdrop/backdrop-unlockify-200x250cm-100dpi.jpg` (7874 x 9843 px a 100 dpi = 2000 x 2500 mm) |
+| Adesivo do balcão 187 x 86 cm | `balcao/adesivo-balcao-187x86cm.pdf` e `-100dpi.tif` (fundo branco, logo no meio, sem faca) |
 | Nome do representante | **precisa ser informado por você** |
 
 Backdrop: símbolo e "Unlockfy / DIGITAL" no topo, chamada "Destrave o crescimento do seu escritório.",
@@ -21,6 +22,17 @@ linha "Tráfego pago, automação e IA para Direito Bancário", serviços com í
 
 A pasta `logo/` também tem o símbolo sozinho (`unlockify-simbolo`), só o nome (`unlockify-nome-*`) e a
 versão com fundo, para outros usos. Os PNG de 3000 px servem para redes sociais, não para gráfica.
+
+## Adesivo do balcão (gabarito "Balcão ONE")
+
+Pedido do designer da montadora: fundo branco e o logo no meio, no tamanho do adesivo, para ficar proporcional.
+
+- **`balcao/adesivo-balcao-187x86cm.pdf`**: vetor, CMYK, 1870 x 860 mm (já com 1 cm de sangria em cada borda).
+- **`balcao/adesivo-balcao-187x86cm-100dpi.tif`**: TIFF CMYK, 7362 x 3386 px a 100 dpi (= 187 x 86 cm).
+- Os dois **sem a faca**, como pede o gabarito. A faca aparece só em `balcao/previa-balcao-com-faca.png`.
+- Faces (corte 185 x 84 cm): 16 | 36 | **80 (frente)** | 36 | 16 cm. O logo (versão fundo claro) fica
+  centralizado na frente: **50 cm de altura x 35,6 cm de largura**, centro a 93,5 cm da borda esquerda e a 43 cm do topo da folha.
+- Medidas e dobras ficam em `BALCAO_*` no `gerar.py`.
 
 ## Especificações
 

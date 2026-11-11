@@ -612,8 +612,8 @@ def backdrop_arte():
     return svg(int(LARG), int(ALT), "mm", corpo, defs + g2_defs)
 
 
-def mockup(arte_png, logo_png, destino):
-    """Simulação de frente do stand: backdrop + balcão com o logo."""
+def mockup(arte_png, frente_png, destino):
+    """Simulação de frente do stand: backdrop + frente do balcão (arte real do adesivo)."""
     from PIL import ImageFilter
     W, H, px_m = 1600, 1250, 400
     cena = Image.new("RGB", (W, H))
@@ -635,23 +635,88 @@ def mockup(arte_png, logo_png, destino):
     arte = Image.open(arte_png).convert("RGB").resize((bw, bh), Image.LANCZOS)
     cena.paste(arte, (bx, by))
     # balcão 1,10 m x 1,00 m, um pouco à frente
-    cw, ch = int(1.1 * px_m), int(1.0 * px_m)
+    cw, ch = int(BALCAO_FRENTE[0] / 1000 * px_m), int(BALCAO_ALT / 1000 * px_m)
     cxb, base = (W - cw) // 2, chao + 70
     s2 = Image.new("L", (W, H), 0)
     ImageDraw.Draw(s2).ellipse([cxb - 40, base - 25, cxb + cw + 40, base + 30], fill=150)
     cena.paste((30, 30, 45), (0, 0), s2.filter(ImageFilter.GaussianBlur(18)))
     d = ImageDraw.Draw(cena)
-    d.rectangle([cxb, base - ch, cxb + cw, base], fill=(22, 24, 39))
-    d.rectangle([cxb - 14, base - ch - 26, cxb + cw + 14, base - ch], fill=(245, 245, 250))
-    d.rectangle([cxb, base - 14, cxb + cw, base], fill=(14, 15, 28))
-    lg = Image.open(logo_png).convert("RGBA")
-    lw = int(cw * 0.5)
-    lg = lg.resize((lw, int(lg.height * lw / lg.width)), Image.LANCZOS)
-    cena.paste(lg, (cxb + (cw - lw) // 2, base - ch + (ch - lg.height) // 2 - 5), lg)
+    frente = Image.open(frente_png).convert("RGB").resize((cw, ch), Image.LANCZOS)
+    cena.paste(frente, (cxb, base - ch))
+    d.rectangle([cxb, base - ch, cxb + cw, base], outline=(200, 200, 210), width=2)
+    d.rectangle([cxb - 14, base - ch - 22, cxb + cw + 14, base - ch], fill=(232, 232, 238), outline=(200, 200, 210))
     f = ImageFont.truetype(os.path.join(FONTES, "Inter-Medium.otf"), 22)
-    d.text((24, H - 40), "Simulação do stand (medidas aproximadas: backdrop 2,00 x 2,50 m, balcão ~1,10 x 1,00 m)",
+    d.text((24, H - 40), "Simulação do stand (backdrop 2,00 x 2,50 m; frente do balcão 80 x 84 cm, logo com 50 cm de altura)",
            font=f, fill=(90, 90, 105))
     cena.save(destino)
+
+
+# ---------------------------------------------------------------- balcão
+# Gabarito "Balcão ONE" da montadora: adesivo 187 x 86 cm com sangria (corte 1 cm para dentro
+# de cada borda = 185 x 84 cm). Faces da esquerda para a direita: 16 | 36 | 80 (frente) | 36 | 16 cm.
+BALCAO_FOLHA = (1870.0, 860.0)            # mm, com sangria
+BALCAO_SANGRIA = 10.0                     # mm em cada borda
+BALCAO_FRENTE = (800.0, 840.0)            # mm, frente do balcão (entre as dobras 535 e 1335 mm)
+BALCAO_FRENTE_X = 535.0                   # mm, dobra da esquerda da frente, na folha
+BALCAO_ALT = 840.0                        # mm, altura útil
+BALCAO_DOBRAS = [169, 175, 529, 535, 1335, 1341, 1695, 1701]  # mm, linhas da faca (só na prévia)
+BALCAO_LOGO_ALT = 500.0                   # mm, altura da assinatura completa na frente
+
+
+def balcao_arte():
+    """Fundo branco e o logo (versão fundo claro) no centro da frente do balcão."""
+    W, H = BALCAO_FOLHA
+    x0, y0, x1, y1 = caixa_assinatura()
+    s = BALCAO_LOGO_ALT / (y1 - y0)
+    cx = BALCAO_FRENTE_X + BALCAO_FRENTE[0] / 2
+    cy = H / 2
+    tx, ty = cx - (x0 + x1) / 2 * s, cy - (y0 + y1) / 2 * s
+    corpo = (f'<rect width="{W}" height="{H}" fill="{BRANCO}"/>'
+             f'<g transform="translate({tx:.3f},{ty:.3f}) scale({s:.6f})">{assinatura(cor_nome=MARINHO)}</g>')
+    largura_logo = (x1 - x0) * s
+    return svg(int(W), int(H), "mm", corpo), largura_logo
+
+
+def balcao(pasta):
+    """PDF vetorial CMYK + TIFF CMYK 100 dpi, ambos no tamanho da folha e SEM a faca,
+    como pede o gabarito. Mais uma prévia com a faca desenhada, só para conferência."""
+    os.makedirs(pasta, exist_ok=True)
+    arte, largura_logo = balcao_arte()
+    nome = os.path.join(pasta, "adesivo-balcao-187x86cm")
+    rgb = exportar(arte, nome, eps=False)
+    os.remove(rgb)
+    os.remove(nome + ".svg")
+    gs("-sDEVICE=tiff32nc", "-r100", "-sCompression=lzw", "-dGraphicsAlphaBits=4",
+       f"-sOutputFile={nome}-100dpi.tif", nome + ".pdf")
+    # prévia com a faca (não vai para a gráfica)
+    W, H = BALCAO_FOLHA
+    k = 1400 / W
+    tmp = nome + ".tmp.png"
+    cairosvg.svg2png(bytestring=arte.encode(), write_to=tmp, output_width=1400)
+    im = Image.open(tmp).convert("RGB")
+    os.remove(tmp)
+    # frente recortada, usada na simulação do stand
+    fx = BALCAO_FRENTE_X * k
+    fy = BALCAO_SANGRIA * k
+    im.crop((round(fx), round(fy), round(fx + BALCAO_FRENTE[0] * k), round(fy + BALCAO_FRENTE[1] * k))).save(
+        os.path.join(pasta, "frente-balcao.png"))
+    d = ImageDraw.Draw(im)
+    rosa, verde = (230, 0, 126), (0, 150, 70)
+    d.rectangle([BALCAO_SANGRIA * k, BALCAO_SANGRIA * k, (W - BALCAO_SANGRIA) * k, (H - BALCAO_SANGRIA) * k],
+                outline=rosa, width=2)
+    for x in BALCAO_DOBRAS:
+        d.line([(x * k, 0), (x * k, H * k)], fill=rosa, width=1)
+    f = ImageFont.truetype(os.path.join(FONTES, "Inter-SemiBold.otf"), 16)
+    rot = [(10, 172, "16 cm"), (172, 532, "36 cm (lateral)"), (532, 1338, "80 cm (frente)"),
+           (1338, 1698, "36 cm (lateral)"), (1698, 1860, "16 cm")]
+    for a, b, t in rot:
+        tw = d.textlength(t, font=f)
+        d.text(((a + b) / 2 * k - tw / 2, (H - BALCAO_SANGRIA) * k - 30), t, font=f, fill=verde)
+    t = f"logo: {BALCAO_LOGO_ALT / 10:.0f} cm de altura x {largura_logo / 10:.1f} cm de largura, centralizado na frente"
+    d.text((fx + 12, BALCAO_SANGRIA * k + 10), t, font=f, fill=verde)
+    d.text((BALCAO_SANGRIA * k + 8, BALCAO_SANGRIA * k + 10), "PRÉVIA com a faca · não enviar",
+           font=f, fill=rosa)
+    im.save(os.path.join(pasta, "previa-balcao-com-faca.png"))
 
 
 def backdrop(pasta, pasta_logo):
@@ -667,7 +732,7 @@ def backdrop(pasta, pasta_logo):
         os.remove(nome + ".svg")
         prev = os.path.join(pasta, "previa-backdrop.png")
         cairosvg.svg2png(bytestring=arte.encode(), write_to=prev, output_width=1000)
-        mockup(prev, os.path.join(pasta_logo, "unlockify-logo-fundo-escuro.png"),
+        mockup(prev, os.path.join(AQUI, "balcao", "frente-balcao.png"),
                os.path.join(pasta, "simulacao-stand.png"))
 
 
@@ -681,6 +746,8 @@ def pacote(pasta_logo, pasta_backdrop, destino):
         for suf in (".pdf", "-100dpi.jpg"):
             arq = f"backdrop-unlockify-200x250cm{suf}"
             z.write(os.path.join(pasta_backdrop, arq), f"backdrop/{arq}")
+        for arq in ("adesivo-balcao-187x86cm.pdf", "adesivo-balcao-187x86cm-100dpi.tif"):
+            z.write(os.path.join(AQUI, "balcao", arq), f"balcao/{arq}")
 
 
 if __name__ == "__main__":
@@ -689,12 +756,13 @@ if __name__ == "__main__":
     if so_previa:  # iteração rápida do layout: só PNGs
         cairosvg.svg2png(bytestring=backdrop_arte().encode(), write_to="/tmp/previa-backdrop.png", output_width=800)
         sys.exit()
-    for p in ("logo", "backdrop"):
+    for p in ("logo", "backdrop", "balcao"):
         shutil.rmtree(os.path.join(AQUI, p), ignore_errors=True)
     for z in os.listdir(AQUI):
         if z.endswith(".zip"):
             os.remove(os.path.join(AQUI, z))
     logos(os.path.join(AQUI, "logo"))
+    balcao(os.path.join(AQUI, "balcao"))
     backdrop(os.path.join(AQUI, "backdrop"), os.path.join(AQUI, "logo"))
     pacote(os.path.join(AQUI, "logo"), os.path.join(AQUI, "backdrop"),
            os.path.join(AQUI, "unlockify-arquivos-stand.zip"))
