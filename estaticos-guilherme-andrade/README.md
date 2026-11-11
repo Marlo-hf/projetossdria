@@ -24,7 +24,7 @@ Essa linha pré-qualifica o lead e reduz o atrito para preencher o formulário.
 
 - **Régua de R$ 300 mil:** é a dos estáticos que estão rodando hoje na campanha `[MF] 11/07 ESTATICOS`. Os vídeos de setembro usam R$ 100 mil. Para trocar em todas as peças, altere `REGUA` em `pecas.js` e rode o build de novo.
 - **"Menos de 1 minuto":** vale se o formulário continuar curto (faixa de dívida, situação e tipo, com os contatos já preenchidos pelo Meta).
-- **Logo:** o "GA | ANDRADE ADVOCACIA" é tipográfico, porque não achei a logo oficial no Drive. Se existir, é só trocar o bloco `.logo` em `build.js`.
+- **Logo:** é o selo oficial (`marca/logo-andrade.png`), ampliado a partir de um arquivo de 150×150 px. Se houver uma versão maior (PNG ou SVG), substitua o arquivo e rode o build para ganhar nitidez.
 
 ## Como gerar de novo
 
@@ -105,6 +105,7 @@ Antes disso existe janela: medidas como a tutela de urgência estão previstas e
 
 - Fotos: Unsplash (licença Unsplash, uso comercial livre, sem atribuição obrigatória). IDs:
   01 `photo-1775150031269-8ec41aecd1db` · 02 `photo-1647926760549-308f42ff14ec` · 03 `photo-1764307465084-bf5ba6ffa9d0` ·
-  04 `photo-1608292390250-1d5d24e843a7` · 05 `photo-1581135548552-6b898da04acd` · 06 `photo-1752936660488-ea5dba4bbebf`
+  04 `photo-1608292390250-1d5d24e843a7` · 05 `photo-1581135548552-6b898da04acd` · 06 `photo-1752936660488-ea5dba4bbebf`.
+  Nas fotos 02 e 05 foram apagados letreiros e logos de empresas reais (inclusive de um banco).
 - Fontes: Source Serif 4 e Red Hat Display (Google Fonts, SIL Open Font License).
 - Ícones: Lucide (licença ISC, ver `icones/LICENSE-lucide.txt`).

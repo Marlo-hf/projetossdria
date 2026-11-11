@@ -56,6 +56,8 @@ function html(p, fmt) {
   .logo .mono{font-family:'Source Serif 4',serif;font-weight:700;font-size:var(--mono);letter-spacing:-.02em;line-height:1}
   .logo .bar{width:2px;height:calc(var(--mono) * 1.2);background:rgba(255,255,255,.85)}
   .logo .nome{font-weight:500;font-size:var(--nome);letter-spacing:.14em;line-height:1.28}
+  .logo .selo{width:var(--selo);height:var(--selo);border-radius:50%;display:block;
+              box-shadow:0 0 0 2px rgba(201,162,92,.35),0 10px 30px rgba(0,0,0,.6)}
 
   /* cartão creme */
   .card{margin:var(--card-top) 57px 0;background:var(--cream);color:var(--ink);padding:var(--card-pad);
@@ -89,19 +91,20 @@ function html(p, fmt) {
   .f4x5 .card{margin-top:auto}
   .f4x5 .wrap{padding-bottom:var(--bottom-pad)}
   .f4x5 .micro{margin-bottom:auto}
-  .f4x5{--bottom-pad:6px;--logo-top:36px;--mono:74px;--nome:22px;--card-top:30px;--card-pad:40px 44px 38px;--kicker:21px;--kicker-gap:14px;
-        --h1:78px;--sub-gap:16px;--sub:30px;--dark-top:34px;--h2:46px;--texto-gap:14px;--texto:31px;--icons-gap:28px;
-        --ic:54px;--lbl:22px;--rule-gap:26px;--rodape:18px;--cta-gap:22px;--cta-h:90px;--cta:34px;--cta-cut:110px;--micro-gap:16px;--micro:20px}
+  .f4x5{--bottom-pad:6px;--logo-top:26px;--selo:150px;--mono:74px;--nome:22px;--card-top:24px;--card-pad:40px 44px 38px;--kicker:21px;--kicker-gap:14px;
+        --h1:78px;--sub-gap:16px;--sub:30px;--dark-top:34px;--h2:46px;--texto-gap:14px;--texto:31px;--icons-gap:26px;
+        --ic:54px;--lbl:22px;--rule-gap:24px;--rodape:18px;--cta-gap:22px;--cta-h:90px;--cta:34px;--cta-cut:110px;--micro-gap:16px;--micro:20px}
   /* 9:16 — stories/reels (topo ~250px e base ~340px livres de informação essencial) */
-  .f9x16{--logo-top:150px;--mono:86px;--nome:26px;--card-top:44px;--card-pad:48px 48px 46px;--kicker:23px;--kicker-gap:16px;
-         --h1:84px;--sub-gap:20px;--sub:33px;--dark-top:46px;--h2:52px;--texto-gap:18px;--texto:35px;--icons-gap:38px;
-         --ic:60px;--lbl:24px;--rule-gap:34px;--rodape:20px;--cta-gap:28px;--cta-h:100px;--cta:37px;--cta-cut:90px;--micro-gap:20px;--micro:22px}
+  .f9x16{--logo-top:118px;--selo:172px;--mono:86px;--nome:26px;--card-top:36px;--card-pad:48px 48px 46px;--kicker:23px;--kicker-gap:16px;
+         --h1:84px;--sub-gap:20px;--sub:33px;--dark-top:46px;--h2:52px;--texto-gap:18px;--texto:35px;--icons-gap:32px;
+         --ic:60px;--lbl:24px;--rule-gap:28px;--rodape:20px;--cta-gap:24px;--cta-h:100px;--cta:37px;--cta-cut:90px;--micro-gap:20px;--micro:22px}
 </style></head><body>
 <div class="ad f${fmt}">
   <div class="bg"></div><div class="shade"></div>
   <div class="wrap">
-    <header class="logo"><span class="mono">${marca.monograma}</span><span class="bar"></span>
-      <span class="nome">${marca.linha1}<br>${marca.linha2}</span></header>
+    <header class="logo">${marca.logo
+      ? `<img class="selo" src="../marca/${marca.logo}" alt="">`
+      : `<span class="mono">${marca.monograma}</span><span class="bar"></span><span class="nome">${marca.linha1}<br>${marca.linha2}</span>`}</header>
     <section class="card">
       <div class="kicker">${p.kicker}</div>
       <h1>${manchete(p.manchete)}</h1>

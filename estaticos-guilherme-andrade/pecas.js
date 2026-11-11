@@ -6,6 +6,7 @@
 const REGUA = 'R$ 300 mil';
 
 const marca = {
+  logo: 'logo-andrade.png', // selo oficial; sem ele, cai no lockup tipográfico abaixo
   monograma: 'GA',
   linha1: 'ANDRADE',
   linha2: 'ADVOCACIA',
