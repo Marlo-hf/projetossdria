@@ -23,8 +23,12 @@ ap.add_argument("--nome-w", type=float, default=520.0, help="largura do nome em 
 ap.add_argument("--gap", type=float, default=62.0, help="espaço entre a logo e o topo do nome (mm)")
 ap.add_argument("--fonte", default="Quicksand-Bold.ttf")
 ap.add_argument("--seed", type=int, default=8)
+ap.add_argument("--sem-i", action="store_true", help="logo só com o U (sem a bolinha do i, hastes iguais)")
 ap.add_argument("--out", default="arte.svg")
 ARGS = ap.parse_args()
+if ARGS.sem_i:
+    YTR = YTL                   # haste direita na mesma altura da esquerda (U simétrico, como no início da vinheta)
+    F["x1"] = XR + SW / 2       # sem a bolinha, a logo termina na haste direita
 LOGO_W = ARGS.logo_w
 s = LOGO_W / (F["x1"] - F["x0"])
 LOGO_H = (F["y1"] - F["y0"]) * s
@@ -86,7 +90,7 @@ logo = f'''
              A {R_ARC*s:.2f} {R_ARC*s:.2f} 0 0 0 {lx(XR):.2f} {ly(YC):.2f}
              L {lx(XR):.2f} {ly(YTR):.2f}"
           fill="none" stroke="url(#logoGrad)" stroke-width="{SW*s:.2f}" stroke-linecap="round"/>
-    <circle cx="{lx(DOT[0]):.2f}" cy="{ly(DOT[1]):.2f}" r="{DOT[2]*s:.2f}" fill="url(#logoGrad)"/>
+    {"" if ARGS.sem_i else f'<circle cx="{lx(DOT[0]):.2f}" cy="{ly(DOT[1]):.2f}" r="{DOT[2]*s:.2f}" fill="url(#logoGrad)"/>'}
   </g>'''
 
 # ---------------- Padrão de fundo (fragmentos de letras com traço arredondado) ----------------

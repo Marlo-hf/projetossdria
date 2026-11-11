@@ -13,12 +13,12 @@ Arte feita sobre o gabarito `GABARITO_Balcão ONE_POLIONDA_V2` enviado pela grá
 
 ## Medidas
 - Painéis do balcão: 16 | 36 | 80 | 36 | 16 cm, com 84 cm de altura. Sangria de 1,5 cm nas laterais e de 1 cm em cima e embaixo.
-- **Logo: 34 x 39,8 cm**, com o nome **unlockify** embaixo, ocupando 52 cm de largura. A fonte é a Quicksand Bold e o texto já está convertido em curvas.
+- **Logo: 33,8 x 39,8 cm**, só o U, sem o i (hastes da mesma altura, como no início da vinheta). Embaixo vai o nome **unlockify**, ocupando 52 cm de largura. A fonte é a Quicksand Bold e o texto já está convertido em curvas.
 - O conjunto de logo e nome mede 52 x 57 cm e fica centralizado no painel frontal de 80 cm, com 14 cm livres de cada lado.
 - Fundo: degradê roxo com fragmentos das letras do nome, no estilo da vinheta da marca. Nada importante fica sobre as dobras.
 
 ## Como regenerar
 `fonte/gerar_arte.py` gera o SVG. Os tamanhos são em mm, e a fonte Quicksand (licença OFL) fica na mesma pasta:
 ```
-cd fonte && python3 gerar_arte.py --logo-w 340 --nome unlockify --nome-w 520 --seed 8 --out arte.svg
+cd fonte && python3 gerar_arte.py --sem-i --logo-w 338 --nome unlockify --nome-w 520 --seed 8 --out arte.svg
 ```
