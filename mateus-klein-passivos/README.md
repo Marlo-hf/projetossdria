@@ -16,31 +16,9 @@ No 9:16, o conteúdo fica dentro da área segura: os 250 px do topo e os 340 px 
 
 Os dois podem rodar no mesmo conjunto de anúncios para ver qual gancho converte melhor.
 
-## Copies sugeridas
+## Copies
 
-### Estático 1: Checklist
-**Título:** Sua empresa fatura. Quem lucra é o banco?
-
-**Texto principal:**
-> Sua empresa vende, fatura, trabalha o mês inteiro… e no fim quem fica com o lucro é o banco.
->
-> Capital de giro que virou bola de neve. Cheque especial e cartão todo santo mês. Parcela atrasada e gerente ligando. Se você se reconheceu, o problema não é falta de venda: é a estrutura da dívida.
->
-> E pagar no desespero só piora: mais juros, mais contratos empilhados e menos caixa para operar. Antes de aceitar qualquer renegociação, entenda quais caminhos jurídicos existem para o passivo bancário da sua empresa.
->
-> Cada caso é analisado individualmente. Clique no botão abaixo e preencha o formulário.
-
-### Estático 2: Notificações
-**Título:** Seu dia começa com o banco cobrando?
-
-**Texto principal:**
-> 08h12. Você nem tomou café e o banco já cobrou três vezes.
->
-> Parcela atrasada. Limite estourado. Aviso de cobrança. Quando isso vira rotina, a tentação é pagar no impulso ou assinar o primeiro acordo que o banco oferece. Só que acordo fechado no desespero costuma virar dívida nova.
->
-> Antes de assinar qualquer coisa, entenda as alternativas para a dívida bancária da sua empresa. O caminho certo depende dos contratos, do tamanho do passivo e do momento do seu negócio.
->
-> Cada caso é analisado individualmente. Clique no botão abaixo e preencha o formulário.
+As copies completas estão em [`COPYS.md`](COPYS.md). Para cada estático há 3 textos principais (longo, médio e curto), 5 títulos e uma descrição.
 
 ## OAB (Provimento 205/2021 e Código de Ética)
 
