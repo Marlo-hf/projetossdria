@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Folder Unlockify 10x20</title>
+<!--
+  FOLDER UNLOCKIFY — 3 painéis, fechado 10x20 cm, aberto 30x20 cm (dobra sanfona/carta).
+  Arquivo com 3 mm de sangria em volta: cada página tem 306 x 206 mm.
+
+  Página 1 (lado de FORA), da esquerda para a direita:
+    A  aba que dobra pra dentro (98 mm)  → recomendações + cases
+    B  verso (101 mm)                    → contato, QR Code, endereço
+    C  capa (101 mm)
+  Página 2 (lado de DENTRO), da esquerda para a direita:
+    D  quem somos (101 mm)   — fica atrás da capa
+    E  gestão de tráfego bancário (101 mm)
+    F  CRM Kommo (98 mm)     — fica atrás da aba A
+
+  Para trocar endereço / telefone, procure por "CONTATO" no verso.
+  Para trocar o número do QR Code, edite gerar-qr.py e rode de novo.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+@page { size: 306mm 206mm; margin: 0; }
+:root {
+  --navy: #161826; --navy-2: #1d1f2e; --navy-3: #252838; --navy-4: #2f3346;
+  --roxo: #9184d9; --roxo-soft: #796cbf; --roxo-deep: #5d5294; --roxo-light: #b5abfc;
+  --paper: #F4F4FB; --paper-2: #E9E9F4; --line-l: #DDDEEC;
+  --txt-d: #e9e9ed; --mut-d: #9397ab; --mut-l: #595d6c; --ink: #161826;
+  --bleed: 3mm; --safe: 6mm;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: #8a8c99; }
+body { font-family: 'Inter', sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+@media screen { body { padding: 10mm; display: grid; gap: 10mm; justify-content: center; } }
+
+.sheet { width: 306mm; height: 206mm; position: relative; overflow: hidden; page-break-after: always; background: var(--navy); }
+.sheet:last-child { page-break-after: auto; }
+
+/* painéis: os das pontas avançam 3 mm na sangria */
+.panel { position: absolute; top: 0; height: 206mm; overflow: hidden; }
+.panel .safe { position: absolute; top: calc(var(--bleed) + var(--safe)); bottom: calc(var(--bleed) + var(--safe)); left: var(--safe); right: var(--safe); display: flex; flex-direction: column; }
+.panel.edge-l .safe { left: calc(var(--bleed) + var(--safe)); }
+.panel.edge-r .safe { right: calc(var(--bleed) + var(--safe)); }
+
+/* lado de fora: A 98 | B 101 | C 101 */
+#A { left: 0;       width: 101mm; }
+#B { left: 101mm;   width: 101mm; }
+#C { left: 202mm;   width: 104mm; }
+/* lado de dentro: D 101 | E 101 | F 98 */
+#D { left: 0;       width: 104mm; }
+#E { left: 104mm;   width: 101mm; }
+#F { left: 205mm;   width: 101mm; }
+
+/* ---------- tipografia ---------- */
+.eyebrow { font: 600 6.3pt/1 'Inter', sans-serif; letter-spacing: .22em; text-transform: uppercase; color: var(--roxo); display: flex; align-items: center; gap: 2.2mm; }
+.eyebrow::before { content: ''; width: 5mm; height: .3mm; background: currentColor; opacity: .8; }
+h1, h2 { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 600; letter-spacing: -.02em; }
+h2 { font-size: 17.5pt; line-height: 1.04; margin-top: 3mm; }
+.serif { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; letter-spacing: -.005em; }
+p { font-size: 8.1pt; line-height: 1.5; }
+
+/* ---------- fundos ---------- */
+.dark { background: var(--navy); color: var(--txt-d); }
+.dark p { color: #c4c6d3; }
+.dark .serif { color: var(--roxo-light); }
+.light { background: var(--paper); color: var(--ink); }
+.light p { color: var(--mut-l); }
+.light .serif { color: var(--roxo-deep); }
+.grid-bg { position: absolute; inset: 0; background-image:
+  linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 8mm 8mm; }
+.glow { position: absolute; border-radius: 50%; filter: blur(0); }
+
+/* ---------- logo ---------- */
+.logo { display: flex; align-items: center; gap: 2.4mm; color: var(--txt-d); }
+.logo svg { width: 7.4mm; height: 7.4mm; display: block; }
+.logo b { display: block; font: 600 12pt/1 'Inter', sans-serif; letter-spacing: -.02em; }
+.logo small { display: block; font: 600 4.6pt/1 'Inter', sans-serif; letter-spacing: .42em; color: var(--mut-d); margin-top: 1mm; }
+
+/* ---------- foto com degradê ---------- */
+.photo { position: relative; flex: none; margin: calc(-1 * (var(--bleed) + var(--safe))) calc(-1 * var(--safe)) 0; overflow: hidden; }
+.panel.edge-l .photo { margin-left: calc(-1 * (var(--bleed) + var(--safe))); }
+.panel.edge-r .photo { margin-right: calc(-1 * (var(--bleed) + var(--safe))); }
+.photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo .fade { position: absolute; inset: 0; }
+.photo .cap { position: absolute; left: var(--safe); bottom: 3mm; font: 500 5.8pt/1.3 'Inter', sans-serif; color: rgba(255,255,255,.9); letter-spacing: .02em; }
+.panel.edge-l .photo .cap { left: calc(var(--bleed) + var(--safe)); }
+
+/* ---------- C · capa ---------- */
+#C .bigmark { position: absolute; right: -16mm; top: 34mm; width: 104mm; height: 104mm; opacity: .16; }
+#C .glow1 { position: absolute; width: 130mm; height: 130mm; left: -20mm; top: 40mm; background: radial-gradient(closest-side, rgba(145,132,217,.42), rgba(145,132,217,0)); }
+#C .glow2 { position: absolute; width: 110mm; height: 110mm; right: -50mm; bottom: -50mm; background: radial-gradient(closest-side, rgba(93,82,148,.5), rgba(93,82,148,0)); }
+#C h1 { font-size: 27pt; line-height: .98; margin-top: 4.5mm; color: #fff; }
+#C h1 .serif { display: block; font-size: 33pt; line-height: .92; margin-top: 1.2mm; color: var(--roxo-light); }
+#C .lead { margin-top: 5mm; font-size: 8.6pt; line-height: 1.5; color: #c9cbd8; max-width: 80mm; }
+#C .chips { display: flex; flex-direction: column; gap: 1.8mm; margin-top: 6mm; }
+.chip { display: inline-flex; align-self: flex-start; align-items: center; gap: 1.8mm; border: .25mm solid rgba(181,171,252,.35); background: rgba(37,40,56,.75); border-radius: 99px; padding: 1.7mm 3.2mm 1.7mm 2.2mm; font: 500 6.9pt/1 'Inter', sans-serif; color: var(--txt-d); }
+.chip b { color: var(--roxo-light); font-weight: 600; }
+.chip img { height: 3.4mm; width: auto; display: block; }
+.chip .dot { width: 1.6mm; height: 1.6mm; border-radius: 50%; background: var(--roxo-light); }
+#C .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; font: 500 6.2pt/1.5 'Inter', sans-serif; color: var(--mut-d); border-top: .25mm solid rgba(255,255,255,.1); padding-top: 3mm; }
+#C .foot b { color: var(--txt-d); font-weight: 600; font-size: 7.2pt; }
+
+/* ---------- B · verso ---------- */
+#B .glow1 { position: absolute; width: 140mm; height: 140mm; left: -20mm; top: 70mm; background: radial-gradient(closest-side, rgba(145,132,217,.3), rgba(145,132,217,0)); }
+#B h2 { font-size: 17pt; color: #fff; }
+#B .qrcard { margin-top: 5.5mm; background: #fff; border-radius: 4mm; padding: 4mm; display: flex; flex-direction: column; align-items: center; box-shadow: 0 0 0 .6mm rgba(181,171,252,.35), 0 3mm 10mm rgba(0,0,0,.35); }
+#B .qrcard .tag { font: 700 6.2pt/1 'Inter', sans-serif; letter-spacing: .16em; color: var(--roxo-deep); text-transform: uppercase; }
+#B .qrcard img { width: 40mm; height: 40mm; display: block; margin: 3mm 0 2.6mm; }
+#B .qrcard .how { font: 500 6.4pt/1.35 'Inter', sans-serif; color: var(--mut-l); text-align: center; }
+#B .qrcard .how b { color: var(--ink); }
+#B .contacts { margin-top: 6.5mm; display: flex; flex-direction: column; gap: 2.6mm; }
+#B .ct { display: flex; gap: 2.8mm; align-items: flex-start; }
+#B .ct .ic { flex: none; width: 6.4mm; height: 6.4mm; border-radius: 1.8mm; background: var(--navy-3); border: .25mm solid rgba(181,171,252,.25); display: grid; place-items: center; }
+#B .ct .ic svg { width: 3.4mm; height: 3.4mm; }
+#B .ct small { display: block; font: 600 5.2pt/1 'Inter', sans-serif; letter-spacing: .18em; text-transform: uppercase; color: var(--mut-d); margin-top: .3mm; }
+#B .ct span { display: block; font: 600 8.6pt/1.3 'Inter', sans-serif; color: var(--txt-d); margin-top: .9mm; }
+#B .ct span i { font-style: normal; font-weight: 400; color: #c4c6d3; font-size: 7pt; }
+#B .bottom { margin-top: auto; }
+#B .legal { margin-top: 3mm; font: 400 4.7pt/1.45 'Inter', sans-serif; color: #7d8196; }
+
+/* ---------- A · recomendações (aba) ---------- */
+#A .photo { height: 68mm; }
+#A .photo img { object-position: 50% 42%; }
+#A .photo .fade { background: linear-gradient(180deg, rgba(22,24,38,0) 45%, rgba(22,24,38,.85) 88%, var(--navy) 100%); }
+#A h2 { color: #fff; }
+#A .quotes { margin-top: 4mm; display: flex; flex-direction: column; gap: 2.2mm; }
+.q { position: relative; background: var(--navy-2); border: .25mm solid rgba(255,255,255,.07); border-left: .7mm solid var(--roxo); border-radius: 0 2mm 2mm 0; padding: 2.4mm 3mm 2.4mm 3.2mm; }
+.q b { display: block; font: 500 8.8pt/1.22 'Bricolage Grotesque', sans-serif; color: #fff; letter-spacing: -.01em; }
+.q span { display: block; margin-top: 1.1mm; font: 400 6.2pt/1.35 'Inter', sans-serif; color: var(--mut-d); }
+#A .stats { margin-top: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; }
+.stat { border-top: .25mm solid rgba(181,171,252,.35); padding-top: 2.2mm; }
+.stat b { display: block; font: 600 15pt/1 'Bricolage Grotesque', sans-serif; color: var(--roxo-light); letter-spacing: -.02em; }
+.stat b small { font-size: 9pt; }
+.stat span { display: block; margin-top: 1.2mm; font: 400 6.3pt/1.35 'Inter', sans-serif; color: #c4c6d3; }
+
+/* ---------- D · quem somos ---------- */
+#D .photo { height: 96mm; }
+#D .photo img { object-position: 50% 40%; }
+#D .photo .fade { background: linear-gradient(180deg, rgba(22,24,38,0) 62%, rgba(22,24,38,.55) 100%); }
+#D h2 { font-size: 17pt; }
+#D p.intro { margin-top: 2.6mm; }
+.bio { margin-top: 4mm; padding-top: 3.4mm; border-top: .25mm solid var(--line-l); }
+.bio h3 { font: 600 10pt/1 'Bricolage Grotesque', sans-serif; letter-spacing: -.01em; color: var(--ink); display: flex; align-items: baseline; gap: 2mm; }
+.bio h3 small { font: 600 5.2pt/1 'Inter', sans-serif; letter-spacing: .18em; color: var(--roxo-deep); text-transform: uppercase; }
+.bio p { margin-top: 1.5mm; font-size: 7.8pt; }
+
+/* ---------- E · tráfego ---------- */
+#E .photo { height: 64mm; margin-left: calc(-1 * var(--safe)); margin-right: calc(-1 * var(--safe)); }
+#E .photo img { object-position: 60% 30%; }
+#E .photo .fade { background: linear-gradient(180deg, rgba(22,24,38,0) 60%, rgba(22,24,38,.5) 100%); }
+#E p.intro { margin-top: 2.6mm; }
+.steps { margin-top: 4.4mm; display: flex; flex-direction: column; gap: 3.4mm; }
+.step { display: grid; grid-template-columns: 7mm 1fr; gap: 1.2mm; align-items: start; }
+.step .n { width: 6mm; height: 6mm; border-radius: 1.6mm; background: var(--navy); color: var(--roxo-light); display: grid; place-items: center; font: 600 6pt/1 'Inter', sans-serif; }
+.step b { display: block; font: 600 9pt/1.15 'Bricolage Grotesque', sans-serif; color: var(--ink); margin-top: .3mm; }
+.step span { display: block; margin-top: .8mm; font: 400 7.3pt/1.42 'Inter', sans-serif; color: var(--mut-l); }
+.channels { margin-top: auto; display: flex; align-items: center; gap: 2mm; padding-top: 3mm; border-top: .25mm solid var(--line-l); }
+.channels > small { font: 600 5.2pt/1.2 'Inter', sans-serif; letter-spacing: .16em; text-transform: uppercase; color: var(--mut-l); margin-right: auto; }
+.ch { display: flex; align-items: center; gap: 1.1mm; font: 600 6.2pt/1 'Inter', sans-serif; color: var(--ink); }
+.ch img { width: 3.6mm; height: 3.6mm; display: block; object-fit: contain; }
+.ch .gpt { width: 3.6mm; height: 3.6mm; border-radius: 1mm; background: var(--navy); color: #fff; display: grid; place-items: center; font-size: 4.2pt; font-weight: 700; }
+
+/* ---------- F · CRM Kommo ---------- */
+#F .kblock { position: relative; flex: none; height: 64mm; margin: calc(-1 * (var(--bleed) + var(--safe))) calc(-1 * (var(--bleed) + var(--safe))) 0 calc(-1 * var(--safe)); background: var(--navy); overflow: hidden; }
+#F .kblock .glow1 { position: absolute; width: 90mm; height: 90mm; right: -28mm; top: -18mm; background: radial-gradient(closest-side, rgba(145,132,217,.45), rgba(145,132,217,0)); }
+#F .kblock .plaque { position: absolute; right: 12mm; top: 11mm; width: 30mm; height: auto; transform: rotate(4deg); border-radius: 1.2mm; box-shadow: 0 2.5mm 8mm rgba(0,0,0,.55); }
+#F .kblock .ktxt { position: absolute; left: var(--safe); top: 18mm; width: 46mm; color: var(--txt-d); }
+#F .kblock .ktxt .badge { display: inline-flex; align-items: center; gap: 1.6mm; background: #fff; color: var(--ink); border-radius: 1.4mm; padding: 1.3mm 2.2mm 1.3mm 1.5mm; font: 700 6pt/1 'Inter', sans-serif; letter-spacing: .02em; }
+#F .kblock .ktxt .badge img { height: 3.6mm; width: auto; }
+#F .kblock .ktxt b { display: block; margin-top: 3mm; font: 600 11pt/1.05 'Bricolage Grotesque', sans-serif; letter-spacing: -.015em; color: #fff; }
+#F .kblock .ktxt span { display: block; margin-top: 1.8mm; font: 400 6.3pt/1.4 'Inter', sans-serif; color: #c4c6d3; }
+#F h2 { margin-top: 3mm; }
+#F p.intro { margin-top: 2.6mm; }
+.feats { margin-top: 4.4mm; display: flex; flex-direction: column; gap: 3.4mm; }
+.feat { display: grid; grid-template-columns: 4mm 1fr; gap: 1.4mm; }
+.feat svg { width: 3.6mm; height: 3.6mm; margin-top: .4mm; }
+.feat b { display: block; font: 600 9pt/1.15 'Bricolage Grotesque', sans-serif; color: var(--ink); }
+.feat span { display: block; margin-top: .8mm; font: 400 7.3pt/1.42 'Inter', sans-serif; color: var(--mut-l); }
+#F .kstats { margin-top: auto; display: grid; grid-template-columns: repeat(3, 1fr); background: var(--navy); border-radius: 2.4mm; padding: 3mm 2.4mm; }
+#F .kstats div { padding: 0 1.4mm; border-left: .25mm solid rgba(255,255,255,.1); }
+#F .kstats div:first-child { border-left: 0; }
+#F .kstats b { display: block; font: 600 13pt/1 'Bricolage Grotesque', sans-serif; color: var(--roxo-light); letter-spacing: -.02em; }
+#F .kstats span { display: block; margin-top: 1.2mm; font: 400 5.9pt/1.3 'Inter', sans-serif; color: #c4c6d3; }
+
+/* guias de dobra (só na tela, não saem no PDF) */
+.fold { position: absolute; top: 0; bottom: 0; width: 0; border-left: .2mm dashed rgba(255,0,128,.6); z-index: 50; }
+.trim { position: absolute; inset: var(--bleed); border: .2mm dashed rgba(0,200,255,.7); z-index: 50; pointer-events: none; }
+@media print { .fold, .trim { display: none; } }
+body.no-guides .fold, body.no-guides .trim { display: none; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="mark" viewBox="0 0 64 64"><g transform="translate(0,4)"><path d="M18 16 V37 A14 14 0 0 0 46 37 V26" stroke="#9184d9" stroke-width="6" stroke-linecap="round" fill="none"/><circle cx="46" cy="20" r="3.4" fill="#9184d9"/></g></symbol>
+    <symbol id="check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#5d5294"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<!-- =====================================================================
+     PÁGINA 1 — LADO DE FORA   [ A aba | B verso | C capa ]
+     ===================================================================== -->
+<section class="sheet" id="fora">
+
+  <!-- A · aba (recomendações + cases) -->
+  <div class="panel dark edge-l" id="A">
+    <div class="grid-bg"></div>
+    <div class="safe">
+      <div class="photo">
+        <img src="assets/foto-mariana.jpg" alt="Mariana Mendonça em gravação de podcast">
+        <div class="fade"></div>
+        <div class="cap">Mariana Mendonça em gravação de podcast</div>
+      </div>
+      <div class="eyebrow" style="margin-top:4mm">Quem já usa</div>
+      <h2>Não somos nós dizendo. <span class="serif" style="white-space:nowrap">São eles.</span></h2>
+      <div class="quotes">
+        <div class="q"><b>“Os leads mudaram de água morna para vinho.”</b><span>Advogado que trocou de gestor e indicou o Marlon na comunidade</span></div>
+        <div class="q"><b>“É meu gestor e tenho gostado muito do trabalho.”</b><span>Resposta a um pedido de indicação de agência em grupo jurídico</span></div>
+        <div class="q"><b>“Ele conseguiu recuperar essa BM.”</b><span>Advogada com Business Manager e números banidos</span></div>
+        <div class="q"><b>“Fechei o 1º contrato nesse momento.”</b><span>Advogada, em comunidade de direito bancário</span></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><b><small>+ de </small>R$ 1 mi</b><span>gerenciados em anúncios no Meta</span></div>
+        <div class="stat"><b>2,3×</b><span>mais reuniões em escritório de direito bancário com IA</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B · verso (contato) -->
+  <div class="panel dark" id="B">
+    <div class="grid-bg"></div>
+    <div class="glow1"></div>
+    <div class="safe" style="position:absolute">
+      <div class="eyebrow">Fale com a gente</div>
+      <h2>Destravar a agenda é o nome do <span class="serif">negócio.</span></h2>
+      <p style="margin-top:2.6mm">Alguém da sua área está anunciando agora, na sua cidade. Que tal ser você a aparecer para quem está procurando?</p>
+
+      <div class="qrcard">
+        <div class="tag">Fale direto com o Marlon</div>
+        <img src="assets/qr-whatsapp.svg" alt="QR Code WhatsApp">
+        <div class="how">Aponte a câmera do celular<br>e a conversa abre no <b>WhatsApp</b>.</div>
+      </div>
+
+      <!-- CONTATO — troque aqui telefone, endereço e site -->
+      <div class="contacts">
+        <div class="ct">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#b5abfc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></div>
+          <div><small>Telefone e WhatsApp</small><span>(11) 95592-8240</span></div>
+        </div>
+        <div class="ct">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#b5abfc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <div><small>Endereço</small><span>Av. Brigadeiro Faria Lima<br><i>Itaim Bibi · São Paulo – SP</i></span></div>
+        </div>
+        <div class="ct">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#b5abfc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+          <div><small>Site</small><span>unlockify.com.br</span></div>
+        </div>
+      </div>
+
+      <div class="bottom">
+        <div class="logo"><svg><use href="#mark"/></svg><div><b>Unlockify</b><small>DIGITAL</small></div></div>
+        <div class="legal">A Unlockify é uma agência de marketing: não presta serviços jurídicos e não é escritório de advocacia. Atua com advogados inscritos na OAB, em conformidade com o Provimento nº 205/2021. Depoimentos são manifestações espontâneas de terceiros e não representam promessa ou garantia de resultado.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C · capa -->
+  <div class="panel dark edge-r" id="C">
+    <div class="grid-bg"></div>
+    <div class="glow1"></div>
+    <div class="glow2"></div>
+    <svg class="bigmark"><use href="#mark"/></svg>
+    <div class="safe">
+      <div class="logo"><svg><use href="#mark"/></svg><div><b>Unlockify</b><small>DIGITAL</small></div></div>
+      <div style="margin-top:auto">
+        <div class="eyebrow">Tráfego pago para advocacia</div>
+        <h1>Encha sua agenda com casos de <span class="serif">direito bancário.</span></h1>
+        <p class="lead">A gente atrai o cliente certo, filtra o perfil antes de chegar em você e entrega a conversa pronta no seu WhatsApp. Você só advoga.</p>
+        <div class="chips">
+          <div class="chip"><img src="assets/logo-kommo.png" alt="" style="filter:brightness(0) invert(1)"><span><b>Parceiro oficial</b> Kommo</span></div>
+          <div class="chip"><span class="dot"></span><span><b>+ de R$ 1 milhão</b> em anúncios no Meta</span></div>
+          <div class="chip"><span class="dot"></span><span>Dentro do <b>Provimento 205/2021</b></span></div>
+        </div>
+      </div>
+      <div class="foot" style="margin-top:9mm">
+        <div><b>unlockify.com.br</b><br>Tráfego · CRM · IA</div>
+        <div style="text-align:right">Feito para<br>quem advoga.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="trim"></div>
+  <div class="fold" style="left:101mm"></div>
+  <div class="fold" style="left:202mm"></div>
+</section>
+
+<!-- =====================================================================
+     PÁGINA 2 — LADO DE DENTRO   [ D quem somos | E tráfego | F CRM ]
+     ===================================================================== -->
+<section class="sheet" id="dentro">
+
+  <!-- D · quem somos -->
+  <div class="panel light edge-l" id="D">
+    <div class="safe">
+      <div class="photo">
+        <img src="assets/foto-socios.jpg" alt="Marlon França e Mariana Mendonça">
+        <div class="fade"></div>
+        <div class="cap">Marlon França e Mariana Mendonça</div>
+      </div>
+      <div class="eyebrow" style="margin-top:4.5mm; color: var(--roxo-deep)">Quem somos</div>
+      <h2>Duas pessoas com nome, rosto e <span class="serif">telefone.</span></h2>
+      <p class="intro">A Unlockify é uma agência de tráfego pago feita para a advocacia. Você não fala com atendente: quem monta a operação é quem responde quando algo precisa mudar.</p>
+      <div class="bio">
+        <h3>Marlon França <small>Criador e gestor</small></h3>
+        <p>Coloca a mão na campanha. Conhecido nas comunidades jurídicas como o gestor que entende de OAB antes de entender de anúncio.</p>
+      </div>
+      <div class="bio">
+        <h3>Mariana Mendonça <small>Sócia</small></h3>
+        <p>Cuida do lado que faz o lead virar contrato: roteiro de triagem, tom de atendimento e o que o escritório precisa ouvir para não perder o caso.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- E · gestão de tráfego bancário -->
+  <div class="panel light" id="E">
+    <div class="safe">
+      <div class="photo">
+        <img src="assets/marlon-evento.jpg" alt="Marlon França e Mariana Mendonça em evento de advocacia">
+        <div class="fade"></div>
+        <div class="cap">Marlon e Mariana em evento de advocacia</div>
+      </div>
+      <div class="eyebrow" style="margin-top:4.5mm; color: var(--roxo-deep)">Gestão de tráfego</div>
+      <h2>Especialista em advocacia <span class="serif">bancária.</span></h2>
+      <p class="intro">Superendividamento, revisional, tarifa indevida, gestão de passivo e fraude. Anúncio informativo que atrai quem tem o caso e filtra o perfil antes de chegar em você.</p>
+      <div class="steps">
+        <div class="step"><div class="n">01</div><div><b>Criativo que informa</b><span>Educativo, sem promessa de resultado e revisado à luz do Provimento 205.</span></div></div>
+        <div class="step"><div class="n">02</div><div><b>Filtro de perfil</b><span>Valor, prazo, documento e comarca. O piso do caso é você quem define.</span></div></div>
+        <div class="step"><div class="n">03</div><div><b>Triagem no WhatsApp</b><span>Perguntas que qualificam o caso antes de chegar em você. Curioso não passa.</span></div></div>
+        <div class="step"><div class="n">04</div><div><b>Você fecha</b><span>A conversa chega pronta e, no fim do mês, vem o relatório de custo por contrato.</span></div></div>
+      </div>
+      <div class="channels">
+        <small>Onde<br>anunciamos</small>
+        <div class="ch"><img src="assets/logo-meta.svg" alt="">Meta</div>
+        <div class="ch"><img src="assets/logo-google.svg" alt="">Google</div>
+        <div class="ch"><span class="gpt">AI</span>GPT Ads</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- F · CRM Kommo -->
+  <div class="panel light edge-r" id="F">
+    <div class="safe">
+      <div class="kblock">
+        <div class="grid-bg"></div>
+        <div class="glow1"></div>
+        <img class="plaque" src="assets/kommo-placa.png" alt="Placa de parceiro certificado Kommo">
+        <div class="ktxt">
+          <div class="badge"><img src="assets/logo-kommo.png" alt="">KOMMO PARTNER</div>
+          <b>Parceiro oficial e certificado Kommo</b>
+          <span>Implementação com suporte direto da plataforma. Certificação que poucos no Brasil têm.</span>
+        </div>
+      </div>
+      <div class="eyebrow" style="margin-top:4.5mm; color: var(--roxo-deep)">Implementação de CRM</div>
+      <h2>Todo lead respondido em <span class="serif">segundos.</span></h2>
+      <p class="intro">Implantamos o Kommo CRM completo no escritório e colocamos um agente de IA que atende por mensagem e ligação, 24 horas por dia.</p>
+      <div class="feats">
+        <div class="feat"><svg><use href="#check"/></svg><div><b>Kommo CRM sob medida</b><span>Funil por área de atuação, WhatsApp oficial conectado e equipe treinada.</span></div></div>
+        <div class="feat"><svg><use href="#check"/></svg><div><b>Agente de IA de atendimento</b><span>Feito com n8n dentro do Kommo: escuta áudios, lê documentos e qualifica o caso.</span></div></div>
+        <div class="feat"><svg><use href="#check"/></svg><div><b>Agendamento automático</b><span>Consulta a agenda do advogado, confirma a reunião e envia lembretes.</span></div></div>
+        <div class="feat"><svg><use href="#check"/></svg><div><b>Tudo amarrado ao anúncio</b><span>Lead do Meta, do Google ou do site cai direto no funil, com resumo do caso.</span></div></div>
+      </div>
+      <div class="kstats">
+        <div><b>&lt; 30s</b><span>resposta ao lead</span></div>
+        <div><b>24/7</b><span>mensagem e ligação</span></div>
+        <div><b>+3.400</b><span>leads atendidos por IA</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="trim"></div>
+  <div class="fold" style="left:104mm"></div>
+  <div class="fold" style="left:205mm"></div>
+</section>
+
+</body>
+</html>
