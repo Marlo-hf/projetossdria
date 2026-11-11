@@ -15,10 +15,67 @@ YTL, YTR = 1418.25, 1665.25      # centros das pontas arredondadas (esq./dir.)
 R_ARC = (XR - XL) / 2
 YC = F["y1"] - SW / 2 - R_ARC    # centro do arco do U
 DOT = (1487.0, 1427.0, 105.0)    # bolinha do "i"
-LOGO_W = float(sys.argv[1]) if len(sys.argv) > 1 else 400.0     # largura da logo (mm)
+import argparse
+ap = argparse.ArgumentParser()
+ap.add_argument("--logo-w", type=float, default=340.0, help="largura da logo em mm")
+ap.add_argument("--nome", default="unlockify")
+ap.add_argument("--nome-w", type=float, default=520.0, help="largura do nome em mm")
+ap.add_argument("--gap", type=float, default=62.0, help="espaço entre a logo e o topo do nome (mm)")
+ap.add_argument("--fonte", default="Quicksand-Bold.ttf")
+ap.add_argument("--seed", type=int, default=8)
+ap.add_argument("--out", default="arte.svg")
+ARGS = ap.parse_args()
+LOGO_W = ARGS.logo_w
 s = LOGO_W / (F["x1"] - F["x0"])
 LOGO_H = (F["y1"] - F["y0"]) * s
-LX0, LY0 = CX - LOGO_W / 2, CY - LOGO_H / 2
+
+# ---- nome em curvas (fonte Quicksand Bold, licença OFL) ----
+def nome_paths(texto, largura, fonte):
+    import uharfbuzz as hb
+    from fontTools.ttLib import TTFont
+    from fontTools.pens.svgPathPen import SVGPathPen
+    from fontTools.pens.transformPen import TransformPen
+    blob = hb.Blob.from_file_path(fonte); face = hb.Face(blob); font = hb.Font(face)
+    buf = hb.Buffer(); buf.add_str(texto); buf.guess_segment_properties()
+    hb.shape(font, buf, {"kern": True, "liga": False})
+    tt = TTFont(fonte); gs = tt.getGlyphSet(); order = tt.getGlyphOrder()
+    track = 0.02 * tt["head"].unitsPerEm
+    x = 0; glifos = []
+    for info, pos in zip(buf.glyph_infos, buf.glyph_positions):
+        glifos.append((order[info.codepoint], x + pos.x_offset))
+        x += pos.x_advance + track
+    # caixa real do desenho
+    from fontTools.pens.boundsPen import BoundsPen
+    xmin = ymin = 1e9; xmax = ymax = -1e9
+    for g, gx in glifos:
+        bp = BoundsPen(gs); gs[g].draw(bp)
+        if bp.bounds:
+            a, b, c, d = bp.bounds
+            xmin, ymin, xmax, ymax = min(xmin, a + gx), min(ymin, b), max(xmax, c + gx), max(ymax, d)
+    k = largura / (xmax - xmin)
+    return glifos, gs, k, (xmin, ymin, xmax, ymax), tt["OS/2"].sxHeight
+
+NOME_GLIFOS, NOME_GS, NK, NB, NXH = nome_paths(ARGS.nome, ARGS.nome_w, ARGS.fonte)
+NOME_W = ARGS.nome_w
+NOME_ASC = NB[3] * NK          # altura acima da linha de base (mm)
+NOME_DESC = -NB[1] * NK        # descendente (mm)
+# centraliza o conjunto (topo da logo até a linha de base do nome) no centro do painel
+GRUPO_H = LOGO_H + ARGS.gap + NOME_ASC
+LX0 = CX - LOGO_W / 2
+LY0 = CY - GRUPO_H / 2
+BASE_Y = LY0 + LOGO_H + ARGS.gap + NOME_ASC
+NX0 = CX - NOME_W / 2
+
+def nome_svg():
+    from fontTools.pens.svgPathPen import SVGPathPen
+    from fontTools.pens.transformPen import TransformPen
+    ds = []
+    for g, gx in NOME_GLIFOS:
+        pen = SVGPathPen(NOME_GS, ntos=lambda v: f"{v:.2f}")
+        tp = TransformPen(pen, (NK, 0, 0, -NK, NX0 + (gx - NB[0]) * NK, BASE_Y))
+        NOME_GS[g].draw(tp)
+        ds.append(pen.getCommands())
+    return f'<path id="nome" d="{" ".join(ds)}" fill="#EEEBFF"/>'
 
 def lx(x): return LX0 + (x - F["x0"]) * s
 def ly(y): return LY0 + (y - F["y0"]) * s
@@ -61,9 +118,9 @@ def glyph_svg(name, x, y, sc, rot, style, alpha, gid):
     body = "".join(f'<path d="{d}"/>' for d in paths)
     dots_svg = "".join(f'<circle cx="{dx}" cy="{dy}" r="{dr*G_SW/sc:.3f}"/>' for dx, dy, dr in dots)
     if style == "solid":
-        return (f'<g transform="{tr}" opacity="{alpha:.3f}" stroke="#A9A6DA" fill="none" '
+        return (f'<g transform="{tr}" opacity="{alpha:.3f}" stroke="#C1B5F7" fill="none" '
                 f'stroke-width="{sw:.3f}" stroke-linecap="round" stroke-linejoin="round">{body}'
-                f'<g stroke="none" fill="#A9A6DA">{dots_svg}</g></g>')
+                f'<g stroke="none" fill="#C1B5F7">{dots_svg}</g></g>')
     # vazado: contorno do traço calculado como polígono (sem máscara), compatível com PDF vetorial
     from shapely.geometry import LineString, Point
     from shapely.ops import unary_union
@@ -90,14 +147,14 @@ def glyph_svg(name, x, y, sc, rot, style, alpha, gid):
         for r in [poly.exterior, *poly.interiors]:
             c = list(r.coords)
             dd.append("M " + " L ".join(f"{a:.1f} {b:.1f}" for a, b in c) + " Z")
-    return f'<path d="{" ".join(dd)}" fill="#B9B6E6" fill-rule="evenodd" opacity="{alpha:.3f}"/>'
+    return f'<path d="{" ".join(dd)}" fill="#CEC4FA" fill-rule="evenodd" opacity="{alpha:.3f}"/>'
 
 def build(seed):
     rnd = random.Random(seed)
     # zona livre ao redor da logo
     mx, my = 55.0, 45.0
-    zx0, zx1 = LX0 - mx, LX0 + LOGO_W + mx
-    zy0, zy1 = LY0 - my, LY0 + LOGO_H + my
+    zx0, zx1 = min(LX0, NX0) - mx, max(LX0 + LOGO_W, NX0 + NOME_W) + mx
+    zy0, zy1 = LY0 - my, BASE_Y + NOME_DESC + my
     def dist_rect(x, y):
         dx = max(zx0 - x, 0, x - zx1); dy = max(zy0 - y, 0, y - zy1)
         return math.hypot(dx, dy)
@@ -122,6 +179,8 @@ def build(seed):
             if any(math.hypot(x - px, y - py) < 0.8 * (R + pR) for px, py, pR, *_ in placed):
                 continue
             rot = rnd.choice([0, 0, 0, 0, 90, 180, 270, -20, 20, 35, -35, 45, 160, 200])
+            if name in ("L", "t", "r", "j"):
+                rot = rnd.choice([0, 0, -20, 20, -35])   # evita formas que pareçam números (ex.: "7")
             style = "outline" if rnd.random() < 0.22 and name not in ("dot", "line") else "solid"
             d = min(1.0, math.hypot((x - CX) / (W / 2), (y - CY) / (H / 2)) / 1.1)
             alpha = (0.16 + 0.18 * d) * rnd.uniform(0.85, 1.15)
@@ -149,38 +208,42 @@ def svg(seed, guides=False):
             mid = xs[i] + p / 2
             lab += (f'<text x="{mid:.1f}" y="{H-22}" text-anchor="middle" font-family="DejaVu Sans, Arial" '
                     f'font-size="24" font-weight="bold" fill="#00E0A0">{p//10} cm</text>')
-        lab += (f'<rect x="{LX0:.1f}" y="{LY0:.1f}" width="{LOGO_W:.1f}" height="{LOGO_H:.1f}" fill="none" '
-                f'stroke="#FFD23F" stroke-width="2" stroke-dasharray="8 6"/>'
-                f'<text x="{CX:.1f}" y="{LY0-14:.1f}" text-anchor="middle" font-family="DejaVu Sans, Arial" '
-                f'font-size="26" font-weight="bold" fill="#FFD23F">LOGO {LOGO_W/10:.0f} x {LOGO_H/10:.1f} cm</text>'.replace(f"{LOGO_H/10:.1f} cm", f"{LOGO_H/10:.1f} cm".replace(".", ",")))
-        lab += (f'<text x="{CX:.1f}" y="{LY0+LOGO_H+38:.1f}" text-anchor="middle" font-family="DejaVu Sans, Arial" '
-                f'font-size="22" fill="#FFD23F">centralizada no painel frontal (80 x 84 cm)</text>')
+        gx0, gx1 = min(LX0, NX0), max(LX0 + LOGO_W, NX0 + NOME_W)
+        gy0, gy1 = LY0, BASE_Y + NOME_DESC
+        lab += (f'<rect x="{gx0:.1f}" y="{gy0:.1f}" width="{gx1-gx0:.1f}" height="{gy1-gy0:.1f}" fill="none" '
+                f'stroke="#FFD23F" stroke-width="2" stroke-dasharray="8 6"/>')
+        cm = lambda v: f"{v/10:.1f}".replace(".", ",").replace(",0", "")
+        lab += (f'<text x="{CX:.1f}" y="{gy0-14:.1f}" text-anchor="middle" font-family="DejaVu Sans, Arial" '
+                f'font-size="24" font-weight="bold" fill="#FFD23F">LOGO {cm(LOGO_W)} x {cm(LOGO_H)} cm  ·  '
+                f'NOME {cm(NOME_W)} cm de largura</text>')
+        lab += (f'<text x="{CX:.1f}" y="{gy1+34:.1f}" text-anchor="middle" font-family="DejaVu Sans, Arial" '
+                f'font-size="20" fill="#FFD23F">conjunto {cm(gx1-gx0)} x {cm(gy1-gy0)} cm, centralizado no painel frontal (80 x 84 cm)</text>')
         guide += lab
     return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W:g} {H:g}" width="{W/10:g}cm" height="{H/10:g}cm">
   <title>Balcão ONE – adesivo 187x86 cm (com sangria)</title>
   <defs>
     <linearGradient id="bgBase" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#2B2852"/>
-      <stop offset="0.45" stop-color="#171B30"/>
-      <stop offset="1" stop-color="#1B2036"/>
+      <stop offset="0" stop-color="#3D2D88"/>
+      <stop offset="0.45" stop-color="#26195C"/>
+      <stop offset="1" stop-color="#302172"/>
     </linearGradient>
     <radialGradient id="glowTL" gradientUnits="userSpaceOnUse" cx="80" cy="40" r="900">
-      <stop offset="0" stop-color="#5A4FA6" stop-opacity="0.75"/>
-      <stop offset="1" stop-color="#5A4FA6" stop-opacity="0"/>
+      <stop offset="0" stop-color="#7B5BE6" stop-opacity="0.62"/>
+      <stop offset="1" stop-color="#7B5BE6" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="glowBR" gradientUnits="userSpaceOnUse" cx="{W-60}" cy="{H+40}" r="760">
-      <stop offset="0" stop-color="#3F3C78" stop-opacity="0.7"/>
-      <stop offset="1" stop-color="#3F3C78" stop-opacity="0"/>
+      <stop offset="0" stop-color="#6447C9" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#6447C9" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="glowLogo" gradientUnits="userSpaceOnUse" cx="{CX}" cy="{CY}" r="{LOGO_H*0.95:.1f}">
-      <stop offset="0" stop-color="#8E82EA" stop-opacity="0.22"/>
-      <stop offset="0.55" stop-color="#8E82EA" stop-opacity="0.07"/>
-      <stop offset="1" stop-color="#8E82EA" stop-opacity="0"/>
+    <radialGradient id="glowLogo" gradientUnits="userSpaceOnUse" cx="{CX}" cy="{CY}" r="{GRUPO_H*0.85:.1f}">
+      <stop offset="0" stop-color="#9D86F7" stop-opacity="0.22"/>
+      <stop offset="0.55" stop-color="#9D86F7" stop-opacity="0.07"/>
+      <stop offset="1" stop-color="#9D86F7" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="vignette" gradientUnits="userSpaceOnUse" cx="{CX}" cy="{CY}" r="{W*0.62:.1f}">
-      <stop offset="0" stop-color="#0E1222" stop-opacity="0.55"/>
-      <stop offset="0.6" stop-color="#0E1222" stop-opacity="0.12"/>
-      <stop offset="1" stop-color="#0E1222" stop-opacity="0"/>
+      <stop offset="0" stop-color="#140C34" stop-opacity="0.5"/>
+      <stop offset="0.6" stop-color="#140C34" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#140C34" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="logoGrad" gradientUnits="userSpaceOnUse" x1="0" y1="{LY0:.1f}" x2="0" y2="{LY0+LOGO_H:.1f}">
       <stop offset="0" stop-color="#A89EF3"/>
@@ -196,12 +259,13 @@ def svg(seed, guides=False):
   <rect width="{W:g}" height="{H:g}" fill="url(#vignette)"/>
   <rect width="{W:g}" height="{H:g}" fill="url(#glowLogo)"/>
 {logo}
+  {nome_svg()}
 {guide}
 </svg>'''
 
 if __name__ == "__main__":
-    seed = int(sys.argv[2]) if len(sys.argv) > 2 else 7
-    out = sys.argv[3] if len(sys.argv) > 3 else "arte.svg"
-    open(out, "w").write(svg(seed))
-    open(out.replace(".svg", "_guias.svg"), "w").write(svg(seed, guides=True))
-    print(f"logo {LOGO_W:.1f} x {LOGO_H:.1f} mm, origem ({LX0:.1f},{LY0:.1f})")
+    out = ARGS.out
+    open(out, "w").write(svg(ARGS.seed))
+    open(out.replace(".svg", "_guias.svg"), "w").write(svg(ARGS.seed, guides=True))
+    print(f"logo {LOGO_W:.1f} x {LOGO_H:.1f} mm em ({LX0:.1f},{LY0:.1f}); nome {NOME_W:.0f} mm, "
+          f"asc {NOME_ASC:.1f} desc {NOME_DESC:.1f}, base y {BASE_Y:.1f}; grupo y {LY0:.1f}..{BASE_Y+NOME_DESC:.1f}")
