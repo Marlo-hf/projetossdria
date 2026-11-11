@@ -142,17 +142,16 @@ p { font-size: 8.1pt; line-height: 1.5; }
 .stat span { display: block; margin-top: 1.2mm; font: 400 6.3pt/1.35 'Inter', sans-serif; color: #c4c6d3; }
 
 /* ---------- D · quem somos (foto inteira) ---------- */
-#D .bgphoto { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
-#D .shade { position: absolute; inset: 0; background:
-  linear-gradient(180deg, rgba(22,24,38,.96) 0%, rgba(22,24,38,.82) 17%, rgba(22,24,38,0) 33%, rgba(22,24,38,0) 56%, rgba(22,24,38,.8) 70%, rgba(22,24,38,.97) 79%, var(--navy) 100%); }
-#D .tint { position: absolute; inset: 0; background: linear-gradient(200deg, rgba(145,132,217,.22), rgba(145,132,217,0) 45%); mix-blend-mode: screen; }
+#D .bgphoto { position: absolute; left: 0; top: 34mm; width: 104mm; height: auto; display: block; }
+#D .shade { position: absolute; left: 0; top: 33.8mm; width: 104mm; height: 125.6mm; background:
+  linear-gradient(180deg, var(--navy) 0%, rgba(22,24,38,.7) 6%, rgba(22,24,38,.25) 12%, rgba(22,24,38,0) 20%, rgba(22,24,38,0) 68%, rgba(22,24,38,.75) 86%, var(--navy) 100%); }
 #D h2 { font-size: 18.5pt; line-height: 1.02; color: #fff; }
 #D .tag { position: absolute; display: flex; align-items: center; gap: 2mm; background: rgba(22,24,38,.72); border: .25mm solid rgba(181,171,252,.45); border-radius: 2.2mm; padding: 2mm 3mm 2mm 2.4mm; box-shadow: 0 2mm 6mm rgba(0,0,0,.35); }
 #D .tag i { width: 1.8mm; height: 1.8mm; border-radius: 50%; background: var(--roxo-light); box-shadow: 0 0 0 1mm rgba(181,171,252,.2); flex: none; }
 #D .tag b { display: block; font: 600 9pt/1 'Bricolage Grotesque', sans-serif; color: #fff; letter-spacing: -.01em; }
 #D .tag small { display: block; margin-top: .9mm; font: 600 5.7pt/1 'Inter', sans-serif; letter-spacing: .16em; text-transform: uppercase; color: var(--roxo-light); }
-#D .tag.marlon { left: calc(var(--bleed) + var(--safe)); top: 117mm; }
-#D .tag.mariana { right: var(--safe); top: 128mm; }
+#D .tag.mariana { left: calc(var(--bleed) + var(--safe)); top: 112mm; }
+#D .tag.marlon { right: var(--safe); top: 124mm; }
 #D .bottom { margin-top: auto; }
 #D .bottom p { font-size: 8.2pt; color: #d3d5e0; }
 #D .bottom p b { color: #fff; font-weight: 600; }
@@ -329,11 +328,10 @@ body.no-guides .fold, body.no-guides .trim { display: none; }
 
   <!-- D · quem somos -->
   <div class="panel dark edge-l" id="D">
-    <img class="bgphoto" src="assets/foto-socios.jpg" alt="Marlon França e Mariana Mendonça">
-    <div class="tint"></div>
+    <img class="bgphoto" src="assets/foto-socios-gala.jpg" alt="Mariana Mendonça e Marlon França">
     <div class="shade"></div>
-    <div class="tag marlon"><i></i><div><b>Marlon França</b><small>Criador e gestor</small></div></div>
     <div class="tag mariana"><i></i><div><b>Mariana Mendonça</b><small>Sócia</small></div></div>
+    <div class="tag marlon"><i></i><div><b>Marlon França</b><small>Criador e gestor</small></div></div>
     <div class="safe">
       <div class="eyebrow">Quem somos</div>
       <h2>Sem atendente no meio: você fala com <span class="serif">os sócios.</span></h2>
