@@ -16,7 +16,13 @@ const MM = 96 / 25.4; // px por mm no Chromium
   const p = await b.newPage();
   await p.goto(url, { waitUntil: 'networkidle' });
   await p.evaluate(() => document.fonts.ready);
-  await p.pdf({ path: path.join(OUT, 'Folder-Unlockify-10x20-IMPRESSAO.pdf'), printBackground: true, preferCSSPageSize: true });
+  const bruto = path.join(OUT, '_bruto.pdf');
+  await p.pdf({ path: bruto, printBackground: true, preferCSSPageSize: true });
+  // textos convertidos em curvas (pedido comum das gráficas) — precisa do Ghostscript
+  require('child_process').execFileSync('gs', ['-q', '-dBATCH', '-dNOPAUSE', '-dSAFER', '-sDEVICE=pdfwrite', '-dNoOutputFonts',
+    '-dPassThroughJPEGImages=true', '-dAutoRotatePages=/None',
+    '-sOutputFile=' + path.join(OUT, 'Folder-Unlockify-10x20-IMPRESSAO.pdf'), bruto]);
+  fs.unlinkSync(bruto);
 
   // 2) PNGs de cada lado, já sem a sangria
   const s = await b.newPage({ viewport: { width: 1400, height: 900 }, deviceScaleFactor: 3 });
