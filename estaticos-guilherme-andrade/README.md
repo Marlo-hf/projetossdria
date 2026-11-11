@@ -24,7 +24,9 @@ Essa linha pré-qualifica o lead e reduz o atrito para preencher o formulário.
 
 - **Régua de R$ 300 mil:** é a dos estáticos que estão rodando hoje na campanha `[MF] 11/07 ESTATICOS`. Os vídeos de setembro usam R$ 100 mil. Para trocar em todas as peças, altere `REGUA` em `pecas.js` e rode o build de novo.
 - **"Menos de 1 minuto":** vale se o formulário continuar curto (faixa de dívida, situação e tipo, com os contatos já preenchidos pelo Meta).
-- **Logo:** é o selo oficial (`marca/logo-andrade.png`), ampliado a partir de um arquivo de 150×150 px. Se houver uma versão maior (PNG ou SVG), substitua o arquivo e rode o build para ganhar nitidez.
+- **Logo:** emblema "A" da logo oficial, sem o círculo azul e sem o texto, em cinza (`#cfcfcf`), ao lado de "ANDRADE / ADVOCACIA" no mesmo tom.
+  O emblema (`marca/emblema-andrade.svg`) foi redesenhado em vetor a partir do selo, porque o arquivo original tem só 150×150 px.
+  Se houver o vetor oficial, substitua o SVG. A cor fica em `marca.cor` (`pecas.js`).
 
 ## Como gerar de novo
 

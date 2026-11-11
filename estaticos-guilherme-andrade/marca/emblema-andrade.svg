@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 162" fill="currentColor" stroke="currentColor" aria-hidden="true">
+  <!-- Emblema "A" do Andrade (redesenho em vetor, monocromático): A de hastes cruzadas com a balança da justiça -->
+  <!-- haste que desce para a direita (mais grossa) -->
+  <path stroke="none" d="M82 8 L90 2 L152 150 L130 150 Z"/>
+  <!-- haste que sobe para a direita (mais fina) -->
+  <path stroke="none" d="M50 150 L65 150 L120 5 L114 1 Z"/>
+  <!-- filetes finos (efeito de contorno) -->
+  <g fill="none" stroke-width="1.7" stroke-linecap="round">
+    <path d="M107 6 L42 150"/>
+    <path d="M96 5 L160 150"/>
+    <!-- gota interna -->
+    <path d="M101 72 C 94 104, 88 130, 101 145 C 114 130, 108 104, 101 72 Z"/>
+  </g>
+  <!-- travessão da balança -->
+  <path stroke="none" d="M10 81 H190 V85.5 H10 Z"/>
+  <!-- cordas e pratos -->
+  <g fill="none" stroke-width="1.6" stroke-linecap="round">
+    <path d="M24 85 L11 98 M24 85 L37 98"/>
+    <path d="M176 85 L163 98 M176 85 L189 98"/>
+  </g>
+  <path stroke="none" d="M7 97.5 H41 C 37 108, 11 108, 7 97.5 Z"/>
+  <path stroke="none" d="M159 97.5 H193 C 189 108, 163 108, 159 97.5 Z"/>
+  <!-- base -->
+  <path stroke="none" d="M34 150 H168 V156 H34 Z"/>
+</svg>

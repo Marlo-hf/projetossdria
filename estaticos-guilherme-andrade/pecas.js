@@ -6,7 +6,10 @@
 const REGUA = 'R$ 300 mil';
 
 const marca = {
-  logo: 'logo-andrade.png', // selo oficial; sem ele, cai no lockup tipográfico abaixo
+  // Emblema "A" da logo oficial (sem o círculo azul e sem o texto), em cinza, ao lado do nome.
+  // Para usar o selo redondo inteiro, troque por: logo: 'logo-andrade.png'
+  emblema: 'emblema-andrade.svg',
+  cor: '#cfcfcf', // mesmo tom de cinza para emblema, barra e nome
   monograma: 'GA',
   linha1: 'ANDRADE',
   linha2: 'ADVOCACIA',
