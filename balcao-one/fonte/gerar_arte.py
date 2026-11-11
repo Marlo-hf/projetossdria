@@ -20,6 +20,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--logo-w", type=float, default=340.0, help="largura da logo em mm")
 ap.add_argument("--nome", default="unlockify")
 ap.add_argument("--nome-w", type=float, default=520.0, help="largura do nome em mm")
+ap.add_argument("--nome-ref", default=None, help="texto que define o tamanho das letras (o nome-w vale para ele)")
 ap.add_argument("--gap", type=float, default=62.0, help="espaço entre a logo e o topo do nome (mm)")
 ap.add_argument("--fonte", default="Quicksand-Bold.ttf")
 ap.add_argument("--seed", type=int, default=8)
@@ -61,8 +62,13 @@ def nome_paths(texto, largura, fonte):
     k = largura / (xmax - xmin)
     return glifos, gs, k, (xmin, ymin, xmax, ymax), tt["OS/2"].sxHeight
 
+def _escala(texto, largura, fonte):
+    return nome_paths(texto, largura, fonte)[2]
+
 NOME_GLIFOS, NOME_GS, NK, NB, NXH = nome_paths(ARGS.nome, ARGS.nome_w, ARGS.fonte)
-NOME_W = ARGS.nome_w
+if ARGS.nome_ref:   # mantém o tamanho das letras do texto de referência
+    NK = _escala(ARGS.nome_ref, ARGS.nome_w, ARGS.fonte)
+NOME_W = (NB[2] - NB[0]) * NK
 NOME_ASC = NB[3] * NK          # altura acima da linha de base (mm)
 NOME_DESC = -NB[1] * NK        # descendente (mm)
 # centraliza o conjunto (topo da logo até a linha de base do nome) no centro do painel
