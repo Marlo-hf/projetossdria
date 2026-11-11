@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Estático 2 · Notificações · Mateus Klein Passivos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script>
+  // ?f=story → versão 9:16 (1080x1920). Padrão: feed 4:5 (1080x1350).
+  if (new URLSearchParams(location.search).get('f') === 'story') document.documentElement.classList.add('story');
+  // Nº da OAB (Código de Ética, art. 44). Ex.: 'OAB/RS 123.456'. Vazio = não aparece.
+  const OAB = '';
+  document.addEventListener('DOMContentLoaded', () => {
+    const el = document.querySelector('.oab');
+    if (OAB) el.textContent = OAB; else document.querySelector('.foot').classList.add('solo');
+  });
+</script>
+<style>
+  :root { --red: #e0182d; --red2: #ff3349; --red-dark: #b5101f; --bg: #07090f; --txt: #f4f5f8; --muted: #a7acb8; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1350px; overflow: hidden; background: var(--bg); }
+  html.story, html.story body { height: 1920px; }
+
+  .canvas {
+    position: relative; width: 1080px; height: 100%; overflow: hidden;
+    padding: 54px 72px 46px;
+    display: flex; flex-direction: column;
+    font-family: 'Inter', sans-serif; color: var(--txt);
+    background: linear-gradient(180deg, #0d1120 0%, #07090f 55%, #0a0608 100%);
+  }
+  html.story .canvas { padding: 250px 72px 340px; justify-content: center; }
+
+  /* "papel de parede" desfocado, para o efeito de tela de bloqueio */
+  .wall { position: absolute; inset: 0; pointer-events: none; }
+  .wall i { position: absolute; border-radius: 50%; filter: blur(70px); }
+  .wall i:nth-child(1) { width: 620px; height: 620px; left: -160px; top: 120px; background: rgba(224,24,45,.55); }
+  .wall i:nth-child(2) { width: 520px; height: 520px; right: -140px; top: 330px; background: rgba(120,20,60,.55); }
+  .wall i:nth-child(3) { width: 700px; height: 360px; left: 190px; top: 560px; background: rgba(40,60,140,.35); }
+  .wall i:nth-child(4) { width: 900px; height: 500px; left: 90px; bottom: -300px; background: rgba(224,24,45,.28); }
+  html.story .wall i:nth-child(1) { top: 330px; }
+  html.story .wall i:nth-child(2) { top: 560px; }
+  html.story .wall i:nth-child(3) { top: 820px; }
+  .canvas > *:not(.wall) { position: relative; }
+
+  .top { display: flex; justify-content: space-between; align-items: center; }
+  .brand { font-weight: 800; font-size: 22px; letter-spacing: .32em; }
+  .brand small { display: block; font-weight: 600; font-size: 13px; letter-spacing: .28em; color: var(--muted); margin-top: 6px; }
+  .tag { font-weight: 800; font-size: 19px; letter-spacing: .14em; color: #fff; background: var(--red); border-radius: 99px; padding: 11px 20px; }
+
+  .clock { margin-top: 12px; text-align: center; }
+  .clock .day { display: inline-flex; align-items: center; gap: 10px; font-size: 25px; font-weight: 600; color: rgba(255,255,255,.82); }
+  .clock .day svg { width: 22px; height: 22px; }
+  .clock .time { font-size: 114px; font-weight: 600; letter-spacing: -.02em; line-height: 1; margin-top: 2px; color: rgba(255,255,255,.95); }
+
+  .stack { margin-top: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .note {
+    display: flex; gap: 20px; align-items: flex-start;
+    background: rgba(255,255,255,.13); border: 1px solid rgba(255,255,255,.14);
+    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    border-radius: 30px; padding: 22px 26px 22px 22px;
+    box-shadow: 0 14px 40px rgba(0,0,0,.35);
+  }
+  .note:nth-child(1) { box-shadow: 0 0 0 3px rgba(255,51,73,.9), 0 18px 50px rgba(224,24,45,.45); background: rgba(255,255,255,.17); }
+  .note:nth-child(3) { opacity: .9; }
+  .ico { flex: 0 0 auto; width: 64px; height: 64px; border-radius: 16px; display: grid; place-items: center;
+         background: linear-gradient(160deg, #ff3349, #b5101f); }
+  .ico.gray { background: linear-gradient(160deg, #5b6170, #2c303a); }
+  .ico svg { width: 38px; height: 38px; }
+  .nb { flex: 1; min-width: 0; }
+  .nh { display: flex; justify-content: space-between; align-items: baseline; font-size: 20px; font-weight: 700; letter-spacing: .07em; color: rgba(255,255,255,.7); }
+  .nh time { font-weight: 500; letter-spacing: 0; color: rgba(255,255,255,.55); font-size: 21px; }
+  .nt { margin-top: 4px; font-size: 29px; font-weight: 800; color: #fff; }
+  .nx { margin-top: 3px; font-size: 25px; font-weight: 500; line-height: 1.3; color: rgba(255,255,255,.86); }
+
+  h1 {
+    margin-top: 34px; text-align: center;
+    font-family: 'Archivo', sans-serif; font-stretch: 66%; font-weight: 900;
+    font-size: 100px; line-height: .94; text-transform: uppercase; letter-spacing: -.005em;
+  }
+  h1 .r { color: var(--red2); text-shadow: 0 0 40px rgba(255,51,73,.45); }
+  .lede { margin-top: 18px; text-align: center; font-size: 30px; line-height: 1.35; font-weight: 500; color: rgba(255,255,255,.88); }
+  .lede b { color: #fff; font-weight: 800; }
+
+  .cta { margin-top: 26px; display: flex; flex-direction: column; align-items: center; }
+  .btn {
+    width: 100%; display: flex; align-items: center; justify-content: center; gap: 22px;
+    background: linear-gradient(180deg, #f0233a, var(--red) 55%, var(--red-dark));
+    color: #fff; border-radius: 18px; padding: 26px 20px;
+    font-weight: 900; font-size: 44px; letter-spacing: .04em;
+    box-shadow: 0 10px 0 #6e0912, 0 26px 50px rgba(224,24,45,.45);
+  }
+  .btn svg { width: 46px; height: 46px; }
+  .cta .sub { margin-top: 22px; font-size: 23px; font-weight: 600; color: var(--muted); display: flex; align-items: center; gap: 12px; }
+  .cta .sub svg { width: 26px; height: 26px; }
+
+  .foot { margin-top: auto; padding-top: 16px; display: flex; justify-content: space-between; font-size: 19px; color: var(--muted); font-weight: 500; }
+  .foot b { color: #fff; font-weight: 800; letter-spacing: .12em; }
+  .foot.solo { justify-content: center; }
+
+  html.story .clock { margin-top: 30px; }
+  html.story .clock .time { font-size: 136px; }
+  html.story .stack { margin-top: 28px; }
+  html.story h1 { margin-top: 44px; }
+  html.story .cta { margin-top: 36px; }
+  html.story .foot { margin-top: 30px; }
+</style>
+</head>
+<body>
+<main class="canvas">
+  <div class="wall"><i></i><i></i><i></i><i></i></div>
+
+  <div class="top">
+    <div class="brand">MATEUS KLEIN<small>ADVOGADO</small></div>
+    <div class="tag">EMPRESÁRIO</div>
+  </div>
+
+  <div class="clock">
+    <div class="day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>segunda-feira</div>
+    <div class="time">08:12</div>
+  </div>
+
+  <div class="stack">
+    <div class="note">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2 2 7v2h20V7z"/><rect x="4" y="10.5" width="2.6" height="7" rx=".4"/><rect x="8.6" y="10.5" width="2.6" height="7" rx=".4"/><rect x="12.8" y="10.5" width="2.6" height="7" rx=".4"/><rect x="17.4" y="10.5" width="2.6" height="7" rx=".4"/><rect x="2" y="19" width="20" height="3" rx=".6"/></svg></div>
+      <div class="nb">
+        <div class="nh"><span>BANCO</span><time>agora</time></div>
+        <div class="nt">Parcela em atraso</div>
+        <div class="nx">Capital de giro: parcela vencida há 15 dias.</div>
+      </div>
+    </div>
+    <div class="note">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2 2 7v2h20V7z"/><rect x="4" y="10.5" width="2.6" height="7" rx=".4"/><rect x="8.6" y="10.5" width="2.6" height="7" rx=".4"/><rect x="12.8" y="10.5" width="2.6" height="7" rx=".4"/><rect x="17.4" y="10.5" width="2.6" height="7" rx=".4"/><rect x="2" y="19" width="20" height="3" rx=".6"/></svg></div>
+      <div class="nb">
+        <div class="nh"><span>BANCO</span><time>2 h</time></div>
+        <div class="nt">Limite excedido</div>
+        <div class="nx">Cheque especial acima do limite. Encargos serão cobrados.</div>
+      </div>
+    </div>
+    <div class="note">
+      <div class="ico gray"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></div>
+      <div class="nb">
+        <div class="nh"><span>COBRANÇA</span><time>ontem</time></div>
+        <div class="nt">Aviso de cobrança</div>
+        <div class="nx">Seu contrato pode ser encaminhado para cobrança judicial.</div>
+      </div>
+    </div>
+  </div>
+
+  <h1>Isso virou <span class="r">rotina</span><br>na sua empresa?</h1>
+  <p class="lede">Pagar no desespero só aperta o caixa.<br><b>Antes de fechar qualquer acordo, entenda suas alternativas.</b></p>
+
+  <div class="cta">
+    <div class="btn">QUERO ANALISAR MEU CASO
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </div>
+    <div class="sub">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#ff3349" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16M6 14l6 6 6-6"/></svg>
+      Preencha o formulário no botão abaixo
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>Cada caso é analisado individualmente.</span>
+    <b class="oab"></b>
+  </div>
+</main>
+</body>
+</html>
