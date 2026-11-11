@@ -23,6 +23,8 @@ ap.add_argument("--nome-w", type=float, default=520.0, help="largura do nome em 
 ap.add_argument("--gap", type=float, default=62.0, help="espaço entre a logo e o topo do nome (mm)")
 ap.add_argument("--fonte", default="Quicksand-Bold.ttf")
 ap.add_argument("--seed", type=int, default=8)
+ap.add_argument("--fundo", choices=["padrao", "roxo", "branco"], default="padrao",
+                help="padrao = roxo com desenhos; roxo = só o degradê roxo; branco = fundo branco")
 ap.add_argument("--sem-i", action="store_true", help="logo só com o U (sem a bolinha do i, hastes iguais)")
 ap.add_argument("--out", default="arte.svg")
 ARGS = ap.parse_args()
@@ -79,7 +81,8 @@ def nome_svg():
         tp = TransformPen(pen, (NK, 0, 0, -NK, NX0 + (gx - NB[0]) * NK, BASE_Y))
         NOME_GS[g].draw(tp)
         ds.append(pen.getCommands())
-    return f'<path id="nome" d="{" ".join(ds)}" fill="#EEEBFF"/>'
+    cor = "#2E2170" if ARGS.fundo == "branco" else "#EEEBFF"
+    return f'<path id="nome" d="{" ".join(ds)}" fill="{cor}"/>'
 
 def lx(x): return LX0 + (x - F["x0"]) * s
 def ly(y): return LY0 + (y - F["y0"]) * s
@@ -194,8 +197,23 @@ def build(seed):
             placed.append((x, y, R, name, sc, rot, style, alpha))
     return placed
 
+def fundo_svg(glyphs):
+    if ARGS.fundo == "branco":
+        return f'  <rect width="{W:g}" height="{H:g}" fill="#FFFFFF"/>'
+    return f'''  <rect width="{W:g}" height="{H:g}" fill="url(#bgBase)"/>
+  <rect width="{W:g}" height="{H:g}" fill="url(#glowTL)"/>
+  <rect width="{W:g}" height="{H:g}" fill="url(#glowBR)"/>
+  <g id="padrao">
+{glyphs}
+  </g>
+  <rect width="{W:g}" height="{H:g}" fill="url(#vignette)"/>
+  <rect width="{W:g}" height="{H:g}" fill="url(#glowLogo)"/>'''
+
+COR_COTA = "#C2410C" if ARGS.fundo == "branco" else "#FFD23F"
+COR_FACA = "#0B8F5A" if ARGS.fundo == "branco" else "#00E0A0"
+
 def svg(seed, guides=False):
-    placed = build(seed)
+    placed = build(seed) if ARGS.fundo == "padrao" else []
     glyphs = "\n".join(glyph_svg(n, x, y, sc, rot, st, a, i)
                        for i, (x, y, R, n, sc, rot, st, a) in enumerate(placed))
     guide = ""
@@ -205,23 +223,23 @@ def svg(seed, guides=False):
         lines = "".join(f'<line x1="{x}" y1="0" x2="{x}" y2="{H}"/>' for x in xs[1:-1])
         guide = (f'<g fill="none" stroke="#FF2E9A" stroke-width="1.6" stroke-dasharray="10 7">{lines}</g>'
                  f'<rect x="{BLEED_X}" y="{BLEED_Y}" width="{W-2*BLEED_X}" height="{H-2*BLEED_Y}" '
-                 f'fill="none" stroke="#00E0A0" stroke-width="1.6"/>')
+                 f'fill="none" stroke="{COR_FACA}" stroke-width="1.6"/>')
         # cotas (somente prévia): larguras dos painéis e tamanho da logo
         lab = ""
         for i, p in enumerate(PANELS):
             mid = xs[i] + p / 2
             lab += (f'<text x="{mid:.1f}" y="{H-22}" text-anchor="middle" font-family="DejaVu Sans, Arial" '
-                    f'font-size="24" font-weight="bold" fill="#00E0A0">{p//10} cm</text>')
+                    f'font-size="24" font-weight="bold" fill="{COR_FACA}">{p//10} cm</text>')
         gx0, gx1 = min(LX0, NX0), max(LX0 + LOGO_W, NX0 + NOME_W)
         gy0, gy1 = LY0, BASE_Y + NOME_DESC
         lab += (f'<rect x="{gx0:.1f}" y="{gy0:.1f}" width="{gx1-gx0:.1f}" height="{gy1-gy0:.1f}" fill="none" '
-                f'stroke="#FFD23F" stroke-width="2" stroke-dasharray="8 6"/>')
+                f'stroke="{COR_COTA}" stroke-width="2" stroke-dasharray="8 6"/>')
         cm = lambda v: f"{v/10:.1f}".replace(".", ",").replace(",0", "")
         lab += (f'<text x="{CX:.1f}" y="{gy0-14:.1f}" text-anchor="middle" font-family="DejaVu Sans, Arial" '
-                f'font-size="24" font-weight="bold" fill="#FFD23F">LOGO {cm(LOGO_W)} x {cm(LOGO_H)} cm  ·  '
+                f'font-size="24" font-weight="bold" fill="{COR_COTA}">LOGO {cm(LOGO_W)} x {cm(LOGO_H)} cm  ·  '
                 f'NOME {cm(NOME_W)} cm de largura</text>')
         lab += (f'<text x="{CX:.1f}" y="{gy1+34:.1f}" text-anchor="middle" font-family="DejaVu Sans, Arial" '
-                f'font-size="20" fill="#FFD23F">conjunto {cm(gx1-gx0)} x {cm(gy1-gy0)} cm, centralizado no painel frontal (80 x 84 cm)</text>')
+                f'font-size="20" fill="{COR_COTA}">conjunto {cm(gx1-gx0)} x {cm(gy1-gy0)} cm, centralizado no painel frontal (80 x 84 cm)</text>')
         guide += lab
     return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W:g} {H:g}" width="{W/10:g}cm" height="{H/10:g}cm">
   <title>Balcão ONE – adesivo 187x86 cm (com sangria)</title>
@@ -254,14 +272,7 @@ def svg(seed, guides=False):
       <stop offset="1" stop-color="#8579E2"/>
     </linearGradient>
   </defs>
-  <rect width="{W:g}" height="{H:g}" fill="url(#bgBase)"/>
-  <rect width="{W:g}" height="{H:g}" fill="url(#glowTL)"/>
-  <rect width="{W:g}" height="{H:g}" fill="url(#glowBR)"/>
-  <g id="padrao">
-{glyphs}
-  </g>
-  <rect width="{W:g}" height="{H:g}" fill="url(#vignette)"/>
-  <rect width="{W:g}" height="{H:g}" fill="url(#glowLogo)"/>
+{fundo_svg(glyphs)}
 {logo}
   {nome_svg()}
 {guide}
