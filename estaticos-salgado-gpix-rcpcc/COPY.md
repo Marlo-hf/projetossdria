@@ -6,6 +6,10 @@ Mesmo modelo dos estáticos v2 de golpe Pix (`estaticos-golpe-pix/`, branch `cla
 |---|---|---|---|
 | GPIX | `salgado-gpix-1080x1350.png` | CJ GOLPE PIX 40K | FORMULÁRIO GPIX 10K NOVO (2380425996038193) |
 | RCPCC | `salgado-rcpcc-1080x1350.png` | CJ RCPCC 50K | FORMULARIO RCPCC MAIS 50K (1148734618096842) |
+| GPIX 02 | `salgado-gpix-02-1080x1350.png` | CJ GOLPE PIX 40K | FORMULÁRIO GPIX 10K NOVO |
+| GPIX 03 | `salgado-gpix-03-1080x1350.png` | CJ GOLPE PIX 40K | FORMULÁRIO GPIX 10K NOVO |
+| RCPCC 02 | `salgado-rcpcc-02-1080x1350.png` | CJ RCPCC 50K | FORMULARIO RCPCC MAIS 50K |
+| RCPCC 03 | `salgado-rcpcc-03-1080x1350.png` | CJ RCPCC 50K | FORMULARIO RCPCC MAIS 50K |
 
 Botão nos dois: **Cadastre-se** (SIGN_UP). Página: Salgado Advogados · Instagram @salgadoadvassociados.
 
@@ -110,6 +114,107 @@ Análise da sua dívida bancária
 
 ---
 
+## GPIX 02 — "Fez um Pix para um golpista?"
+
+### Texto
+> Fez um Pix para um golpista? 🚨
+>
+> R$ 47 mil para uma conta aberta há 3 dias, às 22h. Uma transação assim foge totalmente do padrão, e o sistema de segurança do banco existe justamente para barrar isso.
+>
+> Quando o banco não barra, ele pode ter que responder pelo prejuízo.
+>
+> ✅ Golpe acima de R$ 40 mil
+> ✅ Banco brasileiro
+>
+> Preencha o formulário. Nossa equipe chama no WhatsApp.
+
+### Títulos
+1. Fez um Pix para um golpista?
+2. O banco deveria ter barrado esse Pix
+3. Golpe Pix acima de R$ 40 mil: o banco pode responder
+
+### Descrição
+O banco pode ter que responder
+
+---
+
+## GPIX 03 — "Golpe do Pix acima de R$ 40 mil?"
+
+### Texto
+> Golpe do Pix acima de R$ 40 mil? O banco pode ter que devolver.
+>
+> Falso funcionário do banco, falsa central de segurança, falso parente, falso investimento. O golpe muda, mas um ponto se repete: o banco tem o dever de identificar e barrar movimentações fora do perfil do cliente.
+>
+> Pela Súmula 479 do STJ, os bancos respondem por fraudes de terceiros em operações bancárias. Cada caso é analisado individualmente, sem promessa de resultado.
+>
+> ✅ Golpe acima de R$ 40 mil
+> ✅ Banco brasileiro
+> ✅ Atendimento online, em todo o Brasil
+>
+> Preencha o formulário. Nossa equipe chama no WhatsApp.
+
+### Títulos
+1. Golpe do Pix acima de R$ 40 mil?
+2. O banco pode ter que devolver
+3. Súmula 479: o banco também responde
+
+### Descrição
+Análise do caso com advogado
+
+---
+
+## RCPCC 02 — "Dívidas no banco acima de R$ 50 mil?" (card do saldo crescendo)
+
+### Texto
+> Dívidas no banco acima de R$ 50 mil? 💳
+>
+> Cartão rotativo e cheque especial têm os juros mais altos do mercado. Uma dívida de R$ 18 mil pode passar de R$ 50 mil em pouco mais de um ano.
+>
+> Um advogado pode analisar o contrato, os juros cobrados e buscar uma negociação com o banco que caiba no seu bolso. Sem promessa de resultado, com estratégia.
+>
+> ✅ Cartão de crédito, cheque especial ou empréstimo pessoal
+> ✅ Dívida acima de R$ 50 mil
+>
+> Preencha o formulário. Nossa equipe chama no WhatsApp.
+
+### Títulos
+1. Dívidas no banco acima de R$ 50 mil?
+2. Os juros não param. A conta só cresce.
+3. Negocie a dívida do banco com estratégia
+
+### Descrição
+Análise da sua dívida bancária
+
+---
+
+## RCPCC 03 — "Mais de R$ 50 mil no banco?"
+
+### Texto
+> Mais de R$ 50 mil no banco e a parcela não cabe mais no bolso?
+>
+> Antes de aceitar a primeira proposta do banco, vale entender o que foi cobrado. No nosso escritório o caminho é simples:
+>
+> 1️⃣ Análise do contrato e dos juros cobrados
+> 2️⃣ Estratégia para o seu caso
+> 3️⃣ Negociação direto com o banco
+>
+> Sem promessa de resultado. Com análise séria.
+>
+> ✅ Cartão de crédito, cheque especial ou empréstimo pessoal
+> ✅ Dívida acima de R$ 50 mil
+>
+> Preencha o formulário. Nossa equipe chama no WhatsApp.
+
+### Títulos
+1. Mais de R$ 50 mil no banco?
+2. A parcela não cabe mais no bolso?
+3. Análise do contrato antes de negociar
+
+### Descrição
+Negociação com estratégia
+
+---
+
 ## Gerar as imagens de novo
 
 ```bash
@@ -121,3 +226,7 @@ Precisa de Playwright e acesso ao Google Fonts.
 ## Créditos das fotos (Licença Pexels: uso comercial gratuito)
 - `fotos/36698031.jpg` – https://www.pexels.com/photo/36698031/
 - `fotos/7534380.jpg` – https://www.pexels.com/photo/7534380/
+- `fotos/7699315.jpg` – https://www.pexels.com/photo/7699315/
+- `fotos/7534742.jpg` – https://www.pexels.com/photo/7534742/
+- `fotos/6963887.jpg` – https://www.pexels.com/photo/6963887/
+- `fotos/6964056.jpg` – https://www.pexels.com/photo/6964056/
