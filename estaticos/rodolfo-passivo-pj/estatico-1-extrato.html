@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Estático 1 — Extrato PJ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800;900&family=Oswald:wght@600;700&family=Poppins:wght@400;500;600;700&family=Caveat:wght@700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f1115;
+    --red:#E0262F;
+    --red-hot:#FF4B4B;
+    --red-ink:#B3141C;
+    --pen:#D11F27;
+    --yellow:#FFD23F;
+    --paper:#F5F2EB;
+    --ink:#1b1b1f;
+    --rule:#DDD6C8;
+    --muted:#8b8f98;
+    --green:#1D7F46;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1080px;height:1350px;overflow:hidden}
+  body{background:var(--bg);font-family:Poppins,sans-serif;color:#fff;position:relative}
+
+  .glow{position:absolute;inset:0;
+    background:
+      radial-gradient(760px 620px at 92% 62%, rgba(224,38,47,.30), transparent 62%),
+      radial-gradient(640px 460px at -5% -5%, rgba(255,255,255,.06), transparent 60%);}
+
+  .top{position:absolute;left:72px;right:72px;top:52px;display:flex;justify-content:space-between;align-items:center;
+    font-family:Oswald;text-transform:uppercase;letter-spacing:2px}
+  .brand{font-size:30px;font-weight:700}
+  .brand i{font-style:normal;color:var(--red)}
+  .area{font-size:21px;color:var(--muted);font-weight:600}
+
+  .tag{position:absolute;left:72px;top:122px;background:var(--yellow);color:#111;font-weight:700;font-size:24px;
+    padding:9px 18px;border-radius:6px;letter-spacing:.3px}
+
+  h1{position:absolute;left:72px;top:192px;font-family:Archivo;font-weight:900;font-size:86px;line-height:.98;letter-spacing:-3px;white-space:nowrap}
+  h1 em{font-style:normal;color:var(--red-hot)}
+
+  /* ---------- extrato ---------- */
+  .card{position:absolute;left:64px;top:405px;width:952px;background:var(--paper);color:var(--ink);
+    border-radius:6px;padding:34px 44px 30px;transform:rotate(-1.4deg);
+    box-shadow:0 40px 80px rgba(0,0,0,.55),0 4px 0 rgba(0,0,0,.25)}
+  .card-head{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:16px;border-bottom:2.5px solid var(--ink)}
+  .card-head .t{font-family:Oswald;font-weight:700;font-size:30px;letter-spacing:2px}
+  .card-head .m{font-family:'IBM Plex Mono';font-size:17px;color:#6d6a63;text-align:right;line-height:1.35}
+
+  .rows{position:relative}
+  .row{display:grid;grid-template-columns:370px 290px 1fr;align-items:center;height:62px;border-bottom:1px solid var(--rule)}
+  .row .l{font-size:23px;font-weight:500}
+  .row .v{font-family:'IBM Plex Mono';font-weight:600;font-size:25px;text-align:right;color:var(--red-ink)}
+  .row.in .v{color:var(--green)}
+  .row.in .l{font-weight:600}
+  .row.other .v{color:#55524c}
+  .row.other .l{color:#55524c}
+  .row.bank .l{background:linear-gradient(transparent 58%, rgba(255,210,63,.75) 58%, rgba(255,210,63,.75) 92%, transparent 92%);justify-self:start}
+
+  .saldo{position:relative;display:grid;grid-template-columns:370px 290px 1fr;align-items:center;height:104px}
+  .saldo .l{font-family:Oswald;font-weight:700;font-size:30px;letter-spacing:1.5px}
+  .saldo .v{position:relative;font-family:'IBM Plex Mono';font-weight:700;font-size:33px;text-align:right;color:var(--pen);white-space:nowrap}
+  .saldo .v svg{position:absolute;right:-44px;top:-26px;width:352px;height:98px;overflow:visible}
+
+  /* anotações à mão */
+  .hand{font-family:Caveat;font-weight:700;color:var(--pen);line-height:.95}
+  .bracket{position:absolute;left:676px;top:66px;width:40px;height:304px;overflow:visible}
+  .note-bank{position:absolute;left:722px;top:118px;font-size:40px;transform:rotate(-7deg);text-align:left;width:160px}
+  .note-bank b{font-size:64px;display:block;line-height:.9}
+  .note-saldo{position:absolute;left:690px;top:6px;width:180px;font-size:31px;transform:rotate(-6deg);text-align:left}
+
+  /* ---------- CTA ---------- */
+  .cta{position:absolute;left:72px;top:1150px;background:var(--yellow);color:#111;font-family:Archivo;font-weight:800;
+    font-size:34px;padding:26px 36px;border-radius:12px;display:flex;gap:18px;align-items:center;letter-spacing:-.3px;
+    box-shadow:0 0 0 6px rgba(255,210,63,.14),0 18px 40px rgba(255,210,63,.18)}
+  .legal{position:absolute;right:72px;top:1150px;width:340px;text-align:right;font-size:17.5px;line-height:1.42;color:#9ca0a8}
+  .foot{position:absolute;left:72px;right:72px;bottom:40px;display:flex;justify-content:space-between;
+    font-family:Oswald;font-weight:600;font-size:19px;letter-spacing:1.6px;text-transform:uppercase;color:#6f737b}
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+
+  <div class="top">
+    <div class="brand">RC Advocacia<i>.</i></div>
+    <div class="area">Gestão de passivo empresarial</div>
+  </div>
+
+  <div class="tag">EMPRESA COM DÍVIDA NO BANCO ACIMA DE R$ 100 MIL</div>
+
+  <h1>Sua empresa fatura.<br><em>Quem lucra é o banco.</em></h1>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="t">EXTRATO · CONTA PJ</div>
+      <div class="m">EMPRESA EXEMPLO LTDA<br>Período: novembro</div>
+    </div>
+
+    <div class="rows">
+      <div class="row in"><div class="l">Recebimentos do mês</div><div class="v">+ R$ 186.400,00</div><div></div></div>
+      <div class="row bank"><div class="l">Parcela capital de giro</div><div class="v">− R$ 52.870,00</div><div></div></div>
+      <div class="row bank"><div class="l">Parcela da renegociação</div><div class="v">− R$ 31.640,00</div><div></div></div>
+      <div class="row bank"><div class="l">Cartão empresarial</div><div class="v">− R$ 21.708,90</div><div></div></div>
+      <div class="row bank"><div class="l">Juros cheque especial PJ</div><div class="v">− R$ 14.312,55</div><div></div></div>
+      <div class="row bank"><div class="l">Taxa antecipação recebíveis</div><div class="v">− R$ 9.980,40</div><div></div></div>
+      <div class="row other"><div class="l">Folha, fornecedores e impostos</div><div class="v">− R$ 63.200,00</div><div></div></div>
+
+      <!-- chave à mão nas linhas do banco -->
+      <svg class="bracket" viewBox="0 0 40 290" preserveAspectRatio="none">
+        <path d="M6 6 C 22 8, 20 40, 20 110 C 20 132, 26 140, 36 145 C 26 150, 20 158, 20 180 C 20 250, 22 282, 6 284"
+              fill="none" stroke="#D11F27" stroke-width="4.5" stroke-linecap="round"/>
+      </svg>
+      <div class="hand note-bank"><b>70%</b>do faturamento foi pro banco!</div>
+    </div>
+
+    <div class="saldo">
+      <div class="l">SALDO DO MÊS</div>
+      <div class="v">− R$ 7.311,85
+        <svg viewBox="0 0 300 92">
+          <path d="M40 18 C 110 2, 250 4, 288 30 C 304 50, 270 82, 160 86 C 60 90, 4 74, 10 48 C 14 30, 52 14, 120 10"
+                fill="none" stroke="#D11F27" stroke-width="4.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="hand note-saldo">← trabalhou o mês inteiro pra isso?</div>
+    </div>
+  </div>
+
+  <div class="cta">Quero proteger meu caixa <span>→</span></div>
+  <div class="legal">Toque em “Cadastre-se”. Valores ilustrativos. Cada caso é analisado individualmente. Não há garantia de resultado.</div>
+
+  <div class="foot"><span>Capital de giro · Cheque especial · Cartão PJ · Antecipação</span><span>Imagem ilustrativa</span></div>
+</body>
+</html>

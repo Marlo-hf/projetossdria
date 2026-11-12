@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Estático 2 — Aval e patrimônio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@800;900&family=Oswald:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0c0e;
+    --red:#E0262F;
+    --pen:#D11F27;
+    --yellow:#FFD23F;
+    --paper:#F5F2EB;
+    --ink:#17171a;
+    --rule:#DDD6C8;
+    --muted:#8b8f98;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1080px;height:1350px;overflow:hidden}
+  body{background:var(--bg);font-family:Poppins,sans-serif;color:#fff;position:relative}
+
+  .glow{position:absolute;inset:0;
+    background:
+      radial-gradient(900px 520px at 50% 34%, rgba(224,38,47,.22), transparent 65%),
+      radial-gradient(600px 400px at 100% 100%, rgba(255,210,63,.07), transparent 60%);}
+
+  /* fita de isolamento */
+  .tape{position:absolute;left:-80px;width:1260px;height:78px;background:var(--yellow);color:#111;
+    display:flex;align-items:center;white-space:nowrap;overflow:hidden;
+    font-family:Oswald;font-weight:700;font-size:34px;letter-spacing:3px;text-transform:uppercase;
+    box-shadow:0 14px 30px rgba(0,0,0,.5)}
+  .tape::before,.tape::after{content:"";position:absolute;left:0;right:0;height:11px;
+    background:repeating-linear-gradient(-45deg,#111 0 16px,var(--yellow) 16px 32px)}
+  .tape::before{top:0}
+  .tape::after{bottom:0}
+  .tape span{padding-left:28px}
+  .tape-1{top:44px;transform:rotate(-4deg)}
+
+  h1{position:absolute;left:72px;right:60px;top:172px;font-family:Anton;font-weight:400;font-size:94px;line-height:1.06;
+    text-transform:uppercase;letter-spacing:.5px}
+  h1 .y{color:var(--yellow)}
+  h1 .hl{display:inline-block;background:var(--red);color:#fff;line-height:1;padding:8px 16px 2px;margin:10px 6px 0 -4px;transform:rotate(-1.5deg)}
+
+  .sub{position:absolute;left:72px;right:72px;top:500px;font-size:28px;line-height:1.38;color:#d4d4d8;font-weight:500}
+  .sub b{color:#fff;font-weight:700}
+
+  /* checklist */
+  .card{position:absolute;left:72px;right:72px;top:612px;background:var(--paper);color:var(--ink);border-radius:8px;
+    transform:rotate(.8deg);box-shadow:0 36px 70px rgba(0,0,0,.6);overflow:hidden}
+  .card-in{padding:26px 40px 8px}
+  .card h2{font-family:Oswald;font-weight:700;font-size:29px;letter-spacing:1.5px;color:var(--red);margin-bottom:8px}
+  .item{display:flex;align-items:center;gap:22px;height:59px;border-bottom:1px solid var(--rule);font-size:26px;font-weight:600}
+  .item:last-child{border-bottom:none}
+  .box{position:relative;flex:0 0 38px;height:38px;border:3.5px solid var(--ink);border-radius:5px}
+  .box svg{position:absolute;left:-4px;top:-20px;width:56px;height:56px;overflow:visible}
+  .card-band{background:var(--ink);color:#fff;font-family:Oswald;font-weight:700;font-size:31px;letter-spacing:1px;
+    text-transform:uppercase;padding:17px 40px;display:flex;justify-content:space-between;align-items:center}
+  .card-band .y{color:var(--yellow)}
+
+  .cta{position:absolute;left:72px;top:1112px;background:var(--yellow);color:#111;font-family:Archivo;font-weight:800;
+    font-size:31px;padding:26px 32px;border-radius:12px;display:flex;gap:16px;align-items:center;letter-spacing:-.3px;
+    box-shadow:0 0 0 6px rgba(255,210,63,.14),0 18px 40px rgba(255,210,63,.18)}
+  .legal{position:absolute;right:72px;top:1112px;width:300px;text-align:right;font-size:17.5px;line-height:1.42;color:#9ca0a8}
+  .foot{position:absolute;left:72px;right:72px;bottom:40px;display:flex;justify-content:space-between;
+    font-family:Oswald;font-weight:600;font-size:19px;letter-spacing:1.6px;text-transform:uppercase;color:#6f737b}
+  .foot .brand{color:#e9e9ec;font-weight:700}
+  .foot .brand i{font-style:normal;color:var(--red)}
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+
+  <div class="tape tape-1"><span>⚠ Atenção, empresário &nbsp;&nbsp;⚠ Atenção, empresário &nbsp;&nbsp;⚠ Atenção, empresário &nbsp;&nbsp;⚠ Atenção, empresário</span></div>
+
+  <h1>A dívida é da empresa.<br>Mas quem pode perder<br><span class="hl">a casa</span> <span class="y">é você.</span></h1>
+
+  <div class="sub">Aval do sócio, imóvel em garantia, conta bloqueada: quando a empresa trava no banco, <b>a cobrança chega no seu CPF.</b></div>
+
+  <div class="card">
+    <div class="card-in">
+      <h2>MARQUE O QUE JÁ ESTÁ ACONTECENDO:</h2>
+
+      <div class="item"><div class="box"><svg viewBox="0 0 56 56"><path d="M6 30 C 12 34, 16 40, 20 48 C 28 30, 38 14, 54 2" fill="none" stroke="#D11F27" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        Assinei aval ou dei imóvel como garantia</div>
+      <div class="item"><div class="box"><svg viewBox="0 0 56 56"><path d="M7 28 C 13 33, 17 39, 21 47 C 29 31, 40 13, 53 4" fill="none" stroke="#D11F27" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        Pego capital de giro novo pra pagar o antigo</div>
+      <div class="item"><div class="box"><svg viewBox="0 0 56 56"><path d="M5 31 C 12 35, 15 41, 19 48 C 27 29, 39 15, 55 3" fill="none" stroke="#D11F27" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        Cheque especial PJ estourado todo mês</div>
+      <div class="item"><div class="box"></div>
+        Parcela atrasada — ou prestes a atrasar</div>
+      <div class="item"><div class="box"></div>
+        Chegou aviso de protesto ou de execução</div>
+    </div>
+    <div class="card-band"><span>Marcou <span class="y">2 ou mais?</span></span><span>Não espere a execução.</span></div>
+  </div>
+
+  <div class="cta">Quero proteger meu patrimônio <span>→</span></div>
+  <div class="legal">Dívida da empresa no banco acima de R$ 100 mil? Toque em “Cadastre-se”. Cada caso é analisado individualmente. Não há garantia de resultado.</div>
+
+  <div class="foot"><span class="brand">RC Advocacia<i>.</i></span><span>Gestão de passivo empresarial</span></div>
+</body>
+</html>
