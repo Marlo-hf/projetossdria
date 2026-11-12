@@ -9,6 +9,8 @@ Sem visual de "template de IA": nada de gradiente, brilho, card arredondado ou b
 | 01: "Mandar pro jurídico" | `estatico-01-mandar-pro-juridico-4x5.png` | `estatico-01-mandar-pro-juridico-9x16.png` |
 | 02: Nota "Plano pra salvar a empresa" | `estatico-02-refem-do-banco-4x5.png` | `estatico-02-refem-do-banco-9x16.png` |
 
+**Copy completa (5 textos principais + 5 títulos + descrição por estático): [`COPY.md`](COPY.md).**
+
 ## 01: "O gerente já falou em 'mandar pro jurídico'?"
 Foto real de um empresário com a mão na cabeça, fazendo conta. A chamada pega o empresário no momento exato em que a dor está no pico: o gerente já ameaçou mandar a dívida pro jurídico, ou seja, a execução está perto. Layout simples de peça impressa: bloco creme com a manchete e um marca-texto amarelo, foto embaixo, faixa vermelha com o valor mínimo e rodapé com a marca.
 
