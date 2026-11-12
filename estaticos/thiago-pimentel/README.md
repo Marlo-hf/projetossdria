@@ -10,7 +10,7 @@ Dois estáticos para a conta **CA - Gestão de Passivo PJ**, focados em empresá
 | 02: Nota "Plano pra salvar a empresa" | `estatico-02-refem-do-banco-4x5.png` | `estatico-02-refem-do-banco-9x16.png` |
 
 ## 01: tela de bloqueio às 7:12
-Tela de bloqueio com a foto do filho de papel de parede e a bateria no fim. Aparecem a mensagem do gerente ("63 dias atrasada, sem proposta até sexta vai pro jurídico") e a notificação do processo ("pedido de bloqueio das contas da empresa").
+Tela de bloqueio com a foto da própria empresa (uma oficina/metalúrgica) de papel de parede e a bateria no fim. Aparecem a mensagem do gerente ("63 dias atrasada, sem proposta até sexta vai pro jurídico") e a notificação do processo ("pedido de bloqueio das contas da empresa").
 Texto stories: "empresário, se o seu celular amanheceu assim… …o próximo passo é a conta bloqueada. **fale com um advogado antes disso.**"
 
 - **Título:** Seu celular amanheceu assim?
@@ -30,7 +30,7 @@ Não há promessa de resultado nem percentual de desconto. A linguagem é de pos
 As interfaces de celular são genéricas: nenhuma marca de banco, nenhum logo de app real. Remetentes genéricos ("Gerente PJ", "Processo eletrônico").
 
 ## Créditos
-Foto do papel de parede do estático 01: Pexels (foto 21356382), licença gratuita que permite uso comercial sem atribuição.
+Foto do papel de parede do estático 01: Pexels (foto 18569750, oficina/metalúrgica), licença gratuita que permite uso comercial sem atribuição.
 
 ## Como editar
 Os fontes ficam em `src/` (HTML + `assets/`). Para mudar um texto ou o valor mínimo, edite o HTML e renderize de novo:
