@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Estático 01 – Mandar pro jurídico</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--red:#d3142b;--ink:#101010;--cream:#f3eee5;--yel:#ffd400}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1080px;height:1350px;overflow:hidden}
+  body{font-family:'Inter',sans-serif;color:var(--ink);background:var(--cream);display:flex;flex-direction:column;
+    -webkit-font-smoothing:antialiased}
+
+  .top{padding:56px 64px 40px;background:var(--cream)}
+  .tag{display:inline-block;background:var(--ink);color:#fff;font-family:'Oswald';font-weight:600;font-size:30px;
+    letter-spacing:2px;text-transform:uppercase;padding:6px 18px}
+  h1{font-family:'Oswald';font-weight:700;text-transform:uppercase;font-size:94px;line-height:1.02;letter-spacing:-.5px;margin-top:18px}
+  h1 .hl{background:linear-gradient(transparent 12%, var(--yel) 12%, var(--yel) 92%, transparent 92%);padding:0 10px;margin:0 -6px;
+    -webkit-box-decoration-break:clone;box-decoration-break:clone}
+  .sub{font-size:33px;line-height:1.32;letter-spacing:-.4px;margin-top:22px;max-width:930px;color:#2b2b2b}
+  .sub b{color:var(--ink);font-weight:700}
+
+  .photo{position:relative;flex:1;border-top:10px solid var(--red);
+    background:url(assets/foto-empresario.jpg) no-repeat;background-size:1080px auto;background-position:0 -430px}
+
+  .band{position:absolute;left:0;bottom:96px;background:var(--red);color:#fff;font-family:'Oswald';font-weight:600;
+    font-size:36px;letter-spacing:1px;text-transform:uppercase;padding:14px 40px 14px 64px}
+  .band b{font-weight:700;color:var(--yel)}
+  .foot{position:absolute;left:0;right:0;bottom:0;height:96px;background:var(--ink);color:#fff;display:flex;align-items:center;
+    justify-content:space-between;padding:0 64px}
+  .foot .b{font-family:'Oswald';font-weight:600;font-size:30px;letter-spacing:2px;text-transform:uppercase}
+  .foot .d{font-size:19px;line-height:1.35;color:rgba(255,255,255,.7);text-align:right}
+
+  /* ===== versão 9:16 (stories/reels) ===== */
+  html.story,html.story body{height:1920px}
+  html.story .top{padding-top:250px}
+  html.story .photo{background-size:1300px auto;background-position:-130px -470px}
+  html.story .band{bottom:396px}
+  html.story .foot{bottom:0;height:396px;align-items:flex-start;padding-top:34px}
+</style>
+<script>if(new URLSearchParams(location.search).get('h')==='1920')document.documentElement.classList.add('story')</script>
+</head>
+<body>
+  <div class="top">
+    <div class="tag">Empresário,</div>
+    <h1>o gerente já falou em <span class="hl">“mandar pro jurídico”?</span></h1>
+    <div class="sub">Depois desse aviso costuma vir a execução: <b>conta da empresa bloqueada e penhora de bens.</b> Antes disso, existe a possibilidade de negociar.</div>
+  </div>
+
+  <div class="photo">
+    <div class="band">Dívida da empresa acima de <b>R$ 200 mil</b></div>
+    <div class="foot">
+      <div class="b">Pimentel Advocacia</div>
+      <div class="d">Cada caso é analisado individualmente.<br>Não há garantia de resultado.</div>
+    </div>
+  </div>
+</body>
+</html>
