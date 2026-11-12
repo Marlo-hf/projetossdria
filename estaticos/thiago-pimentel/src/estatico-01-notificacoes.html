@@ -2,167 +2,125 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<title>Estático 01 – Notificações</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>Estático 01 – Tela de bloqueio</title>
 <style>
-  :root{
-    --red:#d3142b; --red-hot:#ff4656; --ink:#0c0c0e; --cream:#f2ede4; --yellow:#ffd23f;
-  }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{width:1080px;height:1350px;overflow:hidden}
-  body{
-    font-family:'Poppins',sans-serif;color:#fff;
-    background:
-      radial-gradient(900px 700px at 50% 52%, rgba(255,40,60,.28), transparent 60%),
-      radial-gradient(1200px 900px at 50% 40%, #4b0a12 0%, #24060a 55%, #0c0304 100%);
-    position:relative;
-  }
-  /* textura de ruído leve */
-  body::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.10;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");}
+  body{font-family:'Inter','Inter Display',sans-serif;color:#fff;position:relative;background:#222;
+    -webkit-font-smoothing:antialiased}
 
-  .wrap{position:absolute;inset:0;padding:58px 64px 0;display:flex;flex-direction:column}
+  /* papel de parede (foto real) */
+  .wall{position:absolute;inset:0;background:url(assets/wallpaper-familia.jpg) no-repeat;
+    background-size:1300px auto;background-position:-110px -590px}
+  .wall::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(rgba(0,0,0,.38),rgba(0,0,0,.05) 32%,rgba(0,0,0,0) 55%,rgba(0,0,0,.35) 100%)}
 
-  .kicker{display:inline-flex;align-items:center;gap:14px;align-self:flex-start;
-    background:var(--red);padding:10px 22px 10px 16px;border-radius:12px;
-    font-weight:800;font-size:30px;letter-spacing:1.5px;text-transform:uppercase;
-    box-shadow:0 8px 30px rgba(211,20,43,.55)}
-  .kicker svg{width:34px;height:34px}
+  /* barra de status */
+  .status{position:absolute;top:30px;left:64px;right:58px;display:flex;justify-content:space-between;align-items:center;
+    font-weight:600;font-size:34px;letter-spacing:-.3px}
+  .status .r{display:flex;gap:14px;align-items:center}
+  .status svg{display:block}
 
-  h1{font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;
-    font-size:112px;line-height:.98;letter-spacing:-1px;margin-top:16px;
-    text-shadow:0 6px 30px rgba(0,0,0,.5)}
-  h1 .hot{color:var(--red-hot);}
+  .lockico{position:absolute;top:96px;left:50%;transform:translateX(-50%)}
+  .date{position:absolute;top:150px;width:100%;text-align:center;font-weight:600;font-size:38px;letter-spacing:-.2px;
+    text-shadow:0 1px 8px rgba(0,0,0,.25)}
+  .clock{position:absolute;top:186px;width:100%;text-align:center;font-family:'Inter Display','Inter';font-weight:700;
+    font-size:214px;line-height:1;letter-spacing:-7px;text-shadow:0 2px 16px rgba(0,0,0,.18)}
 
-  /* ===== tela de bloqueio ===== */
-  .lock{position:relative;margin-top:28px;border-radius:44px;padding:22px 24px 24px;
-    background:
-      radial-gradient(500px 300px at 15% 0%, rgba(120,70,160,.55), transparent 70%),
-      radial-gradient(520px 340px at 100% 100%, rgba(30,70,140,.55), transparent 70%),
-      linear-gradient(160deg,#1b1630,#0d0f1c);
-    border:2px solid rgba(255,255,255,.14);
-    box-shadow:0 30px 80px rgba(0,0,0,.65), 0 0 0 10px rgba(255,255,255,.04), 0 0 90px rgba(255,50,70,.25);
-  }
-  .clock{display:flex;align-items:center;justify-content:space-between;padding:0 10px 8px}
-  .clock .t{font-weight:600;font-size:58px;letter-spacing:-1.5px;line-height:1}
-  .clock .l{display:flex;align-items:baseline;gap:16px}
-  .clock .d{font-size:24px;font-weight:500;color:rgba(255,255,255,.75)}
-  .clock .count{font-size:22px;font-weight:700;background:var(--red);padding:6px 14px;border-radius:30px;align-self:center}
+  /* texto estilo stories */
+  .story-txt{position:absolute;font-weight:700;font-size:46px;line-height:1.36;letter-spacing:-.6px}
+  .story-txt span{background:#fff;color:#111;padding:.08em .32em;border-radius:.28em;
+    -webkit-box-decoration-break:clone;box-decoration-break:clone}
+  .story-txt span.redline{background:#e3192d;color:#fff}
+  .t1{left:58px;top:404px;transform:rotate(-2.2deg);transform-origin:left top}
+  .t2{left:58px;top:1112px;transform:rotate(-1.4deg);transform-origin:left top}
 
-  .notif{display:grid;grid-template-columns:76px 1fr;gap:20px;align-items:center;
-    background:rgba(246,244,248,.94);color:#121214;border-radius:28px;padding:18px 22px;
-    margin-top:12px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
-  .notif{padding:15px 22px}
-  .icon{width:76px;height:76px;border-radius:19px;display:grid;place-items:center}
-  .icon svg{width:44px;height:44px}
-  .meta{display:flex;justify-content:space-between;font-size:19px;font-weight:600;
-    color:#6b6b73;text-transform:uppercase;letter-spacing:1px}
-  .ttl{font-weight:700;font-size:29px;line-height:1.15;margin-top:2px}
-  .txt{font-size:24px;line-height:1.25;color:#34343a;margin-top:2px}
-  .notif.alert{background:#fff;outline:4px solid var(--red-hot);
-    box-shadow:0 0 0 8px rgba(255,70,86,.25), 0 10px 40px rgba(255,40,60,.55)}
-  .notif.alert .ttl{color:#c3061c}
+  /* notificações estilo iOS */
+  .stack{position:absolute;left:28px;right:28px;top:700px}
+  .only-story{display:none!important}
+  .n{position:relative;display:grid;grid-template-columns:86px 1fr;gap:24px;align-items:start;
+    padding:28px 30px 28px 28px;border-radius:46px;margin-bottom:16px;color:#111;
+    background:rgba(236,236,240,.78);-webkit-backdrop-filter:blur(30px) saturate(170%);backdrop-filter:blur(30px) saturate(170%)}
+  .n .ic{width:86px;height:86px;border-radius:20px;display:grid;place-items:center}
+  .n .hd{display:flex;justify-content:space-between;align-items:baseline}
+  .n .ti{font-weight:700;font-size:35px;letter-spacing:-.4px}
+  .n .tm{font-size:29px;color:rgba(40,40,45,.55)}
+  .n .bd{font-size:33px;line-height:1.26;letter-spacing:-.3px;margin-top:2px}
+  /* notificações empilhadas atrás da última (mesmo app) */
+  .n.last{margin-bottom:0}
+  .ghost{position:absolute;left:50%;transform:translateX(-50%);border-radius:0 0 40px 40px;
+    background:rgba(236,236,240,.55);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px)}
+  .g1{width:94%;height:22px;bottom:-20px}
+  .g2{width:88%;height:20px;bottom:-38px;background:rgba(236,236,240,.38)}
 
-  /* ===== fecho ===== */
-  .close{margin-top:auto;padding-top:10px;padding-bottom:26px;position:relative;z-index:2}
-  .line{font-size:42px;font-weight:700;line-height:1.15;letter-spacing:-.5px}
-  .line b{color:var(--yellow)}
-  .qual{margin-top:10px;font-size:25px;font-weight:500;color:#f3d4d7}
-  .qual strong{color:#fff;font-weight:800}
-  .cta{margin-top:18px;display:flex;align-items:center;justify-content:center;gap:16px;
-    background:linear-gradient(180deg,#ff3a4c,#cc0f26);border-radius:22px;padding:22px 20px;
-    font-weight:800;font-size:36px;letter-spacing:.5px;text-transform:uppercase;
-    box-shadow:0 14px 40px rgba(220,20,45,.6), inset 0 2px 0 rgba(255,255,255,.25)}
-  .cta svg{width:40px;height:40px}
-  .foot{margin-top:18px;display:flex;justify-content:space-between;align-items:center;
-    border-top:1px solid rgba(255,255,255,.18);padding-top:16px}
-  .brand{font-weight:700;font-size:22px;letter-spacing:2.5px;text-transform:uppercase}
-  .disc{font-size:17px;color:rgba(255,255,255,.62);text-align:right;line-height:1.3}
-  /* versão 9:16 (stories/reels): mesmo layout dentro da área segura */
+  .legal{position:absolute;left:0;right:0;bottom:24px;text-align:center;font-size:21px;line-height:1.35;
+    color:rgba(255,255,255,.9);text-shadow:0 1px 6px rgba(0,0,0,.6)}
+  .legal b{font-weight:700}
+
+  /* ===== versão 9:16 (stories/reels) ===== */
   html.story,html.story body{height:1920px}
-  html.story .wrap{top:250px;bottom:300px}
+  html.story .wall{background-size:2100px auto;background-position:-500px -1230px}
+  html.story .lockico{top:110px} html.story .date{top:168px} html.story .clock{top:206px;font-size:236px}
+  html.story .t1{top:470px}
+  html.story .stack{top:860px}
+  html.story .t2{top:1268px}
+  html.story .legal{bottom:420px}
 </style>
 <script>if(new URLSearchParams(location.search).get('h')==='1920')document.documentElement.classList.add('story')</script>
 </head>
 <body>
-<div class="wrap">
+  <div class="wall"></div>
 
-  <div class="kicker">
-    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
-    Empresário:
-  </div>
-
-  <h1>Seu celular<br>amanheceu <span class="hot">assim?</span></h1>
-
-  <div class="lock">
-    <div class="clock">
-      <div class="l">
-        <div class="t">07:12</div>
-        <div class="d">segunda-feira</div>
-      </div>
-      <div class="count">4 novas</div>
-    </div>
-
-    <!-- 1. banco -->
-    <div class="notif">
-      <div class="icon" style="background:#1f3b73">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10 12 4l9 6"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/></svg>
-      </div>
-      <div>
-        <div class="meta"><span>Banco · Conta PJ</span><span>06:58</span></div>
-        <div class="ttl">Capital de giro: 63 dias em atraso</div>
-      </div>
-    </div>
-
-    <!-- 2. gerente -->
-    <div class="notif">
-      <div class="icon" style="background:#2f7cf6">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.6A8 8 0 1 1 21 12z"/></svg>
-      </div>
-      <div>
-        <div class="meta"><span>Mensagens · Gerente PJ</span><span>07:03</span></div>
-        <div class="ttl">“Sem acordo até sexta, vai pro jurídico.”</div>
-      </div>
-    </div>
-
-    <!-- 3. cartório -->
-    <div class="notif">
-      <div class="icon" style="background:#e39b12">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>
-      </div>
-      <div>
-        <div class="meta"><span>Cartório de Protesto</span><span>07:08</span></div>
-        <div class="ttl">Intimação: título da empresa a protesto</div>
-      </div>
-    </div>
-
-    <!-- 4. processo -->
-    <div class="notif alert">
-      <div class="icon" style="background:#c3061c">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M7 21h10M5 7h14"/><path d="m5 7-3 6a3 3 0 0 0 6 0zM19 7l-3 6a3 3 0 0 0 6 0z"/></svg>
-      </div>
-      <div>
-        <div class="meta"><span>Processo eletrônico</span><span>07:12</span></div>
-        <div class="ttl">Execução: pedido de bloqueio das contas</div>
-      </div>
+  <div class="status">
+    <div>TIM</div>
+    <div class="r">
+      <svg width="46" height="30" viewBox="0 0 46 30" fill="#fff"><rect x="0" y="20" width="8" height="10" rx="2"/><rect x="12" y="14" width="8" height="16" rx="2"/><rect x="24" y="7" width="8" height="23" rx="2"/><rect x="36" y="0" width="8" height="30" rx="2" opacity=".35"/></svg>
+      <svg width="42" height="30" viewBox="0 0 42 30" fill="#fff"><path d="M21 30l-6-7a9 9 0 0 1 12 0z"/><path d="M8 16a19 19 0 0 1 26 0l-4 4.5a13 13 0 0 0-18 0z"/><path d="M1 8.5a29 29 0 0 1 40 0L37 13a23 23 0 0 0-32 0z"/></svg>
+      <svg width="64" height="30" viewBox="0 0 64 30"><rect x="1.5" y="1.5" width="54" height="27" rx="8" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="3"/><rect x="6" y="6" width="9" height="18" rx="3.5" fill="#ff453a"/><rect x="59" y="10" width="4" height="10" rx="2" fill="#fff" fill-opacity=".5"/></svg>
     </div>
   </div>
 
-  <div class="close">
-    <div class="line">Quando a cobrança chega aqui,<br><b>cada dia conta.</b></div>
-    <div class="qual">Para empresas com dívida bancária <strong>acima de R$ 200 mil</strong></div>
-    <div class="cta">
-      Quero proteger minha empresa
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  <svg class="lockico" width="34" height="44" viewBox="0 0 34 44"><path d="M7 19v-7a10 10 0 0 1 20 0v7" fill="none" stroke="#fff" stroke-width="4.5"/><rect x="1" y="18" width="32" height="25" rx="6" fill="#fff"/></svg>
+  <div class="date">segunda-feira, 9 de novembro</div>
+  <div class="clock">7:12</div>
+
+  <div class="story-txt t1"><span>empresário, se o seu celular</span><br><span>amanheceu assim…</span></div>
+
+  <div class="stack">
+    <div class="n only-story">
+      <div class="ic" style="background:#16365f">
+        <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 4l9 5.5"/><path d="M5.5 10v7.5M10 10v7.5M14 10v7.5M18.5 10v7.5M3.5 20h17"/></svg>
+      </div>
+      <div>
+        <div class="hd"><span class="ti">Conta PJ</span><span class="tm">há 14 min</span></div>
+        <div class="bd">Parcela de capital de giro em atraso há 63 dias. Regularize para evitar medidas de cobrança.</div>
+      </div>
     </div>
-    <div class="foot">
-      <div class="brand">Pimentel Advocacia · Direito Bancário</div>
-      <div class="disc">Cada caso é analisado individualmente.<br>Não há garantia de resultado.</div>
+
+    <div class="n">
+      <div class="ic" style="background:#34c759">
+        <svg width="54" height="54" viewBox="0 0 24 24" fill="#fff"><path d="M12 3C6.9 3 3 6.6 3 11c0 2.4 1.2 4.6 3.1 6.1-.2 1.4-.9 2.6-1.9 3.5 2 .1 3.8-.6 5.1-1.7.9.2 1.8.3 2.7.3 5.1 0 9-3.6 9-8.1S17.1 3 12 3z"/></svg>
+      </div>
+      <div>
+        <div class="hd"><span class="ti">Gerente PJ</span><span class="tm">há 9 min</span></div>
+        <div class="bd">Bom dia. A parcela da empresa já tá 63 dias atrasada. Sem proposta até sexta, vai pro jurídico.</div>
+      </div>
+    </div>
+
+    <div class="n last">
+      <div class="ic" style="background:#8e1020">
+        <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v17M7.5 20.5h9M5 7h14"/><path d="m5 7-2.8 6a2.8 2.8 0 0 0 5.6 0zM19 7l-2.8 6a2.8 2.8 0 0 0 5.6 0z"/></svg>
+      </div>
+      <div>
+        <div class="hd"><span class="ti">Processo eletrônico</span><span class="tm">agora</span></div>
+        <div class="bd">Nova movimentação: execução de título. Pedido de bloqueio das contas da empresa.</div>
+      </div>
+      <div class="ghost g1"></div><div class="ghost g2"></div>
     </div>
   </div>
 
-</div>
+  <div class="story-txt t2"><span>…o próximo passo é a conta bloqueada.</span><br><span class="redline">fale com um advogado antes disso.</span></div>
+
+  <div class="legal"><b>Pimentel Advocacia</b> · dívida bancária de empresas acima de R$ 200 mil<br>Cada caso é analisado individualmente. Não há garantia de resultado.</div>
 </body>
 </html>

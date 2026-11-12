@@ -2,101 +2,114 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<title>Estático 02 – Refém do banco</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Poppins:wght@400;500;600;700;800&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<title>Estático 02 – Nota no celular</title>
 <style>
-  :root{ --red:#d3142b; --ink:#0c0c0e; --cream:#f3eee5; --paper:#fbf8f2; }
+  :root{--gold:#dfa200;--ink:#111;--gray:#8e8e93}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{width:1080px;height:1350px;overflow:hidden}
-  body{font-family:'Poppins',sans-serif;color:var(--ink);background:var(--cream);position:relative}
-  body::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.07;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");}
+  body{font-family:'Inter',sans-serif;background:#fff;color:var(--ink);position:relative;-webkit-font-smoothing:antialiased}
+  .page{position:absolute;inset:0}
 
-  .bar{height:92px;background:var(--ink);display:flex;align-items:center;justify-content:space-between;padding:0 64px;
-    border-bottom:10px solid var(--red)}
-  .bar .b{font-family:'Oswald';font-weight:600;font-size:36px;letter-spacing:2px;color:#fff;text-transform:uppercase}
-  .bar .s{font-family:'Oswald';font-weight:500;font-size:24px;letter-spacing:2px;color:#ff5a68;text-transform:uppercase}
+  /* barra de status (modo claro) */
+  .status{position:absolute;top:30px;left:64px;right:58px;display:flex;justify-content:space-between;align-items:center;
+    font-weight:600;font-size:34px;letter-spacing:-.3px}
+  .status .r{display:flex;gap:14px;align-items:center}
 
-  .wrap{padding:40px 64px 0}
-  .kicker{display:inline-block;background:var(--ink);color:#fff;font-family:'Oswald';font-weight:600;
-    font-size:32px;letter-spacing:2px;text-transform:uppercase;padding:8px 20px}
-  h1{font-family:'Oswald';font-weight:700;text-transform:uppercase;font-size:104px;line-height:1.02;margin-top:16px;letter-spacing:-.5px}
-  h1 .mark{display:inline-block;font-size:1.12em;margin-top:6px;background:var(--red);color:#fff;padding:0 18px 4px;margin-left:-6px;transform:rotate(-1.5deg);
-    box-shadow:8px 8px 0 var(--ink)}
+  /* barra do app Notas */
+  .nav{position:absolute;top:104px;left:30px;right:44px;display:flex;justify-content:space-between;align-items:center;color:var(--gold)}
+  .nav .back{display:flex;align-items:center;gap:6px;font-size:42px;letter-spacing:-.4px}
+  .nav .ic{display:flex;gap:40px;align-items:center}
 
-  .sheet{position:relative;margin-top:46px;background:var(--paper);border:3px solid var(--ink);padding:24px 34px 18px;
-    box-shadow:12px 12px 0 rgba(12,12,14,.9)}
-  .sheet .lbl{position:absolute;top:-22px;left:28px;background:var(--red);color:#fff;font-family:'Oswald';font-weight:600;
-    font-size:26px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 16px}
-  .item{display:grid;grid-template-columns:54px 1fr;gap:22px;align-items:center;padding:13px 0;border-bottom:2px dashed #cfc6b6}
-  .item:last-child{border-bottom:0}
-  .box{width:50px;height:50px;border:4px solid var(--ink);border-radius:6px;position:relative;background:#fff}
-  .box svg{position:absolute;left:-6px;top:-22px;width:72px;height:72px;overflow:visible}
-  .item .tx{font-size:34px;font-weight:600;line-height:1.15;letter-spacing:-.3px}
-  .item .tx em{font-style:normal;color:var(--red)}
+  .when{position:absolute;top:206px;width:100%;text-align:center;font-size:28px;color:var(--gray)}
+  .note{position:absolute;top:262px;left:60px;right:56px}
+  h1{font-size:64px;font-weight:700;letter-spacing:-1.2px;line-height:1.1}
 
-  .result{margin-top:30px;display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;background:var(--ink);color:#fff;
-    padding:26px 34px;border-left:16px solid var(--red)}
-  .result .q{font-family:'Oswald';font-weight:700;font-size:58px;line-height:.95;text-transform:uppercase}
-  .result .q span{color:#ff4656}
-  .result .a{font-size:26px;line-height:1.3;color:#e9e3dc}
-  .result .a b{color:#fff}
+  ul{list-style:none;margin-top:30px}
+  li{display:flex;align-items:center;gap:26px;font-size:42px;letter-spacing:-.5px;line-height:1.2;padding:13px 0}
+  .ck{flex:0 0 50px;width:50px;height:50px;border-radius:50%;display:grid;place-items:center}
+  .ck.on{background:var(--gold)}
+  .ck.off{border:3.5px solid #c7c7cc}
+  .caret{display:inline-block;width:4px;height:50px;background:var(--gold);margin-left:4px;vertical-align:middle;border-radius:2px}
+  .obs{font-size:42px;letter-spacing:-.5px;margin-top:22px;line-height:1.25}
 
-  .cta{margin-top:26px;display:flex;align-items:center;justify-content:space-between;background:var(--red);color:#fff;
-    padding:22px 34px;box-shadow:8px 8px 0 var(--ink)}
-  .cta .t{font-family:'Oswald';font-weight:700;font-size:44px;letter-spacing:1px;text-transform:uppercase}
-  .cta svg{width:52px;height:52px}
-  .foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:22px;font-size:18px;color:#5a544c}
-  .foot .min{font-family:'Oswald';font-weight:600;font-size:26px;letter-spacing:1px;color:var(--ink);text-transform:uppercase}
-  .foot .min b{color:var(--red)}
-  /* versão 9:16 (stories/reels): bloco 4:5 dentro da área segura */
+  /* texto estilo stories */
+  .story-txt{position:absolute;font-weight:700;font-size:46px;line-height:1.36;letter-spacing:-.6px}
+  .story-txt span{background:#111;color:#fff;padding:.08em .32em;border-radius:.28em;
+    -webkit-box-decoration-break:clone;box-decoration-break:clone}
+  .story-txt span.redline{background:#e3192d}
+  .t1{left:56px;top:1084px;transform:rotate(-2deg);transform-origin:left top}
+
+  /* rabisco à mão (ferramenta de desenho do stories) */
+  .draw{position:absolute;left:0;top:0;width:1080px;height:1350px;pointer-events:none}
+
+  .legal{position:absolute;left:0;right:0;bottom:22px;text-align:center;font-size:21px;line-height:1.35;color:#6d6d72}
+  .legal b{color:#111}
+
+  .toolbar{display:none}
+
+  /* ===== versão 9:16 (stories/reels) ===== */
   html.story,html.story body{height:1920px}
-  html.story body{padding-top:250px;background:linear-gradient(var(--ink) 0 250px,var(--cream) 250px)}
+  html.story .page{top:240px;bottom:auto;height:1350px}
+  html.story .legal{bottom:22px}
+  html.story .toolbar{display:flex;position:absolute;left:70px;right:70px;bottom:70px;justify-content:space-between;align-items:center}
 </style>
 <script>if(new URLSearchParams(location.search).get('h')==='1920')document.documentElement.classList.add('story')</script>
 </head>
 <body>
-  <div class="bar"><div class="b">Pimentel Advocacia</div><div class="s">Gestão de passivo empresarial</div></div>
-
-  <div class="wrap">
-    <div class="kicker">Empresário, seja sincero:</div>
-    <h1>Sua empresa virou<br><span class="mark">refém do banco?</span></h1>
-
-    <div class="sheet">
-      <div class="lbl">Marque o que já está acontecendo</div>
-
-      <div class="item"><div class="box"><svg viewBox="0 0 72 72"><path d="M12 40 C 18 46, 24 54, 28 60 C 36 40, 50 18, 70 2" fill="none" stroke="#d3142b" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="tx">Parcela do capital de giro <em>atrasada</em></div></div>
-
-      <div class="item"><div class="box"><svg viewBox="0 0 72 72"><path d="M10 42 C 17 47, 23 54, 27 61 C 37 38, 52 16, 68 4" fill="none" stroke="#d3142b" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="tx">Cheque especial virou o caixa da empresa</div></div>
-
-      <div class="item"><div class="box"><svg viewBox="0 0 72 72"><path d="M12 38 C 19 45, 24 53, 29 60 C 38 41, 49 20, 69 3" fill="none" stroke="#d3142b" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="tx">Empréstimo novo <em>pra pagar o antigo</em></div></div>
-
-      <div class="item"><div class="box"><svg viewBox="0 0 72 72"><path d="M11 41 C 18 46, 23 53, 28 60 C 36 42, 51 17, 70 5" fill="none" stroke="#d3142b" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="tx">Renegociou e a dívida <em>só aumentou</em></div></div>
-
-      <div class="item"><div class="box"></div>
-        <div class="tx">Seu imóvel ou seu CPF garantindo a dívida</div></div>
-    </div>
-
-    <div class="result">
-      <div class="q">Marcou<br><span>2 ou mais?</span></div>
-      <div class="a">Mais um empréstimo não resolve. <b>Existe a possibilidade de negociar a dívida com estratégia jurídica, antes da execução.</b></div>
-    </div>
-
-    <div class="cta">
-      <div class="t">Quero uma análise do meu caso</div>
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-    </div>
-
-    <div class="foot">
-      <div class="min">Dívida da empresa acima de <b>R$ 200 mil</b></div>
-      <div style="text-align:right;line-height:1.3">Cada caso é analisado individualmente.<br>Não há garantia de resultado.</div>
+<div class="page">
+  <div class="status">
+    <div>23:47</div>
+    <div class="r">
+      <svg width="46" height="30" viewBox="0 0 46 30" fill="#111"><rect x="0" y="20" width="8" height="10" rx="2"/><rect x="12" y="14" width="8" height="16" rx="2"/><rect x="24" y="7" width="8" height="23" rx="2"/><rect x="36" y="0" width="8" height="30" rx="2" opacity=".25"/></svg>
+      <svg width="42" height="30" viewBox="0 0 42 30" fill="#111"><path d="M21 30l-6-7a9 9 0 0 1 12 0z"/><path d="M8 16a19 19 0 0 1 26 0l-4 4.5a13 13 0 0 0-18 0z"/><path d="M1 8.5a29 29 0 0 1 40 0L37 13a23 23 0 0 0-32 0z"/></svg>
+      <svg width="64" height="30" viewBox="0 0 64 30"><rect x="1.5" y="1.5" width="54" height="27" rx="8" fill="none" stroke="#111" stroke-opacity=".4" stroke-width="3"/><rect x="6" y="6" width="13" height="18" rx="3.5" fill="#111"/><rect x="59" y="10" width="4" height="10" rx="2" fill="#111" fill-opacity=".4"/></svg>
     </div>
   </div>
+
+  <div class="nav">
+    <div class="back">
+      <svg width="30" height="48" viewBox="0 0 30 48" fill="none" stroke="#dfa200" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"><path d="M24 4 5 24l19 20"/></svg>
+      Notas
+    </div>
+    <div class="ic">
+      <svg width="44" height="54" viewBox="0 0 44 54" fill="none" stroke="#dfa200" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 34V3M12 13 22 3l10 10"/><path d="M14 21H6v30h32V21h-8"/></svg>
+      <svg width="56" height="56" viewBox="0 0 56 56" fill="none" stroke="#dfa200" stroke-width="4"><circle cx="28" cy="28" r="25"/><circle cx="16" cy="28" r="3" fill="#dfa200" stroke="none"/><circle cx="28" cy="28" r="3" fill="#dfa200" stroke="none"/><circle cx="40" cy="28" r="3" fill="#dfa200" stroke="none"/></svg>
+    </div>
+  </div>
+
+  <div class="when">9 de novembro de 2026 às 23:41</div>
+
+  <div class="note">
+    <h1>Plano pra salvar a empresa</h1>
+    <ul>
+      <li><span class="ck on"><svg width="28" height="22" viewBox="0 0 28 22" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 10.5 19 25 3.5"/></svg></span>Renegociar com o gerente</li>
+      <li><span class="ck on"><svg width="28" height="22" viewBox="0 0 28 22" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 10.5 19 25 3.5"/></svg></span>Empréstimo novo pra quitar o antigo</li>
+      <li><span class="ck on"><svg width="28" height="22" viewBox="0 0 28 22" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 10.5 19 25 3.5"/></svg></span>Cheque especial pra pagar fornecedor</li>
+      <li><span class="ck on"><svg width="28" height="22" viewBox="0 0 28 22" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 10.5 19 25 3.5"/></svg></span>Antecipar recebíveis</li>
+      <li><span class="ck on"><svg width="28" height="22" viewBox="0 0 28 22" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 10.5 19 25 3.5"/></svg></span>Renegociar de novo (parcela subiu)</li>
+      <li><span class="ck off"></span>Entender por que a dívida só cresce</li>
+      <li id="ultimo"><span class="ck off"></span>Falar com advogado de dívida bancária<span class="caret"></span></li>
+    </ul>
+    <div class="obs">obs: a dívida no banco já passou de 480 mil</div>
+  </div>
+
+  <div class="story-txt t1"><span>já fez tudo isso e a dívida só aumentou?</span><br><span class="redline">falta o último item da lista.</span></div>
+
+  <!-- círculo e seta desenhados "à mão" -->
+  <svg class="draw" viewBox="0 0 1080 1350" fill="none" stroke="#e3192d" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M150 906 C 62 896, 34 852, 118 829 C 260 806, 700 805, 930 815 C 1012 822, 1032 862, 990 887 C 930 916, 600 917, 330 913 C 200 911, 88 901, 70 870 C 60 850, 92 832, 172 822" stroke-width="7"/>
+    <path d="M978 1050 C 1002 1012, 1008 976, 999 934" stroke-width="7"/>
+    <path d="M974 957 L 998 929 L 1023 959" stroke-width="7"/>
+  </svg>
+
+  <div class="legal"><b>Pimentel Advocacia</b> · dívida bancária de empresas acima de R$ 200 mil<br>Cada caso é analisado individualmente. Não há garantia de resultado.</div>
+</div>
+
+<div class="toolbar">
+  <svg width="56" height="56" viewBox="0 0 56 56" fill="none" stroke="#dfa200" stroke-width="4" stroke-linecap="round"><circle cx="10" cy="12" r="5"/><circle cx="10" cy="28" r="5"/><circle cx="10" cy="44" r="5"/><path d="M24 12h28M24 28h28M24 44h28"/></svg>
+  <svg width="60" height="52" viewBox="0 0 60 52" fill="none" stroke="#dfa200" stroke-width="4" stroke-linejoin="round"><path d="M4 14h12l5-8h18l5 8h12v34H4z"/><circle cx="30" cy="29" r="10"/></svg>
+  <svg width="56" height="56" viewBox="0 0 56 56" fill="none" stroke="#dfa200" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M38 6l12 12-30 30H8V36z"/><path d="M32 12l12 12"/></svg>
+  <svg width="56" height="56" viewBox="0 0 56 56" fill="none" stroke="#dfa200" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M28 8H8v40h40V28"/><path d="M44 4l8 8-22 22h-8v-8z"/></svg>
+</div>
 </body>
 </html>
