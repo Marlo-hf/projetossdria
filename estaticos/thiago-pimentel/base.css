@@ -1,0 +1,56 @@
+/* Base compartilhada dos estáticos — Pimentel Advocacia / Gestão de Passivo PJ */
+@font-face { font-family: "Archivo"; font-weight: 700; font-stretch: 100%; src: url(fonts/Archivo-normal-700.ttf); }
+@font-face { font-family: "Archivo"; font-weight: 800; font-stretch: 100%; src: url(fonts/Archivo-normal-800.ttf); }
+@font-face { font-family: "Archivo"; font-weight: 900; font-stretch: 100%; src: url(fonts/Archivo-normal-900.ttf); }
+@font-face { font-family: "Archivo"; font-weight: 700; font-stretch: 112.5%; src: url(fonts/Archivo-semi-expanded-700.ttf); }
+@font-face { font-family: "Archivo"; font-weight: 800; font-stretch: 112.5%; src: url(fonts/Archivo-semi-expanded-800.ttf); }
+@font-face { font-family: "Archivo"; font-weight: 900; font-stretch: 112.5%; src: url(fonts/Archivo-semi-expanded-900.ttf); }
+@font-face { font-family: "Archivo"; font-weight: 700; font-stretch: 125%; src: url(fonts/Archivo-expanded-700.ttf); }
+@font-face { font-family: "Archivo"; font-weight: 800; font-stretch: 125%; src: url(fonts/Archivo-expanded-800.ttf); }
+@font-face { font-family: "Archivo"; font-weight: 900; font-stretch: 125%; src: url(fonts/Archivo-expanded-900.ttf); }
+@font-face { font-family: "Caveat"; font-weight: 700; src: url(fonts/Caveat-normal-700.ttf); }
+
+:root {
+  --red: #E0302F;
+  --red-deep: #B3181A;
+  --ink: #0B0D12;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1350px; overflow: hidden; }
+body.f916, body.f916 html { height: 1920px; }
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+.canvas {
+  position: relative;
+  width: 1080px;
+  height: 1350px;
+  display: flex;
+  flex-direction: column;
+  padding: 70px 76px 58px;
+  overflow: hidden;
+}
+body.f916 .canvas { height: 1920px; padding: 230px 76px 300px; }
+
+.cta {
+  display: flex; align-items: center; justify-content: center; gap: 18px;
+  height: 96px;
+  background: var(--red);
+  color: #fff;
+  font-family: "Archivo"; font-stretch: 112.5%; font-weight: 800;
+  font-size: 31px; letter-spacing: 0.06em;
+  border-radius: 4px;
+  box-shadow: 0 14px 40px -12px rgba(224, 48, 47, 0.65);
+}
+.cta svg { width: 34px; height: 34px; }
+
+.sign { margin-top: 24px; font-size: 21px; line-height: 1.35; }
+.sign b {
+  font-family: "Archivo"; font-stretch: 112.5%; font-weight: 800;
+  letter-spacing: 0.12em; font-size: 20px;
+}
+.sign .dia { display: inline-block; width: 13px; height: 13px; background: var(--red); transform: rotate(45deg); margin: 0 14px 2px; }
