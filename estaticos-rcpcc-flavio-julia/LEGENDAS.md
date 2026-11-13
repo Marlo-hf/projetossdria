@@ -4,46 +4,48 @@ Formato 1080×1440, igual aos estáticos que já rodam no conjunto **CJ RCPCC 40
 (campanha `[UNLOCKIFY][RCPCC - Flávio de Lima - 29.09.2026] RCPCC 40K`).
 A numeração continua a dos atuais: EST 01 a 03 já estão no ar, então estes são o EST 04 e o EST 05.
 
-| Arquivo | Ângulo de dor |
-| --- | --- |
-| `EST 04 - SALARIO COM DONO - RCPCC 40K.png` | Salário que já chega comprometido (consignado + cartão + cheque especial) e quase nada sobra para viver |
-| `EST 05 - CICLO DO EMPRESTIMO - RCPCC 40K.png` | Ciclo de pegar empréstimo para pagar empréstimo, para quem "está em dia mas vai atrasar" |
+Versão 2, em estilo nativo (sem cara de peça desenhada): parecem post de gente comum, não anúncio.
+
+| Arquivo | Formato | Ângulo de dor |
+| --- | --- | --- |
+| `EST 04 - PRINT NOTAS CONTAS DO MES - RCPCC 40K.png` | Meme com print do app Notas do celular | Salário que já chega comprometido e o mês que não fecha |
+| `EST 05 - TEXTO EMPRESTIMO PRA PAGAR EMPRESTIMO - RCPCC 40K.png` | Post só de texto, com marca-texto | Ciclo de pegar empréstimo para pagar empréstimo |
 
 Para editar um texto, mude o `.html` correspondente e gere a imagem de novo (render 1080×1440).
 
 ---
 
-## EST 04 — Seu salário já chega com dono?
+## EST 04 — Print do Notas ("quando o salário cai e você vai fazer as contas")
 
 **Texto principal**
 
-O salário cai na conta e, antes de você respirar, já foi quase todo embora: consignado, parcela do empréstimo, mínimo do cartão, juros do cheque especial…
+O salário cai e no mesmo dia já foi quase tudo: consignado, parcela do empréstimo, mínimo do cartão, juros do cheque especial.
 
-No fim, sobra tão pouco que não dá nem pra passar o mês. E aí vem a vontade de pegar mais um empréstimo só pra fechar a conta.
+Sobra pouco, o mês não fecha, e a saída parece ser pegar mais um empréstimo. Só que aí a conta do mês seguinte fica pior ainda.
 
-Essa situação tem nome: superendividamento. E a Lei 14.181/2021 prevê que a pessoa nessa situação possa pedir um plano de pagamento das dívidas que preserve o mínimo para viver.
+Desde 2021 existe uma lei pra quem chegou nesse ponto, a Lei do Superendividamento (14.181/21). Ela permite pedir um plano de pagamento das dívidas que deixe o mínimo pra pessoa viver.
 
-Se as suas dívidas no CPF passam de R$ 40 mil, toque em "Saiba mais", responda algumas perguntas rápidas e veja se o seu caso se encaixa.
+Se as suas dívidas no CPF passam de R$ 40 mil, toque em Saiba mais e responda umas perguntas rápidas pra ver se o seu caso se encaixa.
 
-**Título:** Seu salário já chega com dono?
+**Título:** Sobra quase nada do salário?
 **Descrição:** Para dívidas acima de R$ 40 mil no CPF
 **CTA:** Inscreva-se / Saiba mais (igual aos atuais)
 
 ---
 
-## EST 05 — Pare de pegar empréstimo pra pagar empréstimo
+## EST 05 — Texto ("Pegou empréstimo pra pagar empréstimo?")
 
 **Texto principal**
 
-Pega um empréstimo pra pagar a parcela que ia atrasar. No mês seguinte os juros já subiram, o dinheiro falta de novo… e lá vem outro empréstimo.
+Pegou empréstimo pra pagar empréstimo? Você não é o único.
 
-Quem está preso nesse ciclo sabe o quanto ele cansa. E ele não termina sozinho: a cada volta, a dívida fica maior.
+Começa com o cartão, depois vem a parcela, depois o cheque especial. Quando vê, metade do salário vai pro banco todo mês e a dívida continua do mesmo tamanho.
 
-A Lei do Superendividamento (Lei 14.181/2021) permite que a pessoa física reúna as dívidas em um único plano de pagamento, preservando o mínimo para viver.
+Existe uma lei pra isso: a Lei do Superendividamento (14.181/21). Ela permite juntar as dívidas num plano de pagamento que deixa o mínimo pra você viver.
 
-Se você deve mais de R$ 40 mil no seu CPF, toque em "Saiba mais" e entenda seus direitos.
+Se você deve mais de R$ 40 mil no CPF, toque em Saiba mais e veja se o seu caso se encaixa.
 
-**Título:** Pare de pegar empréstimo pra pagar empréstimo
+**Título:** Pegou empréstimo pra pagar empréstimo?
 **Descrição:** Para quem deve mais de R$ 40 mil no CPF
 **CTA:** Inscreva-se / Saiba mais (igual aos atuais)
 
@@ -52,5 +54,4 @@ Se você deve mais de R$ 40 mil no seu CPF, toque em "Saiba mais" e entenda seus
 ### Cuidados de compliance (Provimento 205/2021 da OAB)
 - Não prometem resultado, valor de redução nem prazo. Falam só do que a lei prevê.
 - Não falam de preço nem de consulta grátis.
-- Os valores do recibo no EST 04 têm a marcação "*valores ilustrativos".
-- Nenhum nome de banco aparece no criativo.
+- O print do EST 04 é uma situação ilustrativa (não é depoimento de cliente) e não mostra nome de banco.

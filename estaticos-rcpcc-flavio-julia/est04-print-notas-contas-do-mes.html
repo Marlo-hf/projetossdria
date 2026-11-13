@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>EST 04 - Contas do mês (print do Notas)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1080px;height:1440px}
+  body{position:relative;overflow:hidden;background:#fff;color:#000;font-family:'Inter',-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+
+  /* legenda estilo meme */
+  .meme{height:196px;padding:30px 46px 0;font-family:'Liberation Sans',Arial,sans-serif;font-size:51px;line-height:1.2;color:#000;border-bottom:2px solid #e3e3e3}
+
+  /* print do celular */
+  .shot{position:absolute;top:198px;left:0;right:0;bottom:0;background:#fff}
+  .status{height:128px;position:relative}
+  .status .time{position:absolute;left:104px;top:42px;font-weight:600;font-size:47px;letter-spacing:-.5px}
+  .status .icons{position:absolute;right:62px;top:50px;display:flex;align-items:center;gap:18px}
+
+  .nav{height:112px;position:relative;color:#E2A300}
+  .nav .back{position:absolute;left:26px;top:22px;display:flex;align-items:center;gap:6px;font-size:47px;font-weight:400}
+  .nav .right{position:absolute;right:40px;top:20px;display:flex;align-items:center;gap:40px;font-size:47px;font-weight:600}
+
+  .date{text-align:center;color:#8a8a8e;font-size:35px;margin-top:6px}
+  .note{padding:26px 56px 0;font-size:46px;line-height:63px;letter-spacing:-.2px}
+  .note .t{font-weight:700;font-size:70px;line-height:84px;letter-spacing:-.8px;margin-bottom:8px}
+  .note .gap{height:63px}
+  .caret{display:inline-block;width:4px;height:54px;background:#E2A300;vertical-align:-10px;margin-left:3px;border-radius:2px}
+
+  /* texto de story por cima */
+  .story{position:absolute;right:40px;top:418px;transform:rotate(-5deg);text-align:center}
+  .story span{display:inline-block;background:#ff3a30;color:#fff;font-weight:700;font-size:42px;line-height:1.12;padding:8px 20px 10px;border-radius:14px;margin-top:-8px}
+</style>
+</head>
+<body>
+  <div class="meme">quando o salário cai e você vai fazer as contas:</div>
+
+  <div class="shot">
+    <div class="status">
+      <div class="time">23:48</div>
+      <div class="icons">
+        <!-- sinal -->
+        <svg width="50" height="32" viewBox="0 0 50 32"><rect x="0" y="22" width="9" height="10" rx="2.5"/><rect x="13" y="15" width="9" height="17" rx="2.5"/><rect x="26" y="8" width="9" height="24" rx="2.5"/><rect x="39" y="0" width="9" height="32" rx="2.5" fill="#c7c7cc"/></svg>
+        <!-- wifi -->
+        <svg width="46" height="33" viewBox="0 0 46 33"><path d="M23 33 L15.5 24.6 A11 11 0 0 1 30.5 24.6 Z"/><path d="M8.6 17.4 A19.5 19.5 0 0 1 37.4 17.4 L33.6 21.6 A14 14 0 0 0 12.4 21.6 Z"/><path d="M1.6 10.2 A29.5 29.5 0 0 1 44.4 10.2 L40.6 14.4 A24 24 0 0 0 5.4 14.4 Z"/></svg>
+        <!-- bateria fraca -->
+        <svg width="72" height="34" viewBox="0 0 72 34"><rect x="1.5" y="1.5" width="62" height="31" rx="9" fill="none" stroke="#000" stroke-opacity=".38" stroke-width="3"/><rect x="6" y="6" width="9" height="22" rx="4" fill="#ff3b30"/><path d="M67 12 a4 4 0 0 1 0 10 z" fill="#000" fill-opacity=".4"/></svg>
+      </div>
+    </div>
+
+    <div class="nav">
+      <div class="back">
+        <svg width="30" height="50" viewBox="0 0 30 50"><path d="M24 4 L5 25 L24 46" fill="none" stroke="#E2A300" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Notas</span>
+      </div>
+      <div class="right">
+        <!-- compartilhar -->
+        <svg width="40" height="54" viewBox="0 0 40 54"><path d="M20 3 V34 M9 14 L20 3 L31 14" fill="none" stroke="#E2A300" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 22 H6 a3 3 0 0 0 -3 3 V48 a3 3 0 0 0 3 3 H34 a3 3 0 0 0 3 -3 V25 a3 3 0 0 0 -3 -3 H27" fill="none" stroke="#E2A300" stroke-width="4.5" stroke-linecap="round"/></svg>
+        <!-- mais -->
+        <svg width="52" height="52" viewBox="0 0 52 52"><circle cx="26" cy="26" r="23" fill="none" stroke="#E2A300" stroke-width="4.5"/><circle cx="15" cy="26" r="3.6" fill="#E2A300"/><circle cx="26" cy="26" r="3.6" fill="#E2A300"/><circle cx="37" cy="26" r="3.6" fill="#E2A300"/></svg>
+        <span>OK</span>
+      </div>
+    </div>
+
+    <div class="date">13 de novembro de 2026 às 23:41</div>
+
+    <div class="note">
+      <div class="t">contas novembro</div>
+      <div>salario 6.850</div>
+      <div class="gap"></div>
+      <div>consignado -2.055</div>
+      <div>emprestimo banco -1.480</div>
+      <div>cartao (so o minimo) -1.230</div>
+      <div>financeira -890</div>
+      <div>cheque especial -740</div>
+      <div class="gap"></div>
+      <div>sobra 455</div>
+      <div>e ainda tem aluguel luz mercado</div>
+      <div>nao fecha. de novo</div>
+      <div>pego outro emprestimo???<span class="caret"></span></div>
+    </div>
+
+    <div class="story"><span>deve mais de</span><br><span>40 mil no CPF?</span><br><span>tem lei pra isso</span></div>
+  </div>
+</body>
+</html>
