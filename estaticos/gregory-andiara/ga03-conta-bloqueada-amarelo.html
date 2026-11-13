@@ -2,83 +2,93 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<title>GA03 · O banco já bloqueou a conta da sua empresa?</title>
-<link rel="stylesheet" href="base.css">
+<title>GA03 · O banco bloqueou a conta da sua empresa?</title>
 <style>
-  body { background: #FFD83A; color: #111; }
-  .canvas { background: #FFD83A; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1440px; overflow: hidden; }
+  body.f916, body.f916 html { height: 1920px; }
+  body { background: #FFD43B; color: #121212; font-family: "Inter", sans-serif; -webkit-font-smoothing: antialiased; }
 
-  .ola { font-size: 66px; line-height: 1; letter-spacing: -0.005em; }
-  .head { margin-top: 14px; letter-spacing: -0.01em; }
-  .head .fit { margin-top: -4px; }
+  .canvas {
+    width: 1080px; height: 1440px; padding: 64px 80px 60px;
+    display: flex; flex-direction: column; background: #FFD43B;
+  }
+  body.f916 .canvas { height: 1920px; padding: 230px 80px 320px; }
 
-  .bar {
-    margin-top: 30px; background: #111; color: #FFD83A;
-    font-size: 76px; line-height: 1; padding: 20px 28px 22px; text-align: center;
+  /* cabeçalho editorial */
+  .topo {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 20px; border-bottom: 3px solid #121212;
+    font-size: 19px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase;
+  }
+  .topo span:last-child { font-weight: 600; letter-spacing: .14em; }
+
+  .kicker { margin-top: 64px; font-family: "Inter Display", "Inter"; font-size: 50px; font-weight: 500; letter-spacing: -0.02em; }
+
+  h1 {
+    margin-top: 14px;
+    font-family: "Inter Display", "Inter"; font-weight: 900;
+    font-size: 158px; line-height: .96; letter-spacing: -0.042em; word-spacing: .04em;
+  }
+  h1 .inv {
+    display: inline-block; line-height: .8;
+    background: #121212; color: #FFD43B;
+    padding: .03em .09em .2em; margin: .04em -.02em .02em -.06em;
   }
 
-  .apoio { margin-top: 34px; font-size: 33px; line-height: 1.32; font-weight: 600; letter-spacing: -0.01em; }
-  .apoio b { font-weight: 800; }
-
-  .chips { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 14px; }
-  .chips span {
-    border: 3px solid #111; border-radius: 16px;
-    font-size: 31px; line-height: 1; padding: 13px 20px 15px;
+  .filtro {
+    margin-top: 56px; align-self: flex-start;
+    display: flex; align-items: center; gap: 18px;
+    font-size: 34px; font-weight: 700; letter-spacing: -0.01em;
   }
+  .filtro i {
+    display: inline-block; width: 46px; height: 46px; border-radius: 50%;
+    background: #121212; position: relative; flex: none;
+  }
+  .filtro i::after { /* check */
+    content: ""; position: absolute; left: 15px; top: 10px; width: 11px; height: 20px;
+    border: solid #FFD43B; border-width: 0 5px 5px 0; transform: rotate(45deg);
+  }
+  .filtro b { font-weight: 900; text-decoration: underline; text-decoration-thickness: 5px; text-underline-offset: 7px; }
+
+  .apoio { margin-top: 20px; font-size: 32px; line-height: 1.38; font-weight: 500; max-width: 860px; color: #2A2A2A; }
 
   .cta {
-    margin-top: 38px; background: #111; color: #FFD83A; border-radius: 18px;
-    font-size: 54px; line-height: 1; padding: 26px 0 30px; text-align: center;
+    margin-top: auto;
+    display: flex; align-items: center; justify-content: space-between;
+    background: #121212; color: #fff; border-radius: 999px;
+    padding: 18px 18px 18px 46px;
+    font-size: 36px; font-weight: 700; letter-spacing: -0.01em;
   }
+  .cta .seta {
+    width: 78px; height: 78px; border-radius: 50%; background: #FFD43B;
+    display: grid; place-items: center; flex: none;
+  }
+  .cta .seta svg { width: 36px; height: 36px; }
 
-  .rodape {
-    margin-top: auto; padding: 0 0 34px;
-    display: flex; justify-content: space-between; align-items: flex-end;
-  }
-  .rodape .marca { font-size: 25px; line-height: 1.25; font-weight: 600; }
-  .rodape .marca b { display: block; font-family: "Anton", sans-serif; font-weight: 400; font-size: 32px; letter-spacing: .01em; }
-  .rodape small { font-size: 19px; font-weight: 700; }
-
-  .faixa {
-    margin: 0 -64px; height: 46px; flex: none;
-    background: repeating-linear-gradient(-45deg, #111 0 34px, #FFD83A 34px 68px);
-  }
+  .nota { margin-top: 22px; font-size: 19px; font-weight: 500; color: #4A4535; text-align: center; letter-spacing: .01em; }
 
   /* 9:16 */
-  body.f916 .ola { font-size: 76px; }
-  body.f916 .bar { font-size: 78px; margin-top: 40px; white-space: nowrap; }
-  body.f916 .apoio { font-size: 37px; margin-top: 42px; }
-  body.f916 .chips { margin-top: 38px; }
-  body.f916 .cta { margin-top: 48px; font-size: 58px; }
-  body.f916 .rodape { padding-bottom: 250px; }
+  body.f916 .kicker { margin-top: 90px; font-size: 54px; }
+  body.f916 h1 { font-size: 158px; }
+  body.f916 .filtro { margin-top: 70px; }
 </style>
 </head>
 <body>
 <div class="canvas">
-  <div class="ola anton">Empresário,</div>
+  <div class="topo"><span>Schemes &amp; Remonti</span><span>Direito Bancário Empresarial</span></div>
 
-  <div class="head anton">
-    <span class="fit" data-max="200">o banco já</span>
-    <span class="fit" data-max="200">bloqueou a conta</span>
-    <span class="fit" data-max="200">da sua empresa?</span>
+  <p class="kicker">Empresário,</p>
+  <h1>o banco <span class="inv">bloqueou</span> a conta da sua empresa?</h1>
+
+  <p class="filtro"><i></i><span>Dívida bancária acima de <b>R$ 200 mil</b></span></p>
+  <p class="apoio">Conta travada, faturamento retido ou penhora. Cada dia sem defesa pesa no caixa, e existem caminhos jurídicos para proteger a empresa.</p>
+
+  <div class="cta">Solicite a análise do seu caso
+    <span class="seta"><svg viewBox="0 0 24 24" fill="none" stroke="#121212" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
   </div>
-
-  <div class="bar anton">Dívida acima de R$ 200 mil?</div>
-
-  <p class="apoio">Conta travada, faturamento retido ou penhora: <b>cada dia sem defesa pesa no caixa.</b> Existem caminhos jurídicos para proteger a empresa.</p>
-
-  <div class="chips anton">
-    <span>Conta bloqueada</span><span>Penhora</span><span>Execução</span><span>Faturamento retido</span>
-  </div>
-
-  <div class="cta anton">Solicite a análise do seu caso →</div>
-
-  <div class="rodape">
-    <div class="marca"><b>SCHEMES &amp; REMONTI</b>Direito Bancário Empresarial</div>
-    <small>Conteúdo informativo.</small>
-  </div>
-  <div class="faixa"></div>
+  <p class="nota">Conteúdo informativo. Cada caso exige análise individual.</p>
 </div>
-<script src="fit.js"></script>
+<script>if (new URLSearchParams(location.search).get('f') === '916') document.body.classList.add('f916');</script>
 </body>
 </html>
