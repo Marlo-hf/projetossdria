@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>GA03 · O banco já bloqueou a conta da sua empresa?</title>
+<link rel="stylesheet" href="base.css">
+<style>
+  body { background: #FFD83A; color: #111; }
+  .canvas { background: #FFD83A; }
+
+  .ola { font-size: 66px; line-height: 1; letter-spacing: -0.005em; }
+  .head { margin-top: 14px; letter-spacing: -0.01em; }
+  .head .fit { margin-top: -4px; }
+
+  .bar {
+    margin-top: 30px; background: #111; color: #FFD83A;
+    font-size: 76px; line-height: 1; padding: 20px 28px 22px; text-align: center;
+  }
+
+  .apoio { margin-top: 34px; font-size: 33px; line-height: 1.32; font-weight: 600; letter-spacing: -0.01em; }
+  .apoio b { font-weight: 800; }
+
+  .chips { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 14px; }
+  .chips span {
+    border: 3px solid #111; border-radius: 16px;
+    font-size: 31px; line-height: 1; padding: 13px 20px 15px;
+  }
+
+  .cta {
+    margin-top: 38px; background: #111; color: #FFD83A; border-radius: 18px;
+    font-size: 54px; line-height: 1; padding: 26px 0 30px; text-align: center;
+  }
+
+  .rodape {
+    margin-top: auto; padding: 0 0 34px;
+    display: flex; justify-content: space-between; align-items: flex-end;
+  }
+  .rodape .marca { font-size: 25px; line-height: 1.25; font-weight: 600; }
+  .rodape .marca b { display: block; font-family: "Anton", sans-serif; font-weight: 400; font-size: 32px; letter-spacing: .01em; }
+  .rodape small { font-size: 19px; font-weight: 700; }
+
+  .faixa {
+    margin: 0 -64px; height: 46px; flex: none;
+    background: repeating-linear-gradient(-45deg, #111 0 34px, #FFD83A 34px 68px);
+  }
+
+  /* 9:16 */
+  body.f916 .ola { font-size: 76px; }
+  body.f916 .bar { font-size: 78px; margin-top: 40px; white-space: nowrap; }
+  body.f916 .apoio { font-size: 37px; margin-top: 42px; }
+  body.f916 .chips { margin-top: 38px; }
+  body.f916 .cta { margin-top: 48px; font-size: 58px; }
+  body.f916 .rodape { padding-bottom: 250px; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="ola anton">Empresário,</div>
+
+  <div class="head anton">
+    <span class="fit" data-max="200">o banco já</span>
+    <span class="fit" data-max="200">bloqueou a conta</span>
+    <span class="fit" data-max="200">da sua empresa?</span>
+  </div>
+
+  <div class="bar anton">Dívida acima de R$ 200 mil?</div>
+
+  <p class="apoio">Conta travada, faturamento retido ou penhora: <b>cada dia sem defesa pesa no caixa.</b> Existem caminhos jurídicos para proteger a empresa.</p>
+
+  <div class="chips anton">
+    <span>Conta bloqueada</span><span>Penhora</span><span>Execução</span><span>Faturamento retido</span>
+  </div>
+
+  <div class="cta anton">Solicite a análise do seu caso →</div>
+
+  <div class="rodape">
+    <div class="marca"><b>SCHEMES &amp; REMONTI</b>Direito Bancário Empresarial</div>
+    <small>Conteúdo informativo.</small>
+  </div>
+  <div class="faixa"></div>
+</div>
+<script src="fit.js"></script>
+</body>
+</html>
