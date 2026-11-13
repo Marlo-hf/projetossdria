@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>GA01 · Gregory · Conta bloqueada</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1350px; overflow: hidden; background: #111; }
+  body.f916, body.f916 html { height: 1920px; }
+  body { font-family: "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+
+  .canvas {
+    position: relative; width: 1080px; height: 1350px; overflow: hidden;
+    background: url(img/gregory.jpg) center -190px / 1080px 1920px no-repeat;
+  }
+  body.f916 .canvas { height: 1920px; background-position: center 0; }
+
+  /* sombra só embaixo, para o texto e a marca */
+  .canvas::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 560px;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 55%, rgba(0,0,0,.78) 100%);
+  }
+  .canvas > * { position: absolute; z-index: 2; }
+
+  /* ===== caixinha de pergunta ===== */
+  .q {
+    left: 50%; top: 640px; width: 820px;
+    transform: translateX(-50%) rotate(-2deg);
+    background: #fff; border-radius: 30px;
+    padding: 52px 44px 34px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.28);
+    text-align: center;
+  }
+  .q .av {
+    position: absolute; left: 50%; top: -42px; transform: translateX(-50%);
+    width: 84px; height: 84px; border-radius: 50%;
+    border: 5px solid #fff;
+    background: url(img/gregory.jpg) -83px -98px / 260px auto no-repeat;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  }
+  .q .lab { font-size: 23px; font-weight: 600; color: #8E8E93; letter-spacing: .01em; }
+  .q .txt { margin-top: 12px; font-size: 39px; line-height: 1.22; font-weight: 700; color: #111; letter-spacing: -0.012em; }
+
+  /* ===== resposta no estilo texto de story ===== */
+  .ans { left: 70px; right: 60px; top: 950px; transform: rotate(-1deg); }
+  .ans p { font-size: 50px; line-height: 1.42; font-weight: 800; letter-spacing: -0.02em; }
+  .ans span {
+    background: #fff; color: #111;
+    padding: 4px 18px 6px; border-radius: 12px;
+    -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  }
+  .ans .hot span { background: #E9C46A; }
+
+  .rodape {
+    left: 70px; right: 70px; bottom: 54px;
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 30px;
+  }
+  .rodape .cta { color: #fff; font-size: 27px; line-height: 1.32; font-weight: 500; text-shadow: 0 1px 6px rgba(0,0,0,.5); }
+  .rodape .cta b { font-weight: 800; color: #F1D27F; }
+  .logo { width: 300px; flex: none; margin-bottom: 4px; }
+
+  /* 9:16: respeita a área da interface (topo ~250px, base ~340px) */
+  body.f916 .q { top: 905px; }
+  body.f916 .ans { top: 1225px; }
+  body.f916 .rodape { bottom: 330px; }
+  body.f916 .canvas::after { height: 1000px; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.5) 45%, rgba(0,0,0,.8) 100%); }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="q">
+    <div class="av"></div>
+    <div class="lab">Caixinha de perguntas</div>
+    <div class="txt">Dr., o banco bloqueou a conta da empresa e a folha vence sexta.<br>Ainda dá pra fazer alguma coisa?</div>
+  </div>
+
+  <div class="ans">
+    <p><span>Tem o que fazer, sim.</span></p>
+    <p class="hot"><span>Mas não espera a sexta chegar.</span></p>
+  </div>
+
+  <div class="rodape">
+    <p class="cta">Empresa com dívida no banco<br>acima de <b>R$ 100 mil</b>?<br>Preencha o formulário.</p>
+    <img class="logo" src="img/logo-schemes-remonti.png" alt="Schemes & Remonti Advogados Associados">
+  </div>
+</div>
+<script>
+  if (new URLSearchParams(location.search).get('f') === '916') document.body.classList.add('f916');
+</script>
+</body>
+</html>
