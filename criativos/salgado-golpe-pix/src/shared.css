@@ -1,0 +1,112 @@
+/* ==========================================================
+   Salgado Advogados Associados — Golpe PIX (estáticos 4:5)
+   Sistema visual compartilhado pelos 4 criativos
+   ========================================================== */
+
+@font-face { font-family: "Inter"; src: url(../fonts/Inter-Regular.otf); font-weight: 400; }
+@font-face { font-family: "Inter"; src: url(../fonts/Inter-Medium.otf); font-weight: 500; }
+@font-face { font-family: "Inter"; src: url(../fonts/Inter-SemiBold.otf); font-weight: 600; }
+@font-face { font-family: "Inter"; src: url(../fonts/Inter-Bold.otf); font-weight: 700; }
+@font-face { font-family: "Inter"; src: url(../fonts/Inter-ExtraBold.otf); font-weight: 800; }
+@font-face { font-family: "Inter"; src: url(../fonts/Inter-Black.otf); font-weight: 900; }
+@font-face { font-family: "Display"; src: url(../fonts/InterDisplay-Regular.otf); font-weight: 400; }
+@font-face { font-family: "Display"; src: url(../fonts/InterDisplay-Medium.otf); font-weight: 500; }
+@font-face { font-family: "Display"; src: url(../fonts/InterDisplay-SemiBold.otf); font-weight: 600; }
+@font-face { font-family: "Display"; src: url(../fonts/InterDisplay-Bold.otf); font-weight: 700; }
+@font-face { font-family: "Display"; src: url(../fonts/InterDisplay-ExtraBold.otf); font-weight: 800; }
+@font-face { font-family: "Display"; src: url(../fonts/InterDisplay-Black.otf); font-weight: 900; }
+@font-face { font-family: "Display"; src: url(../fonts/InterDisplay-SemiBoldItalic.otf); font-weight: 600; font-style: italic; }
+@font-face { font-family: "Display"; src: url(../fonts/InterDisplay-ExtraBoldItalic.otf); font-weight: 800; font-style: italic; }
+@font-face { font-family: "Serif"; src: url(../fonts/InstrumentSerif-Regular.ttf); font-weight: 400; }
+@font-face { font-family: "Serif"; src: url(../fonts/InstrumentSerif-Italic.ttf); font-weight: 400; font-style: italic; }
+
+:root {
+  --ink: #07090c;
+  --ink-2: #10141b;
+  --paper: #f3eee4;
+  --paper-2: #e9e2d4;
+  --red: #ff3b30;
+  --red-soft: #ff6a5f;
+  --pix: #32bcad;        /* teal associado ao PIX (sem usar a marca) */
+  --pix-deep: #0b3a36;
+  --yellow: #ffd23f;
+  --white: #ffffff;
+  --pad: 64px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1350px; background: #000; }
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+  font-feature-settings: "ss01" 0, "cv11" 1;
+}
+
+.ad {
+  position: relative;
+  width: 1080px;
+  height: 1350px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Grão de filme — dá textura "impressa" e tira o aspecto de template */
+.grain::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  opacity: var(--grain, .10);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 1.6 -.3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 300px 300px;
+}
+
+/* ---------- Kicker (selo superior) ---------- */
+.kicker {
+  display: inline-flex; align-items: center; gap: 14px;
+  height: 52px; padding: 0 24px 0 20px;
+  border-radius: 999px;
+  font: 700 20px/1 "Inter";
+  letter-spacing: .14em; text-transform: uppercase;
+  white-space: nowrap;
+}
+.kicker .dot { width: 12px; height: 12px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 6px color-mix(in srgb, currentColor 22%, transparent); }
+
+/* ---------- CTA ---------- */
+.cta {
+  display: inline-flex; align-items: center; gap: 22px;
+  height: 92px; padding: 0 14px 0 40px;
+  border-radius: 999px;
+  font: 700 31px/1 "Display";
+  letter-spacing: -.01em;
+  white-space: nowrap;
+}
+.cta .arrow {
+  width: 66px; height: 66px; border-radius: 50%;
+  display: grid; place-items: center;
+}
+.cta .arrow svg { width: 30px; height: 30px; }
+
+/* ---------- Barra de identificação (OAB) ---------- */
+.brandbar {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 118px;
+  padding: 0 var(--pad);
+  display: flex; align-items: center; justify-content: space-between;
+  z-index: 20;
+}
+.brand { display: flex; align-items: center; gap: 18px; }
+.mono {
+  width: 60px; height: 60px;
+  border: 2px solid currentColor;
+  display: grid; place-items: center;
+  font: 400 46px/1 "Serif";
+  padding-top: 4px;
+}
+.brand .name { font: 700 24px/1.1 "Inter"; letter-spacing: -.005em; }
+.brand .meta { font: 500 18px/1.3 "Inter"; opacity: .72; margin-top: 5px; letter-spacing: .01em; }
+.disclaimer { font: 500 15px/1.35 "Inter"; opacity: .55; text-align: right; max-width: 300px; }
+
+.rule { height: 1.5px; background: currentColor; opacity: .18; }

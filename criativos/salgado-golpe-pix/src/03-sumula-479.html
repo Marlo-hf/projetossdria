@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>03 — Súmula 479</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  .c3 { background: #f1ebdf; color: #121212; --grain: .22; --red3: #d3261d; }
+  .c3 .bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(900px 700px at 30% 30%, rgba(255,255,255,.55), transparent 70%),
+      radial-gradient(1200px 900px at 50% 50%, transparent 55%, rgba(120,95,60,.18) 100%);
+  }
+
+  /* cabeçalho estilo jornal */
+  .mast { position: absolute; z-index: 5; left: var(--pad); right: var(--pad); top: 58px; }
+  .mast .row { display: flex; justify-content: space-between; align-items: center; font: 700 19px/1 "Inter"; letter-spacing: .2em; text-transform: uppercase; }
+  .mast .row span:last-child { color: var(--red3); }
+  .mast .rules { margin-top: 18px; border-top: 3px solid #121212; padding-top: 5px; }
+  .mast .rules::after { content: ""; display: block; border-top: 1px solid #121212; }
+
+  .lead { position: absolute; z-index: 5; left: var(--pad); top: 160px; font: 600 31px/1.25 "Display"; letter-spacing: -.012em; color: #2a2a2a; }
+  .lead mark { background: linear-gradient(transparent 55%, var(--yellow) 55%, var(--yellow) 94%, transparent 94%); color: #121212; font-weight: 800; padding: 0 3px; }
+
+  .c3 h1 {
+    position: absolute; z-index: 5; left: 56px; top: 214px;
+    font: 400 196px/.86 "Serif";
+    letter-spacing: -.025em;
+    color: #121212;
+  }
+  .c3 h1 em { font-style: italic; color: var(--red3); letter-spacing: -.03em; }
+
+  /* selo giratório */
+  .seal { position: absolute; z-index: 6; right: 70px; top: 214px; width: 236px; height: 236px; transform: rotate(-12deg); }
+  .seal svg { width: 100%; height: 100%; display: block; }
+  .seal .center { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+  .seal .center b { display: block; font: 400 76px/.8 "Serif"; color: #121212; margin-top: -6px; }
+  .seal .center span { display: block; margin-top: 6px; font: 800 13px/1 "Inter"; letter-spacing: .22em; color: var(--red3); padding-left: .22em; }
+
+  /* citação da súmula */
+  .quote { position: absolute; z-index: 5; left: var(--pad); right: var(--pad); top: 800px; padding-left: 34px; border-left: 6px solid var(--red3); }
+  .quote p { font: 400 40px/1.2 "Serif"; color: #1b1b1b; letter-spacing: -.003em; }
+  .quote p i { font-style: italic; }
+  .quote .src { margin-top: 18px; font: 800 18px/1 "Inter"; letter-spacing: .2em; text-transform: uppercase; color: #121212; }
+  .quote .src span { color: #7a7368; font-weight: 600; }
+
+  .c3 .cta { position: absolute; z-index: 6; left: var(--pad); top: 1090px; background: #121212; color: #f1ebdf; }
+  .c3 .cta .arrow { background: var(--red3); color: #fff; }
+  .c3 .side { position: absolute; z-index: 6; right: var(--pad); top: 1102px; text-align: right; font: 600 21px/1.35 "Inter"; color: #4d4a44; }
+  .c3 .side b { color: #121212; font-weight: 800; }
+
+  .c3 .brandbar { color: #121212; border-top: 3px solid #121212; }
+  .c3 .brandbar::before { content: ""; position: absolute; left: 0; right: 0; top: 4px; border-top: 1px solid #121212; }
+  .c3 .brandbar { left: var(--pad); right: var(--pad); padding: 0; }
+</style>
+</head>
+<body>
+<div class="ad grain c3">
+  <div class="bg"></div>
+
+  <div class="mast">
+    <div class="row"><span>Direito Bancário</span><span>Golpe via PIX</span></div>
+    <div class="rules"></div>
+  </div>
+
+  <p class="lead">Para quem perdeu <mark>mais de R$ 20 mil</mark> em golpe via PIX:</p>
+
+  <h1>A conta<br>pode ser<br><em>do banco.</em></h1>
+
+  <div class="seal">
+    <svg viewBox="0 0 236 236">
+      <defs><path id="circ" d="M118,118 m-92,0 a92,92 0 1,1 184,0 a92,92 0 1,1 -184,0"/></defs>
+      <circle cx="118" cy="118" r="115" fill="none" stroke="#121212" stroke-width="2.5"/>
+      <circle cx="118" cy="118" r="76" fill="none" stroke="#121212" stroke-width="1.5"/>
+      <text font-family="Inter" font-weight="800" font-size="15" fill="#121212">
+        <textPath href="#circ" textLength="570" lengthAdjust="spacing">SUPERIOR TRIBUNAL DE JUSTIÇA • DIREITO BANCÁRIO •</textPath>
+      </text>
+    </svg>
+    <div class="center"><div><b>479</b><span>SÚMULA</span></div></div>
+  </div>
+
+  <div class="quote">
+    <p>“As instituições financeiras <i>respondem objetivamente</i> pelos danos gerados por fortuito interno relativo a <i>fraudes e delitos praticados por terceiros</i> no âmbito de operações bancárias.”</p>
+    <div class="src">Súmula 479 <span>· Superior Tribunal de Justiça</span></div>
+  </div>
+
+  <div class="cta">Solicitar análise do caso<span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+  <div class="side">Cada caso é único.<br><b>Entenda o seu.</b></div>
+
+  <footer class="brandbar">
+    <div class="brand">
+      <div class="mono">S</div>
+      <div>
+        <div class="name">Salgado Advogados Associados</div>
+        <div class="meta">Dr. Cláudio Salgado · OAB/UF 000.000</div>
+      </div>
+    </div>
+    <div class="disclaimer">Conteúdo informativo. Cada caso é analisado individualmente.</div>
+  </footer>
+</div>
+</body>
+</html>

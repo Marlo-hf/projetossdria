@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>02 — Falsa central</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  .c2 { background: #e7e3db; color: var(--ink); --grain: .16; }
+  .c2 .bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(700px 520px at 85% 8%, rgba(255,255,255,.75), transparent 70%),
+      radial-gradient(800px 600px at 0% 100%, rgba(180,170,150,.35), transparent 70%);
+  }
+
+  .c2 .kicker { position: absolute; z-index: 5; left: var(--pad); top: 60px; color: #fff; background: var(--red); }
+  .c2 .kicker .dot { background: #fff; box-shadow: 0 0 0 6px rgba(255,255,255,.25); }
+
+  /* ---------- janela de conversa ---------- */
+  .chat {
+    position: absolute; z-index: 3;
+    left: var(--pad); right: var(--pad); top: 140px;
+    height: 604px;
+    border-radius: 44px;
+    background: #f7f5f1;
+    box-shadow: 0 1px 0 rgba(255,255,255,.9) inset, 0 40px 80px -30px rgba(60,40,20,.35), 0 0 0 1px rgba(0,0,0,.05);
+    overflow: hidden;
+  }
+  .chat .head {
+    display: flex; align-items: center; gap: 20px;
+    height: 112px; padding: 0 34px;
+    background: rgba(255,255,255,.85);
+    border-bottom: 1px solid rgba(0,0,0,.07);
+  }
+  .chat .back { width: 22px; height: 36px; }
+  .avatar {
+    width: 68px; height: 68px; border-radius: 50%;
+    background: linear-gradient(160deg, #20304f, #0d1629);
+    display: grid; place-items: center;
+  }
+  .who .n { font: 700 30px/1.1 "Inter"; letter-spacing: -.015em; display: flex; align-items: center; gap: 10px; }
+  .who .s { margin-top: 5px; font: 500 21px/1 "Inter"; color: #6b6f76; display: flex; align-items: center; gap: 8px; }
+  .who .s i { width: 11px; height: 11px; border-radius: 50%; background: #22c55e; display: inline-block; }
+  .head .icons { margin-left: auto; display: flex; gap: 30px; opacity: .55; }
+
+  .msgs { padding: 30px 34px 0; display: flex; flex-direction: column; gap: 16px; }
+  .day { align-self: center; font: 600 18px/1 "Inter"; color: #7c7f86; background: rgba(0,0,0,.05); padding: 9px 16px; border-radius: 999px; letter-spacing: .02em; }
+  .b {
+    max-width: 760px;
+    padding: 22px 28px 18px;
+    font: 500 30px/1.32 "Inter"; letter-spacing: -.012em;
+    border-radius: 34px;
+    position: relative;
+  }
+  .b .t { display: block; text-align: right; margin-top: 4px; font: 500 18px/1 "Inter"; opacity: .55; }
+  .in { align-self: flex-start; background: #fff; border-bottom-left-radius: 10px; box-shadow: 0 2px 0 rgba(0,0,0,.04), 0 1px 2px rgba(0,0,0,.06); }
+  .out { align-self: flex-end; margin-top: 6px; background: #1d63ed; color: #fff; border-bottom-right-radius: 10px; font-weight: 600; }
+  .out .t { opacity: .8; }
+  .out b { font-weight: 800; }
+
+  /* ---------- carimbo ---------- */
+  .stamp {
+    position: absolute; z-index: 7;
+    left: 84px; top: 640px;
+    transform: rotate(-6deg);
+    padding: 12px 28px 8px;
+    border: 7px solid #e3241a;
+    border-radius: 16px;
+    color: #e3241a;
+    font: 900 68px/1 "Display"; letter-spacing: .02em;
+    white-space: nowrap;
+    text-transform: uppercase;
+    mix-blend-mode: multiply;
+    -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.5 1.72'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    -webkit-mask-size: 220px 220px;
+    box-shadow: inset 0 0 0 3px rgba(227,36,26,.0);
+  }
+  .stamp small { display: block; font: 800 22px/1 "Inter"; letter-spacing: .32em; text-align: center; margin-bottom: 8px; }
+
+  /* ---------- texto ---------- */
+  .c2 .copy { position: absolute; z-index: 5; left: var(--pad); right: var(--pad); top: 806px; }
+  .c2 h1 { font: 800 92px/.95 "Display"; letter-spacing: -.042em; }
+  .c2 h1 em { font-style: normal; color: var(--red); }
+  .c2 .sub { margin-top: 26px; font: 500 30px/1.3 "Display"; color: #3b3d42; letter-spacing: -.01em; max-width: 900px; }
+  .c2 .sub b { color: var(--ink); font-weight: 800; }
+  .c2 .sub mark { background: linear-gradient(transparent 58%, var(--yellow) 58%, var(--yellow) 92%, transparent 92%); color: inherit; padding: 0 2px; }
+
+  .c2 .cta { position: absolute; z-index: 6; left: var(--pad); top: 1112px; background: var(--ink); color: #fff; }
+  .c2 .cta .arrow { background: var(--red); color: #fff; }
+  .c2 .ctanote { position: absolute; z-index: 6; left: 600px; top: 1124px; font: 600 21px/1.35 "Inter"; color: #55585e; }
+  .c2 .ctanote b { color: var(--ink); }
+
+  .c2 .brandbar { color: var(--ink); border-top: 1.5px solid rgba(0,0,0,.12); }
+</style>
+</head>
+<body>
+<div class="ad grain c2">
+  <div class="bg"></div>
+
+  <div class="kicker"><span class="dot"></span>Golpe da falsa central</div>
+
+  <div class="chat">
+    <div class="head">
+      <svg class="back" viewBox="0 0 22 36" fill="none" stroke="#1d63ed" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 3 4 18l14 15"/></svg>
+      <div class="avatar"><svg width="36" height="40" viewBox="0 0 36 40"><path d="M18 2 3 8v11c0 9.4 6.4 16.8 15 19 8.6-2.2 15-9.6 15-19V8z" fill="#fff"/><path d="m11 20 5 5 9-10" stroke="#16223b" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="who">
+        <div class="n">Central de Segurança</div>
+        <div class="s"><i></i>online</div>
+      </div>
+      <div class="icons">
+        <svg width="40" height="32" viewBox="0 0 40 32" fill="none" stroke="#111" stroke-width="3"><rect x="2" y="5" width="25" height="22" rx="5"/><path d="m27 13 10-6v18l-10-6"/></svg>
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#111" stroke-width="3"><path d="M7 3h6l3 8-4 3a18 18 0 0 0 7 7l3-4 8 3v6a3 3 0 0 1-3 3A26 26 0 0 1 4 6a3 3 0 0 1 3-3z"/></svg>
+      </div>
+    </div>
+
+    <div class="msgs">
+      <div class="b in">Aqui é da Central de Segurança do seu banco. Detectamos um acesso suspeito na sua conta.<span class="t">14:02</span></div>
+      <div class="b in">Para proteger seu dinheiro, transfira o saldo para a conta segura. O valor volta em 24h.<span class="t">14:03</span></div>
+      <div class="b out">Fiz o PIX de <b>R$ 38.000</b>.<span class="t">14:09 ✓✓</span></div>
+    </div>
+  </div>
+
+  <div class="stamp">Era golpe</div>
+
+  <div class="copy">
+    <h1>Não foi descuido.<br><em>Foi golpe profissional.</em></h1>
+    <p class="sub">Quando o banco falha na prevenção a fraudes, ele pode ser <b>responsabilizado</b>. Atuamos em casos <mark><b>acima de R$ 20 mil</b></mark>.</p>
+  </div>
+
+  <div class="cta">Falar com um advogado<span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+
+  <footer class="brandbar">
+    <div class="brand">
+      <div class="mono">S</div>
+      <div>
+        <div class="name">Salgado Advogados Associados</div>
+        <div class="meta">Dr. Cláudio Salgado · OAB/UF 000.000</div>
+      </div>
+    </div>
+    <div class="disclaimer">Conteúdo informativo. Cada caso é analisado individualmente.</div>
+  </footer>
+</div>
+</body>
+</html>

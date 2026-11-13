@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>04 — Checklist</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  .c4 { background: #031a18; color: #fff; --grain: .12; --teal: #3fd1bf; }
+  .c4 .bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(700px 520px at 92% 4%, rgba(63, 209, 191, .30), transparent 70%),
+      radial-gradient(800px 700px at 0% 70%, rgba(20, 120, 110, .28), transparent 70%),
+      linear-gradient(180deg, #04221f 0%, #021210 100%);
+  }
+  /* malha sutil de "formulário" */
+  .c4 .grid {
+    position: absolute; inset: 0; z-index: 1; opacity: .07;
+    background-image: linear-gradient(rgba(255,255,255,.9) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.9) 1px, transparent 1px);
+    background-size: 54px 54px;
+    -webkit-mask-image: radial-gradient(700px 600px at 80% 10%, #000, transparent 75%);
+  }
+
+  .c4 .top { position: absolute; z-index: 5; left: var(--pad); right: var(--pad); top: 60px; }
+  .c4 .kicker { color: var(--teal); background: rgba(63, 209, 191, .10); border: 1.5px solid rgba(63, 209, 191, .45); }
+  .c4 h1 { margin-top: 28px; font: 800 98px/.93 "Display"; letter-spacing: -.042em; }
+  .c4 h1 em { font-style: normal; color: var(--teal); }
+
+  /* ---------- checklist ---------- */
+  .list {
+    position: absolute; z-index: 5; left: var(--pad); right: var(--pad); top: 384px;
+    border-radius: 40px;
+    background: linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.035));
+    box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.10), 0 40px 80px -30px rgba(0,0,0,.6);
+    padding: 8px 40px;
+  }
+  .item { display: flex; gap: 46px; align-items: center; padding: 35px 0; }
+  .item + .item { border-top: 1.5px dashed rgba(255,255,255,.14); }
+  .box {
+    position: relative; flex: none;
+    width: 72px; height: 72px; border-radius: 18px;
+    border: 3.5px solid rgba(255,255,255,.85);
+  }
+  .box svg { position: absolute; left: -6px; top: -26px; width: 104px; height: 104px; overflow: visible; }
+  .box svg path { fill: none; stroke: var(--teal); stroke-width: 13; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 4px 10px rgba(63,209,191,.35)); }
+  .itx .t { font: 800 38px/1.08 "Display"; letter-spacing: -.025em; }
+  .itx .t mark { background: none; color: var(--teal); }
+  .itx .s { margin-top: 8px; font: 500 23px/1.3 "Inter"; color: rgba(255,255,255,.62); letter-spacing: -.005em; }
+
+  /* ---------- resolução ---------- */
+  .res { position: absolute; z-index: 5; left: var(--pad); right: var(--pad); top: 880px; display: flex; align-items: center; gap: 30px; }
+  .ring { flex: none; width: 132px; height: 132px; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(var(--teal) 0 100%); box-shadow: 0 0 60px rgba(63,209,191,.35); }
+  .ring span { width: 112px; height: 112px; border-radius: 50%; background: #03201d; display: grid; place-items: center; font: 800 44px/1 "Display"; letter-spacing: -.03em; color: var(--teal); }
+  .res .q { font: 800 70px/.95 "Display"; letter-spacing: -.04em; }
+  .res .a { margin-top: 10px; font: 600 31px/1.2 "Display"; letter-spacing: -.012em; color: rgba(255,255,255,.86); }
+  .res .a b { color: #fff; font-weight: 800; }
+
+  .c4 .cta { position: absolute; z-index: 6; left: var(--pad); top: 1084px; background: var(--teal); color: #03201d; }
+  .c4 .cta .arrow { background: #03201d; color: var(--teal); }
+
+  .med { position: absolute; z-index: 6; left: 620px; right: var(--pad); top: 1088px; display: flex; gap: 14px; align-items: flex-start; font: 500 20px/1.35 "Inter"; color: rgba(255,255,255,.66); }
+  .med b { color: #fff; font-weight: 700; }
+  .med svg { flex: none; margin-top: 2px; }
+
+  .c4 .brandbar { color: #fff; border-top: 1.5px solid rgba(255,255,255,.12); }
+</style>
+</head>
+<body>
+<div class="ad grain c4">
+  <div class="bg"></div>
+  <div class="grid"></div>
+
+  <header class="top">
+    <div class="kicker"><span class="dot"></span>Golpe via PIX · teste de 10 segundos</div>
+    <h1>Vale procurar<br>um <em>advogado?</em></h1>
+  </header>
+
+  <div class="list">
+    <div class="item">
+      <div class="box"><svg viewBox="0 0 104 104"><path d="M18 58 L42 82 L96 14"/></svg></div>
+      <div class="itx"><div class="t">Perdi <mark>mais de R$ 20 mil</mark></div><div class="s">em uma ou em várias transferências via PIX</div></div>
+    </div>
+    <div class="item">
+      <div class="box"><svg viewBox="0 0 104 104"><path d="M18 58 L42 82 L96 14"/></svg></div>
+      <div class="itx"><div class="t">Caí em um golpe</div><div class="s">falsa central, falso gerente, conta invadida, WhatsApp clonado…</div></div>
+    </div>
+    <div class="item">
+      <div class="box"><svg viewBox="0 0 104 104"><path d="M18 58 L42 82 L96 14"/></svg></div>
+      <div class="itx"><div class="t">O banco não devolveu</div><div class="s">ou negou a contestação do PIX (MED)</div></div>
+    </div>
+  </div>
+
+  <div class="res">
+    <div class="ring"><span>3/3</span></div>
+    <div>
+      <div class="q">Marcou os três?</div>
+      <div class="a">O banco pode ser <b>responsabilizado.</b></div>
+    </div>
+  </div>
+
+  <div class="cta">Quero analisar meu caso<span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+
+  <div class="med">
+    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="#3fd1bf" stroke-width="2.6" stroke-linecap="round"><circle cx="13" cy="13" r="11"/><path d="M13 7v6l4 3"/></svg>
+    <div><b>Não deixe para depois:</b> a contestação pelo MED tem prazo de até 80 dias após o PIX.</div>
+  </div>
+
+  <footer class="brandbar">
+    <div class="brand">
+      <div class="mono">S</div>
+      <div>
+        <div class="name">Salgado Advogados Associados</div>
+        <div class="meta">Dr. Cláudio Salgado · OAB/UF 000.000</div>
+      </div>
+    </div>
+    <div class="disclaimer">Conteúdo informativo. Cada caso é analisado individualmente.</div>
+  </footer>
+</div>
+</body>
+</html>
