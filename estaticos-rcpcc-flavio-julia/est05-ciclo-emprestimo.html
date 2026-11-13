@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>EST 05 - Ciclo do empréstimo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1080px;height:1440px}
+  body{
+    position:relative;overflow:hidden;font-family:'Inter',sans-serif;color:#fff;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 64%, rgba(214,22,30,.30) 0%, rgba(214,22,30,0) 70%),
+      linear-gradient(180deg,#0d0d0d 0%,#070707 100%);
+  }
+  .grid{position:absolute;inset:0;opacity:.07;
+    background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px);
+    background-size:54px 54px}
+
+  /* fita de atenção */
+  .tape{position:absolute;left:-80px;width:1240px;height:92px;display:flex;align-items:center;justify-content:center;
+    background:#FFD400;color:#0b0b0b;font-family:'Anton',sans-serif;font-size:42px;letter-spacing:1.5px;white-space:nowrap;
+    box-shadow:0 14px 28px rgba(0,0,0,.55)}
+  .tape::before,.tape::after{content:"";position:absolute;left:0;right:0;height:16px;
+    background:repeating-linear-gradient(-45deg,#0b0b0b 0 18px,#FFD400 18px 36px)}
+  .tape::before{top:0}.tape::after{bottom:0}
+  .tape.t1{top:44px;transform:rotate(-3.2deg)}
+  .tape .dot{display:inline-block;width:14px;height:14px;background:#0b0b0b;border-radius:50%;margin:0 26px;transform:translateY(-4px)}
+
+  .h1{position:absolute;top:180px;left:72px;font-family:'Anton',sans-serif;text-transform:uppercase;line-height:1.03;font-size:114px;letter-spacing:.5px}
+  .h1 .y{color:#FFD400}
+  .h1 .stop{display:inline-block;background:#d6161e;color:#fff;padding:0 22px 6px;margin-right:16px;transform:rotate(-2deg);box-shadow:8px 8px 0 rgba(0,0,0,.6)}
+
+  /* selo */
+  .seal{position:absolute;top:338px;right:58px;width:216px;height:216px;border-radius:50%;background:#d6161e;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transform:rotate(9deg);
+    box-shadow:0 0 0 8px #0b0b0b, 0 0 0 12px #d6161e, 0 20px 40px rgba(0,0,0,.6)}
+  .seal .a{font-weight:900;font-size:25px;line-height:1.1;letter-spacing:.3px}
+  .seal .b{font-family:'Anton',sans-serif;font-size:58px;line-height:1;color:#FFD400;margin:4px 0 2px}
+  .seal .c{font-weight:800;font-size:22px;letter-spacing:.5px}
+
+  /* ciclo */
+  .cycle{position:absolute;top:700px;left:0;width:1080px;height:410px}
+  .cycle svg{position:absolute;inset:0}
+  .node{position:absolute;width:300px;padding:12px 16px 14px;border-radius:16px;background:#151515;border:3px solid #FFD400;
+    text-align:center;font-weight:800;font-size:26px;line-height:1.16;box-shadow:0 12px 26px rgba(0,0,0,.6)}
+  .node .n{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;
+    background:#FFD400;color:#0b0b0b;font-weight:900;font-size:21px;margin-bottom:4px}
+  .node.red{border-color:#ff3b41}
+  .node.red .n{background:#ff3b41;color:#fff}
+  .n1{left:390px;top:0}
+  .n2{left:744px;top:140px}
+  .n3{left:390px;top:280px}
+  .n4{left:36px;top:140px}
+  .center{position:absolute;left:340px;top:162px;width:400px;text-align:center}
+  .center .q{font-family:'Anton',sans-serif;font-size:64px;line-height:1;color:#ff3b41;text-transform:uppercase}
+  .center .s{font-weight:700;font-size:21px;color:rgba(255,255,255,.75);margin-top:8px;letter-spacing:.3px}
+
+  .body{position:absolute;top:1128px;left:70px;right:70px;text-align:center;font-size:28px;line-height:1.36;font-weight:500;color:rgba(255,255,255,.92)}
+  .body b{color:#fff;font-weight:800}
+  .body .hl{color:#FFD400;font-weight:800}
+
+  .cta{position:absolute;left:76px;right:76px;bottom:56px;height:104px;border-radius:18px;background:#FFD400;color:#0b0b0b;
+    display:flex;align-items:center;justify-content:center;font-weight:900;font-size:34px;letter-spacing:-.2px;
+    box-shadow:0 10px 0 #9c8200}
+  .hazard{position:absolute;left:0;right:0;bottom:0;height:20px;background:repeating-linear-gradient(-45deg,#0b0b0b 0 18px,#FFD400 18px 36px)}
+</style>
+</head>
+<body>
+  <div class="grid"></div>
+
+  <div class="tape t1">ATENÇÃO<span class="dot"></span>DÍVIDAS ACIMA DE R$ 40 MIL NO CPF<span class="dot"></span>ATENÇÃO</div>
+
+  <div class="h1">
+    <div><span class="stop">PARE</span>de pegar</div>
+    <div class="y">empréstimo</div>
+    <div>pra pagar</div>
+    <div class="y">empréstimo.</div>
+  </div>
+
+  <div class="seal">
+    <div class="a">VOCÊ<br>ESTÁ PRESO</div>
+    <div class="b">NESSE</div>
+    <div class="c">CICLO?</div>
+  </div>
+
+  <div class="cycle">
+    <svg viewBox="0 0 1080 410">
+      <defs>
+        <marker id="ah" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="#FFD400"/>
+        </marker>
+      </defs>
+      <!-- elipse guia -->
+      <ellipse cx="540" cy="200" rx="354" ry="140" fill="none" stroke="rgba(255,212,0,.16)" stroke-width="3" stroke-dasharray="4 12"/>
+      <!-- setas no sentido horário entre os nós -->
+      <path d="M700 52 A 354 140 0 0 1 872 132" fill="none" stroke="#FFD400" stroke-width="7" stroke-linecap="round" marker-end="url(#ah)"/>
+      <path d="M884 270 A 354 140 0 0 1 708 340" fill="none" stroke="#FFD400" stroke-width="7" stroke-linecap="round" marker-end="url(#ah)"/>
+      <path d="M372 340 A 354 140 0 0 1 196 270" fill="none" stroke="#FFD400" stroke-width="7" stroke-linecap="round" marker-end="url(#ah)"/>
+      <path d="M208 132 A 354 140 0 0 1 380 52" fill="none" stroke="#FFD400" stroke-width="7" stroke-linecap="round" marker-end="url(#ah)"/>
+    </svg>
+    <div class="node n1"><div class="n">1</div><div>Pega um<br>empréstimo novo</div></div>
+    <div class="node n2"><div class="n">2</div><div>Cobre a parcela<br>que ia atrasar</div></div>
+    <div class="node n3 red"><div class="n">3</div><div>Os juros sobem e<br>a dívida cresce</div></div>
+    <div class="node n4 red"><div class="n">4</div><div>Falta dinheiro<br>de novo</div></div>
+    <div class="center"><div class="q">Até quando?</div></div>
+  </div>
+
+  <div class="body">
+    Isso tem nome: <b>superendividamento</b>. E a <b>Lei 14.181/21</b> permite reunir as dívidas em <span class="hl">um único plano de pagamento</span>, preservando o mínimo para você viver.
+  </div>
+
+  <div class="cta">DEVE MAIS DE R$ 40 MIL? TOQUE EM SAIBA MAIS ›</div>
+  <div class="hazard"></div>
+</body>
+</html>
